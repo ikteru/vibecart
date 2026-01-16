@@ -42,7 +42,7 @@ export default function SellerLayout({ children, params }: SellerLayoutProps) {
       <div className="h-full overflow-y-auto no-scrollbar p-6 pb-24">{children}</div>
 
       {/* Bottom Navigation - Fixed */}
-      <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 p-2 safe-area-pb z-50">
+      <div className="fixed bottom-0 inset-x-0 bg-zinc-900 border-t border-zinc-800 p-2 safe-area-pb z-50">
         <div className="flex justify-between items-center px-2 max-w-lg mx-auto">
           {navItems.map((item) => {
             const Icon = item.icon;

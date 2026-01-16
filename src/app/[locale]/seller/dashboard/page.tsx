@@ -58,7 +58,7 @@ export default function DashboardPage() {
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-3 mb-6">
         <div className="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-3 opacity-10">
+          <div className="absolute top-0 end-0 p-3 opacity-10">
             <TrendingUp size={40} />
           </div>
           <p className="text-xs font-bold text-zinc-500 uppercase mb-1">{t('seller.dashboard.totalRevenue')}</p>
@@ -71,7 +71,7 @@ export default function DashboardPage() {
           </div>
         </div>
         <div className="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-3 opacity-10">
+          <div className="absolute top-0 end-0 p-3 opacity-10">
             <ShoppingBag size={40} />
           </div>
           <p className="text-xs font-bold text-zinc-500 uppercase mb-1">{t('seller.dashboard.pendingOrders')}</p>

@@ -159,7 +159,7 @@ export default function VibePage() {
           >
             <div
               className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-                config.spotlight.enabled ? 'left-5' : 'left-1'
+                config.spotlight.enabled ? 'start-5' : 'start-1'
               }`}
             />
           </button>
@@ -219,7 +219,7 @@ export default function VibePage() {
           >
             <div
               className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-                config.makerBio.enabled ? 'left-5' : 'left-1'
+                config.makerBio.enabled ? 'start-5' : 'start-1'
               }`}
             />
           </button>

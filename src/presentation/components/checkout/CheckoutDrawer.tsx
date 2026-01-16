@@ -352,7 +352,7 @@ export function CheckoutDrawer({
                 {/* Variant Selector */}
                 {product.variants && product.variants.length > 0 && (
                   <div className="space-y-2">
-                    <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1 flex items-center gap-1">
+                    <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1 flex items-center gap-1">
                       <Ruler size={10} /> {t('checkout.selectOption')}
                     </label>
                     <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
@@ -378,7 +378,7 @@ export function CheckoutDrawer({
                 {/* Name & Phone */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
+                    <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
                       {t('checkout.fullName')}
                     </label>
                     <input
@@ -393,7 +393,7 @@ export function CheckoutDrawer({
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
+                    <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
                       {t('checkout.whatsapp')}
                     </label>
                     <input
@@ -470,7 +470,7 @@ export function CheckoutDrawer({
                           <Map size={20} />
                         </div>
                       )}
-                      <div className="text-left">
+                      <div className="text-start">
                         <span
                           className={`block text-xs font-bold ${order.locationUrl ? 'text-white' : 'text-zinc-300'}`}
                         >
@@ -500,7 +500,7 @@ export function CheckoutDrawer({
                           ref={cityInputRef}
                           type="text"
                           placeholder={t('checkout.city')}
-                          className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl pl-4 pr-8 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-all cursor-pointer"
+                          className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl ps-4 pe-8 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-all cursor-pointer"
                           value={citySearch}
                           onChange={(e) => {
                             setCitySearch(e.target.value);
@@ -516,16 +516,16 @@ export function CheckoutDrawer({
                         />
                         <ChevronDown
                           size={14}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none"
+                          className="absolute end-3 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none"
                         />
                       </div>
                       {isCityListOpen && (
-                        <div className="absolute top-[calc(100%+4px)] left-0 w-full max-h-48 overflow-y-auto bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl z-20 no-scrollbar">
+                        <div className="absolute top-[calc(100%+4px)] start-0 w-full max-h-48 overflow-y-auto bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl z-20 no-scrollbar">
                           {filteredCities.map((city) => (
                             <button
                               key={city}
                               type="button"
-                              className="w-full text-left px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors border-b border-zinc-800/50 last:border-0"
+                              className="w-full text-start px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors border-b border-zinc-800/50 last:border-0"
                               onMouseDown={(e) => {
                                 e.preventDefault();
                                 handleCitySelect(city);
@@ -546,7 +546,7 @@ export function CheckoutDrawer({
                           type="text"
                           disabled={!order.city}
                           placeholder={!order.city ? t('checkout.cityFirst') : t('checkout.neighborhood')}
-                          className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl pl-4 pr-8 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl ps-4 pe-8 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                           value={neighborhoodSearch}
                           onChange={(e) => {
                             setNeighborhoodSearch(e.target.value);
@@ -561,18 +561,18 @@ export function CheckoutDrawer({
                         {!neighborhoodSearch && (
                           <Search
                             size={14}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none"
+                            className="absolute end-3 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none"
                           />
                         )}
                       </div>
                       {isNeighborhoodListOpen &&
                         availableNeighborhoods.length > 0 && (
-                          <div className="absolute top-[calc(100%+4px)] left-0 w-full max-h-48 overflow-y-auto bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl z-20 no-scrollbar">
+                          <div className="absolute top-[calc(100%+4px)] start-0 w-full max-h-48 overflow-y-auto bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl z-20 no-scrollbar">
                             {filteredNeighborhoods.map((n) => (
                               <button
                                 key={n}
                                 type="button"
-                                className="w-full text-left px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors border-b border-zinc-800/50 last:border-0"
+                                className="w-full text-start px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors border-b border-zinc-800/50 last:border-0"
                                 onMouseDown={(e) => {
                                   e.preventDefault();
                                   handleNeighborhoodSelect(n);
@@ -638,7 +638,7 @@ export function CheckoutDrawer({
                   successLabel={t('checkout.sent')}
                   disabled={!isFormValid()}
                   onConfirm={handleConfirmOrder}
-                  icon={<Send size={20} className="text-white ml-0.5" />}
+                  icon={<Send size={20} className="text-white ms-0.5" />}
                 />
                 {!isFormValid() && (
                   <p className="text-center text-xs text-zinc-600 mt-2">
@@ -672,7 +672,7 @@ export function CheckoutDrawer({
                 <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center shrink-0 mt-1">
                   <CheckCircle size={16} className="text-white" />
                 </div>
-                <div className="text-left">
+                <div className="text-start">
                   <p className="text-sm font-bold text-white">{t('checkout.oneLastStep')}</p>
                   <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
                     {t('checkout.whatsappConfirmText')}

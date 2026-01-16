@@ -23,20 +23,18 @@ export default async function ShippingPage({ params: { locale } }: ShippingPageP
 
   return (
     <div className="min-h-screen bg-zinc-950">
-      {/* Header */}
+      {/* Header - Back button fixed on LEFT side regardless of RTL */}
       <header className="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-800">
-        <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link
-              href={`/${locale}/seller/settings`}
-              className="p-2 -ml-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
-            <div className="flex items-center gap-2">
-              <Settings className="w-5 h-5 text-violet-400" />
-              <h1 className="font-semibold text-white">{t('pageTitle')}</h1>
-            </div>
+        <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-center relative">
+          <Link
+            href={`/${locale}/seller/settings`}
+            className="absolute left-4 p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5 rtl-flip" />
+          </Link>
+          <div className="flex items-center gap-2">
+            <Settings className="w-5 h-5 text-violet-400" />
+            <h1 className="font-semibold text-white">{t('pageTitle')}</h1>
           </div>
         </div>
       </header>

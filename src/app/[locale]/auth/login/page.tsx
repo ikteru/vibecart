@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/presentation/providers/AuthProvider';
 import { Phone, Mail, Chrome, ArrowLeft, Loader2 } from 'lucide-react';
+import { DirectionalIcon } from '@/presentation/components/ui/DirectionalIcon';
 
 type AuthMethod = 'select' | 'phone' | 'email' | 'otp';
 
@@ -169,7 +170,7 @@ function LoginContent() {
               onClick={goBack}
               className="flex items-center gap-2 text-zinc-400 hover:text-white"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <DirectionalIcon icon={ArrowLeft} size={16} />
               {t('common.back')}
             </button>
 
@@ -222,7 +223,7 @@ function LoginContent() {
               onClick={goBack}
               className="flex items-center gap-2 text-zinc-400 hover:text-white"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <DirectionalIcon icon={ArrowLeft} size={16} />
               {t('common.back')}
             </button>
 
@@ -276,7 +277,7 @@ function LoginContent() {
               onClick={goBack}
               className="flex items-center gap-2 text-zinc-400 hover:text-white"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <DirectionalIcon icon={ArrowLeft} size={16} />
               {t('common.back')}
             </button>
 

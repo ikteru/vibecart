@@ -243,7 +243,7 @@ export default function SettingsPage() {
         </div>
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">{t('seller.profile.shopName')}</label>
+            <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">{t('seller.profile.shopName')}</label>
             <input
               type="text"
               value={sellerName}
@@ -252,7 +252,7 @@ export default function SettingsPage() {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
+            <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
               {t('auth.phoneNumber')}
             </label>
             <input
@@ -379,7 +379,7 @@ export default function SettingsPage() {
             >
               <div
                 className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-                  config.googleMaps.enabled ? 'left-5' : 'left-1'
+                  config.googleMaps.enabled ? 'start-5' : 'start-1'
                 }`}
               />
             </button>
@@ -446,7 +446,7 @@ export default function SettingsPage() {
 
           <div className="space-y-2">
             <div className="flex justify-between items-center mb-2">
-              <p className="text-[10px] text-zinc-500 font-bold uppercase ml-1">{t('seller.settings.shipping.cityRules')}</p>
+              <p className="text-[10px] text-zinc-500 font-bold uppercase ms-1">{t('seller.settings.shipping.cityRules')}</p>
               <label className="flex items-center gap-1 text-[10px] text-emerald-400 cursor-pointer hover:text-emerald-300">
                 <FileSpreadsheet size={12} />
                 <span>{t('seller.settings.shipping.importCsv')}</span>

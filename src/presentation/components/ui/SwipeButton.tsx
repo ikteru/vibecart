@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { ChevronsRight, Check } from 'lucide-react';
+import { useRTL } from '@/presentation/hooks/useRTL';
 
 interface SwipeButtonProps {
   onConfirm: () => void;
@@ -24,6 +25,7 @@ export function SwipeButton({
   icon,
   successLabel = 'Confirmed',
 }: SwipeButtonProps) {
+  const isRtl = useRTL();
   const [dragWidth, setDragWidth] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
@@ -43,7 +45,11 @@ export function SwipeButton({
     const thumbWidth = 48;
     const maxDrag = containerWidth - thumbWidth - 8;
 
-    let offset = clientX - startXRef.current;
+    // RTL: swipe from right to left (negative direction)
+    // LTR: swipe from left to right (positive direction)
+    let offset = isRtl
+      ? startXRef.current - clientX
+      : clientX - startXRef.current;
     offset = Math.max(0, offset);
     offset = Math.min(offset, maxDrag);
 
@@ -93,20 +99,22 @@ export function SwipeButton({
           className={`text-sm font-bold tracking-widest uppercase flex items-center gap-2 ${confirmed ? 'text-emerald-500' : 'text-zinc-500'}`}
         >
           {confirmed ? successLabel : label}{' '}
-          {!confirmed && <ChevronsRight size={14} className="animate-pulse" />}
+          {!confirmed && (
+            <ChevronsRight size={14} className={`animate-pulse ${isRtl ? 'scale-x-[-1]' : ''}`} />
+          )}
         </span>
       </div>
 
       {/* Fill Track */}
       <div
         style={{ width: `${dragWidth + 48}px` }}
-        className={`absolute inset-y-0 left-0 transition-[width] duration-75 ease-out pointer-events-none ${confirmed ? 'bg-emerald-500' : 'bg-emerald-500/10'}`}
+        className={`absolute inset-y-0 start-0 transition-[width] duration-75 ease-out pointer-events-none ${confirmed ? 'bg-emerald-500' : 'bg-emerald-500/10'}`}
       />
 
       {/* Thumb */}
       <div
-        style={{ transform: `translateX(${dragWidth}px)` }}
-        className={`absolute top-1 left-1 bottom-1 w-12 rounded-full flex items-center justify-center shadow-lg border border-white/10 transition-transform duration-75 ease-out z-10
+        style={{ transform: `translateX(${isRtl ? -dragWidth : dragWidth}px)` }}
+        className={`absolute top-1 start-1 bottom-1 w-12 rounded-full flex items-center justify-center shadow-lg border border-white/10 transition-transform duration-75 ease-out z-10
                 ${disabled ? 'bg-zinc-600' : confirmed ? 'bg-white' : 'bg-emerald-500 cursor-grab active:cursor-grabbing hover:bg-emerald-400'}
             `}
         onMouseDown={(e) => handleStart(e.clientX)}
@@ -115,7 +123,7 @@ export function SwipeButton({
         {confirmed ? (
           <Check size={20} className="text-emerald-500" />
         ) : (
-          <div className="text-white fill-white/20">{icon}</div>
+          <div className={`text-white fill-white/20 ${isRtl ? 'scale-x-[-1]' : ''}`}>{icon}</div>
         )}
       </div>
     </div>

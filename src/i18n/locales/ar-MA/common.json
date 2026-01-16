@@ -362,6 +362,7 @@
     "search": "بحث",
     "noResults": "ما لقينا والو",
     "currency": "درهم",
+    "currencySymbol": "د.م.",
     "share": "شارك",
     "copy": "نسخ",
     "copied": "تنسخ!",
@@ -414,15 +415,60 @@
     "notifyButton": "عرفني"
   },
   "cities": {
-    "Casablanca": "الدار البيضاء",
-    "Rabat": "الرباط",
-    "Marrakech": "مراكش",
-    "Fes": "فاس",
-    "Tangier": "طنجة",
     "Agadir": "أكادير",
-    "Meknes": "مكناس",
-    "Oujda": "وجدة",
+    "Al Hoceima": "الحسيمة",
+    "Beni Mellal": "بني ملال",
+    "Berkane": "بركان",
+    "Casablanca": "الدار البيضاء",
+    "Dar Bouazza": "دار بوعزة",
+    "El Jadida": "الجديدة",
+    "Errachidia": "الراشيدية",
+    "Essaouira": "الصويرة",
+    "Fes": "فاس",
     "Kenitra": "القنيطرة",
-    "Tetouan": "تطوان"
+    "Khouribga": "خريبكة",
+    "Laayoune": "العيون",
+    "Marrakech": "مراكش",
+    "Meknes": "مكناس",
+    "Mohammedia": "المحمدية",
+    "Nador": "الناظور",
+    "Ouarzazate": "ورزازات",
+    "Oujda": "وجدة",
+    "Rabat": "الرباط",
+    "Safi": "آسفي",
+    "Sale": "سلا",
+    "Settat": "سطات",
+    "Tangier": "طنجة",
+    "Temara": "تمارة",
+    "Tetouan": "تطوان",
+    "Tiznit": "تيزنيت"
+  },
+  "relativeTime": {
+    "justNow": "دابا",
+    "minutesAgo": "قبل {count} دقيقة",
+    "hoursAgo": "قبل {count} ساعة",
+    "daysAgo": "قبل {count} يوم",
+    "weeksAgo": "قبل {count} أسبوع"
+  },
+  "mockData": {
+    "customers": {
+      "customer1": "فاطمة الزهراء",
+      "customer2": "محمد علي",
+      "customer3": "أمينة بنعلي",
+      "customer4": "يوسف القادري"
+    },
+    "products": {
+      "berberRug": "زربية أمازيغية يدوية",
+      "ceramicVase": "مزهرية خزفية",
+      "arganOilSet": "طقم زيت الأركان",
+      "leatherPouf": "بوف جلدي مغربي",
+      "tagineSet": "طقم طاجين"
+    },
+    "orderItems": {
+      "order1": "2× زربية أمازيغية، 1× مزهرية خزفية",
+      "order2": "1× طقم زيت الأركان",
+      "order3": "3× بوف جلدي",
+      "order4": "1× طقم طاجين"
+    }
   }
 }

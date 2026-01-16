@@ -41,7 +41,7 @@ export function ComingSoonBanner({ className = '' }: ComingSoonBannerProps) {
   return (
     <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600/20 to-fuchsia-600/20 border border-violet-500/30 ${className}`}>
       {/* Coming Soon Badge */}
-      <div className="absolute top-4 right-4 z-10">
+      <div className="absolute top-4 end-4 z-10">
         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-500/90 rounded-full text-white text-xs font-semibold">
           <Clock className="w-3.5 h-3.5" />
           <span>{t('comingSoon')}</span>
@@ -127,8 +127,8 @@ export function ComingSoonBanner({ className = '' }: ComingSoonBannerProps) {
       />
 
       {/* Background Decoration */}
-      <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -top-10 -left-10 w-40 h-40 bg-fuchsia-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-20 -end-20 w-64 h-64 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-10 -start-10 w-40 h-40 bg-fuchsia-500/10 rounded-full blur-3xl pointer-events-none" />
     </div>
   );
 }

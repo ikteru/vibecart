@@ -51,7 +51,25 @@
 
   /* RTL-specific adjustments */
   [dir="rtl"] {
-    /* Flip text alignment for RTL */
+    /* Arabic typography optimization */
+    font-feature-settings: "liga" 1, "calt" 1, "kern" 1;
+  }
+
+  /* Arabic display headings - use Cairo font */
+  [dir="rtl"] h1,
+  [dir="rtl"] h2,
+  [dir="rtl"] h3 {
+    font-family: var(--font-cairo), var(--font-noto-arabic), system-ui, sans-serif;
+    font-weight: 700;
+  }
+
+  /* Utility class for flipping directional icons in RTL */
+  .rtl-flip {
+    transform: scaleX(-1);
+  }
+
+  [dir="rtl"] .rtl-flip {
+    transform: scaleX(-1);
   }
 
   html {
@@ -143,6 +161,37 @@
 
   .text-end {
     text-align: end;
+  }
+
+  /* Arabic typography scale - ~4pt larger for equal legibility */
+  [dir="rtl"] .text-xs {
+    font-size: 0.8125rem; /* 13px vs 12px */
+    line-height: 1.8;
+  }
+
+  [dir="rtl"] .text-sm {
+    font-size: 0.9375rem; /* 15px vs 14px */
+    line-height: 1.75;
+  }
+
+  [dir="rtl"] .text-base {
+    font-size: 1.0625rem; /* 17px vs 16px */
+    line-height: 1.7;
+  }
+
+  [dir="rtl"] .text-lg {
+    font-size: 1.1875rem; /* 19px vs 18px */
+    line-height: 1.65;
+  }
+
+  [dir="rtl"] .text-xl {
+    font-size: 1.375rem; /* 22px vs 20px */
+    line-height: 1.6;
+  }
+
+  [dir="rtl"] .text-2xl {
+    font-size: 1.625rem; /* 26px vs 24px */
+    line-height: 1.55;
   }
 
   /* Animation utilities */

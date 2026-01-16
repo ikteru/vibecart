@@ -362,6 +362,7 @@
     "search": "بحث",
     "noResults": "لا توجد نتائج",
     "currency": "درهم",
+    "currencySymbol": "د.م.",
     "share": "مشاركة",
     "copy": "نسخ",
     "copied": "تم النسخ!",
@@ -424,5 +425,33 @@
     "Oujda": "وجدة",
     "Kenitra": "القنيطرة",
     "Tetouan": "تطوان"
+  },
+  "relativeTime": {
+    "justNow": "الآن",
+    "minutesAgo": "منذ {count} دقيقة",
+    "hoursAgo": "منذ {count} ساعة",
+    "daysAgo": "منذ {count} يوم",
+    "weeksAgo": "منذ {count} أسبوع"
+  },
+  "mockData": {
+    "customers": {
+      "customer1": "فاطمة الزهراء",
+      "customer2": "محمد علي",
+      "customer3": "أمينة بنعلي",
+      "customer4": "يوسف القادري"
+    },
+    "products": {
+      "berberRug": "سجادة أمازيغية يدوية الصنع",
+      "ceramicVase": "مزهرية خزفية",
+      "arganOilSet": "طقم زيت الأرغان",
+      "leatherPouf": "مقعد جلدي مغربي",
+      "tagineSet": "طقم طاجين"
+    },
+    "orderItems": {
+      "order1": "2× سجادة أمازيغية، 1× مزهرية خزفية",
+      "order2": "1× طقم زيت الأرغان",
+      "order3": "3× مقعد جلدي",
+      "order4": "1× طقم طاجين"
+    }
   }
 }

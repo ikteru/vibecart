@@ -362,6 +362,7 @@
     "search": "Rechercher",
     "noResults": "Aucun résultat",
     "currency": "MAD",
+    "currencySymbol": "MAD",
     "share": "Partager",
     "copy": "Copier",
     "copied": "Copié !",
@@ -424,5 +425,33 @@
     "Oujda": "Oujda",
     "Kenitra": "Kénitra",
     "Tetouan": "Tétouan"
+  },
+  "relativeTime": {
+    "justNow": "À l'instant",
+    "minutesAgo": "Il y a {count} min",
+    "hoursAgo": "Il y a {count}h",
+    "daysAgo": "Il y a {count}j",
+    "weeksAgo": "Il y a {count} sem"
+  },
+  "mockData": {
+    "customers": {
+      "customer1": "Fatima Zahra",
+      "customer2": "Mohammed Ali",
+      "customer3": "Amina Benali",
+      "customer4": "Youssef Kadiri"
+    },
+    "products": {
+      "berberRug": "Tapis berbère fait main",
+      "ceramicVase": "Vase en céramique",
+      "arganOilSet": "Coffret huile d'argan",
+      "leatherPouf": "Pouf en cuir marocain",
+      "tagineSet": "Ensemble tajine"
+    },
+    "orderItems": {
+      "order1": "2× Tapis berbère, 1× Vase en céramique",
+      "order2": "1× Coffret huile d'argan",
+      "order3": "3× Pouf en cuir",
+      "order4": "1× Ensemble tajine"
+    }
   }
 }

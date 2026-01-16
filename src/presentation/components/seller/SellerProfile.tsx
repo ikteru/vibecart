@@ -15,6 +15,7 @@ import {
   Quote,
 } from 'lucide-react';
 import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
+import { DirectionalIcon } from '@/presentation/components/ui/DirectionalIcon';
 
 /**
  * Shop Configuration for SellerProfile
@@ -73,6 +74,8 @@ type GridItemType =
  * Pinterest-style masonry grid showcasing seller's products
  * with mixed content cards (Google Maps, IG reviews, spotlight offers).
  */
+type CategoryFilter = 'all' | 'newDrops' | 'bestSellers' | 'vintage' | 'sale';
+
 export function SellerProfile({
   sellerName,
   sellerHandle,
@@ -84,16 +87,38 @@ export function SellerProfile({
   const t = useTranslations();
   const [showComingSoon, setShowComingSoon] = useState(false);
   const [comingSoonFeature, setComingSoonFeature] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('all');
 
   const showFeatureComingSoon = (feature: string) => {
     setComingSoonFeature(feature);
     setShowComingSoon(true);
   };
 
+  // Filter products based on selected category
+  const filteredProducts = useMemo(() => {
+    if (selectedCategory === 'all') return products;
+
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    switch (selectedCategory) {
+      case 'newDrops':
+        return products.filter((p) => p.createdAt >= sevenDaysAgo);
+      case 'sale':
+        return products.filter((p) => p.discountPrice !== null);
+      case 'bestSellers':
+      case 'vintage':
+        // These would require additional data, show all for now
+        return products;
+      default:
+        return products;
+    }
+  }, [products, selectedCategory]);
+
   // Algorithmically mix content based on shopConfig
   const mixedContent: GridItemType[] = useMemo(() => {
-    // Start with products
-    const items: GridItemType[] = products.map((p) => ({
+    // Start with filtered products
+    const items: GridItemType[] = filteredProducts.map((p) => ({
       type: 'product' as const,
       data: p,
     }));
@@ -155,7 +180,7 @@ export function SellerProfile({
     }
 
     return items;
-  }, [products, shopConfig]);
+  }, [filteredProducts, shopConfig]);
 
   // Pinterest aspect ratio logic
   const getAspectRatio = (index: number, type: string) => {
@@ -169,18 +194,18 @@ export function SellerProfile({
 
   return (
     <div className="h-full bg-black text-white pb-20 overflow-y-auto no-scrollbar">
-      {/* Navigation */}
-      <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-xl px-4 py-3 flex justify-between items-center border-b border-white/5">
+      {/* Navigation - Back button fixed on LEFT, share button on RIGHT */}
+      <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-xl px-4 py-4 flex justify-end items-center border-b border-white/5 relative mt-2">
         <button
           onClick={onBack}
-          className="p-2 -ml-2 rounded-full hover:bg-zinc-800 transition-colors"
+          className="absolute left-3 p-2.5 rounded-full hover:bg-zinc-800 transition-colors"
         >
-          <ArrowLeft size={20} />
+          <DirectionalIcon icon={ArrowLeft} size={20} flipInRTL={false} />
         </button>
-        <div className="flex gap-2">
+        <div className="absolute right-3 flex gap-2">
           <button
             onClick={() => showFeatureComingSoon(t('common.share'))}
-            className="p-2 rounded-full hover:bg-zinc-800 transition-colors"
+            className="p-2.5 rounded-full hover:bg-zinc-800 transition-colors"
           >
             <Share2 size={18} />
           </button>
@@ -205,12 +230,12 @@ export function SellerProfile({
               )}
             </div>
           </div>
-          <div className="absolute bottom-0 right-0 bg-blue-500 text-white p-1 rounded-full border-4 border-black">
+          <div className="absolute bottom-0 end-0 bg-blue-500 text-white p-1 rounded-full border-4 border-black">
             <Check size={10} strokeWidth={4} />
           </div>
         </div>
 
-        <div className="flex flex-col items-start text-left min-w-0">
+        <div className="flex flex-col items-start text-start min-w-0">
           <h1 className="text-xl font-bold tracking-tight leading-tight truncate w-full">
             {sellerName}
           </h1>
@@ -232,13 +257,14 @@ export function SellerProfile({
 
       {/* Categories / Chips */}
       <div className="px-5 pb-4 flex gap-2 overflow-x-auto no-scrollbar mask-linear-fade">
-        {(['all', 'newDrops', 'bestSellers', 'vintage', 'sale'] as const).map((cat, i) => (
+        {(['all', 'newDrops', 'bestSellers', 'vintage', 'sale'] as const).map((cat) => (
           <button
             key={cat}
+            onClick={() => setSelectedCategory(cat)}
             className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold transition-all ${
-              i === 0
+              selectedCategory === cat
                 ? 'bg-white text-black'
-                : 'bg-zinc-900 text-zinc-400 border border-zinc-800'
+                : 'bg-zinc-900 text-zinc-400 border border-zinc-800 hover:border-zinc-600'
             }`}
           >
             {t(`seller.profile.categories.${cat}`)}
@@ -273,12 +299,12 @@ export function SellerProfile({
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60" />
 
                     {product.stock <= 3 && (
-                      <div className="absolute top-2 left-2 bg-red-500/90 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-sm">
+                      <div className="absolute top-2 start-2 bg-red-500/90 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-sm">
                         {t('product.lowStock', { count: product.stock })}
                       </div>
                     )}
 
-                    <div className="absolute bottom-2 left-2 right-2 flex justify-between items-end">
+                    <div className="absolute bottom-2 start-2 end-2 flex justify-between items-end">
                       <span className="text-white text-sm font-bold drop-shadow-md">
                         {product.price.amount}{' '}
                         <span className="text-[10px]">{product.price.currency}</span>
@@ -375,7 +401,7 @@ export function SellerProfile({
                   key={item.id}
                   className={`break-inside-avoid mb-2 w-full bg-gradient-to-br ${item.color} rounded-xl p-4 flex flex-col justify-between relative overflow-hidden`}
                 >
-                  <div className="absolute top-0 right-0 p-3 opacity-20">
+                  <div className="absolute top-0 end-0 p-3 opacity-20">
                     <Clock size={40} className="text-white" />
                   </div>
                   <div>
@@ -416,8 +442,8 @@ export function SellerProfile({
                     </div>
                   </div>
                   <div className="relative">
-                    <Quote size={12} className="absolute -top-1 -left-1 text-zinc-700" />
-                    <p className="text-[10px] text-zinc-400 italic pl-3 leading-relaxed">
+                    <Quote size={12} className="absolute -top-1 -start-1 text-zinc-700" />
+                    <p className="text-[10px] text-zinc-400 italic ps-3 leading-relaxed">
                       {item.bio}
                     </p>
                   </div>

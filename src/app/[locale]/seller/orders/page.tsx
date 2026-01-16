@@ -17,15 +17,15 @@ import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
 type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
 
 /**
- * Order interface
+ * Order interface with translation keys for locale-aware display
  */
-interface Order {
+interface OrderData {
   id: string;
-  customerName: string;
-  date: string;
-  items: string;
+  customerNameKey: string;
+  dateKey: string;
+  dateCount: number;
+  itemsKey: string;
   total: number;
-  currency: string;
   status: OrderStatus;
   hasNewMessage: boolean;
 }
@@ -46,49 +46,60 @@ export default function OrdersPage() {
     setShowComingSoon(true);
   };
 
-  // TODO: Fetch from API
-  const orders: Order[] = [
+  // Get currency symbol from translations (د.م. for Arabic, MAD for English)
+  const currencySymbol = t('common.currencySymbol');
+
+  // Mock orders using translation keys for locale-aware data
+  const ordersData: OrderData[] = [
     {
       id: 'ORD-2341',
-      customerName: 'Fatima Zahra',
-      date: '2 hours ago',
-      items: '2x Handmade Berber Rug, 1x Ceramic Vase',
+      customerNameKey: 'mockData.customers.customer1',
+      dateKey: 'relativeTime.hoursAgo',
+      dateCount: 2,
+      itemsKey: 'mockData.orderItems.order1',
       total: 630,
-      currency: 'MAD',
       status: 'pending',
       hasNewMessage: true,
     },
     {
       id: 'ORD-2340',
-      customerName: 'Mohammed Ali',
-      date: '5 hours ago',
-      items: '1x Argan Oil Set',
+      customerNameKey: 'mockData.customers.customer2',
+      dateKey: 'relativeTime.hoursAgo',
+      dateCount: 5,
+      itemsKey: 'mockData.orderItems.order2',
       total: 280,
-      currency: 'MAD',
       status: 'confirmed',
       hasNewMessage: false,
     },
     {
       id: 'ORD-2339',
-      customerName: 'Amina Benali',
-      date: '1 day ago',
-      items: '3x Leather Pouf',
+      customerNameKey: 'mockData.customers.customer3',
+      dateKey: 'relativeTime.daysAgo',
+      dateCount: 1,
+      itemsKey: 'mockData.orderItems.order3',
       total: 1200,
-      currency: 'MAD',
       status: 'shipped',
       hasNewMessage: false,
     },
     {
       id: 'ORD-2338',
-      customerName: 'Youssef Kadiri',
-      date: '2 days ago',
-      items: '1x Tagine Set',
+      customerNameKey: 'mockData.customers.customer4',
+      dateKey: 'relativeTime.daysAgo',
+      dateCount: 2,
+      itemsKey: 'mockData.orderItems.order4',
       total: 450,
-      currency: 'MAD',
       status: 'delivered',
       hasNewMessage: false,
     },
   ];
+
+  // Transform order data with translated values
+  const orders = ordersData.map((order) => ({
+    ...order,
+    customerName: t(order.customerNameKey),
+    date: t(order.dateKey, { count: order.dateCount }),
+    items: t(order.itemsKey),
+  }));
 
   const filteredOrders = orders.filter((order) => {
     if (filterStatus === 'all') return true;
@@ -209,7 +220,7 @@ export default function OrdersPage() {
                 <div className="mt-2 flex justify-between items-center">
                   <span className="text-xs text-zinc-500">{t('checkout.total')}</span>
                   <span className="text-sm font-bold text-white">
-                    {order.total} {order.currency}
+                    {order.total} {currencySymbol}
                   </span>
                 </div>
               </div>

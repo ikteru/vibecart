@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { ArrowLeft, Loader2, Save, Trash2, Sparkles } from 'lucide-react';
+import { DirectionalIcon } from '@/presentation/components/ui/DirectionalIcon';
 import type { ProductCategoryType } from '@/lib/constants';
 
 const PRESET_VARIANTS: Record<ProductCategoryType, string[]> = {
@@ -143,15 +144,15 @@ export default function EditProductPage() {
 
   return (
     <div className="h-full overflow-y-auto no-scrollbar bg-zinc-950 text-white">
-      {/* Header */}
-      <div className="flex items-center gap-4 mb-8 pt-4 sticky top-0 bg-zinc-950/90 backdrop-blur-md z-10 px-6 py-4 border-b border-zinc-800/50">
-        <button onClick={goBack} className="p-2 -ml-2 text-zinc-400 hover:text-white">
-          <ArrowLeft />
+      {/* Header - Back button fixed on LEFT side regardless of RTL */}
+      <div className="relative flex items-center justify-center mb-8 pt-4 sticky top-0 bg-zinc-950/90 backdrop-blur-md z-10 px-6 py-4 border-b border-zinc-800/50">
+        <button onClick={goBack} className="absolute left-4 p-2 text-zinc-400 hover:text-white">
+          <DirectionalIcon icon={ArrowLeft} size={24} />
         </button>
-        <h1 className="text-2xl font-bold flex-1">{t('seller.inventory.editProduct')}</h1>
+        <h1 className="text-2xl font-bold">{t('seller.inventory.editProduct')}</h1>
         <button
           onClick={handleDelete}
-          className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg"
+          className="absolute right-4 p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg"
         >
           <Trash2 size={20} />
         </button>
@@ -165,7 +166,7 @@ export default function EditProductPage() {
             </div>
             <div className="flex-1 space-y-3">
               <div>
-                <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
+                <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
                   {t('product.title')}
                 </label>
                 <input
@@ -178,7 +179,7 @@ export default function EditProductPage() {
               </div>
               <div className="flex gap-2">
                 <div className="flex-1">
-                  <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
+                  <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
                     {t('product.price')}
                   </label>
                   <input
@@ -190,7 +191,7 @@ export default function EditProductPage() {
                   />
                 </div>
                 <div className="w-24">
-                  <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
+                  <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
                     {t('product.stock')}
                   </label>
                   <input
@@ -206,7 +207,7 @@ export default function EditProductPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1 flex justify-between">
+            <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1 flex justify-between">
               <span>{t('product.description')}</span>
               <span
                 className="text-emerald-500 flex items-center gap-1 cursor-pointer"
@@ -238,7 +239,7 @@ export default function EditProductPage() {
 
           <div className="space-y-4 pt-2">
             <div>
-              <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1 mb-2 block">
+              <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1 mb-2 block">
                 {t('product.category')}
               </label>
               <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
@@ -261,7 +262,7 @@ export default function EditProductPage() {
             </div>
 
             <div>
-              <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1 mb-2 block">
+              <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1 mb-2 block">
                 {t('product.variants')}
               </label>
               <div className="flex flex-wrap gap-2">

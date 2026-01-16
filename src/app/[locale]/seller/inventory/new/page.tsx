@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { ArrowLeft, Instagram, Upload, Loader2, Plus, Check, Sparkles } from 'lucide-react';
+import { DirectionalIcon } from '@/presentation/components/ui/DirectionalIcon';
 import type { ProductCategoryType } from '@/lib/constants';
 import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
 
@@ -129,10 +130,10 @@ export default function NewProductPage() {
 
   return (
     <div className="h-full overflow-y-auto no-scrollbar bg-zinc-950 text-white">
-      {/* Header */}
-      <div className="flex items-center gap-4 mb-8 pt-4 sticky top-0 bg-zinc-950/90 backdrop-blur-md z-10 px-6 py-4 border-b border-zinc-800/50">
-        <button onClick={goBack} className="p-2 -ml-2 text-zinc-400 hover:text-white">
-          <ArrowLeft />
+      {/* Header - Back button fixed on LEFT side regardless of RTL */}
+      <div className="relative flex items-center justify-center mb-8 pt-4 sticky top-0 bg-zinc-950/90 backdrop-blur-md z-10 px-6 py-4 border-b border-zinc-800/50">
+        <button onClick={goBack} className="absolute left-4 p-2 text-zinc-400 hover:text-white">
+          <DirectionalIcon icon={ArrowLeft} size={24} />
         </button>
         <h1 className="text-2xl font-bold">
           {step === 'connect' && t('seller.inventory.setupDrop')}
@@ -209,7 +210,7 @@ export default function NewProductPage() {
                   <div className="absolute bottom-0 inset-x-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
                     <p className="text-[10px] text-white line-clamp-2">{media.caption}</p>
                   </div>
-                  <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute top-2 end-2 w-6 h-6 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <Plus size={14} className="text-white" />
                   </div>
                 </div>
@@ -227,7 +228,7 @@ export default function NewProductPage() {
               </div>
               <div className="flex-1 space-y-3">
                 <div>
-                  <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">{t('product.title')}</label>
+                  <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">{t('product.title')}</label>
                   <input
                     type="text"
                     placeholder={t('seller.inventory.productTitle')}
@@ -238,7 +239,7 @@ export default function NewProductPage() {
                 </div>
                 <div className="flex gap-2">
                   <div className="flex-1">
-                    <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">{t('product.price')}</label>
+                    <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">{t('product.price')}</label>
                     <input
                       type="number"
                       placeholder="0.00"
@@ -248,7 +249,7 @@ export default function NewProductPage() {
                     />
                   </div>
                   <div className="w-24">
-                    <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">{t('product.stock')}</label>
+                    <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">{t('product.stock')}</label>
                     <input
                       type="number"
                       placeholder="1"
@@ -262,7 +263,7 @@ export default function NewProductPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1 flex justify-between">
+              <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1 flex justify-between">
                 <span>{t('product.description')}</span>
                 <span
                   className="text-emerald-500 flex items-center gap-1 cursor-pointer"
@@ -294,7 +295,7 @@ export default function NewProductPage() {
 
             <div className="space-y-4 pt-2">
               <div>
-                <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1 mb-2 block">
+                <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1 mb-2 block">
                   {t('product.category')}
                 </label>
                 <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
@@ -317,7 +318,7 @@ export default function NewProductPage() {
               </div>
 
               <div>
-                <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1 mb-2 block">
+                <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1 mb-2 block">
                   {t('product.variants')}
                 </label>
                 <div className="flex flex-wrap gap-2">

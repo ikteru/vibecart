@@ -362,6 +362,7 @@
     "search": "Search",
     "noResults": "No results found",
     "currency": "MAD",
+    "currencySymbol": "MAD",
     "share": "Share",
     "copy": "Copy",
     "copied": "Copied!",
@@ -414,15 +415,60 @@
     "notifyButton": "Notify Me"
   },
   "cities": {
-    "Casablanca": "Casablanca",
-    "Rabat": "Rabat",
-    "Marrakech": "Marrakech",
-    "Fes": "Fes",
-    "Tangier": "Tangier",
     "Agadir": "Agadir",
-    "Meknes": "Meknes",
-    "Oujda": "Oujda",
+    "Al Hoceima": "Al Hoceima",
+    "Beni Mellal": "Beni Mellal",
+    "Berkane": "Berkane",
+    "Casablanca": "Casablanca",
+    "Dar Bouazza": "Dar Bouazza",
+    "El Jadida": "El Jadida",
+    "Errachidia": "Errachidia",
+    "Essaouira": "Essaouira",
+    "Fes": "Fes",
     "Kenitra": "Kenitra",
-    "Tetouan": "Tetouan"
+    "Khouribga": "Khouribga",
+    "Laayoune": "Laayoune",
+    "Marrakech": "Marrakech",
+    "Meknes": "Meknes",
+    "Mohammedia": "Mohammedia",
+    "Nador": "Nador",
+    "Ouarzazate": "Ouarzazate",
+    "Oujda": "Oujda",
+    "Rabat": "Rabat",
+    "Safi": "Safi",
+    "Sale": "Sale",
+    "Settat": "Settat",
+    "Tangier": "Tangier",
+    "Temara": "Temara",
+    "Tetouan": "Tetouan",
+    "Tiznit": "Tiznit"
+  },
+  "relativeTime": {
+    "justNow": "Just now",
+    "minutesAgo": "{count} min ago",
+    "hoursAgo": "{count}h ago",
+    "daysAgo": "{count}d ago",
+    "weeksAgo": "{count}w ago"
+  },
+  "mockData": {
+    "customers": {
+      "customer1": "Fatima Zahra",
+      "customer2": "Mohammed Ali",
+      "customer3": "Amina Benali",
+      "customer4": "Youssef Kadiri"
+    },
+    "products": {
+      "berberRug": "Handmade Berber Rug",
+      "ceramicVase": "Ceramic Vase",
+      "arganOilSet": "Argan Oil Set",
+      "leatherPouf": "Leather Pouf Ottoman",
+      "tagineSet": "Tagine Set"
+    },
+    "orderItems": {
+      "order1": "2x Handmade Berber Rug, 1x Ceramic Vase",
+      "order2": "1x Argan Oil Set",
+      "order3": "3x Leather Pouf",
+      "order4": "1x Tagine Set"
+    }
   }
 }

@@ -17,6 +17,7 @@ import {
   ArrowLeft,
   Bookmark,
 } from 'lucide-react';
+import { DirectionalIcon } from '@/presentation/components/ui/DirectionalIcon';
 
 interface MapPickerProps {
   isOpen: boolean;
@@ -295,21 +296,21 @@ export function MapPicker({
 
   return (
     <div className="fixed inset-0 z-[60] bg-zinc-950 flex flex-col">
-      {/* Header Controls */}
-      <div className="absolute top-0 left-0 right-0 z-20 p-4 flex justify-between items-start pointer-events-none">
+      {/* Header Controls - Back/Close button fixed on LEFT side regardless of RTL */}
+      <div className="absolute top-0 inset-x-0 z-20 p-4 flex justify-end items-start pointer-events-none">
         {step === 'map' ? (
           <button
             onClick={onClose}
-            className="pointer-events-auto p-2 bg-white/90 backdrop-blur-md text-black rounded-full shadow-lg"
+            className="pointer-events-auto absolute left-4 p-2 bg-white/90 backdrop-blur-md text-black rounded-full shadow-lg"
           >
             <X size={20} />
           </button>
         ) : (
           <button
             onClick={() => setStep('map')}
-            className="pointer-events-auto p-2 bg-white/90 backdrop-blur-md text-black rounded-full shadow-lg"
+            className="pointer-events-auto absolute left-4 p-2 bg-white/90 backdrop-blur-md text-black rounded-full shadow-lg"
           >
-            <ArrowLeft size={20} />
+            <DirectionalIcon icon={ArrowLeft} size={20} />
           </button>
         )}
 
@@ -351,7 +352,7 @@ export function MapPicker({
                   className={`transition-transform duration-200 ${isDragging ? '-translate-y-4 scale-110' : 'translate-y-0 scale-100'}`}
                 />
                 <div
-                  className={`absolute top-[14px] left-[14px] w-5 h-5 bg-black rounded-full transition-transform duration-200 ${isDragging ? '-translate-y-4' : 'translate-y-0'}`}
+                  className={`absolute top-[14px] start-[14px] w-5 h-5 bg-black rounded-full transition-transform duration-200 ${isDragging ? '-translate-y-4' : 'translate-y-0'}`}
                 />
               </div>
               <div
@@ -363,7 +364,7 @@ export function MapPicker({
 
         {/* Locate Me FAB */}
         {step === 'map' && (
-          <div className="absolute bottom-6 right-4 z-20">
+          <div className="absolute bottom-6 end-4 z-20">
             <button
               onClick={handleLocateMe}
               className="p-3 bg-white text-black rounded-full shadow-xl active:scale-95 transition-transform"
@@ -449,7 +450,7 @@ export function MapPicker({
             <div className="space-y-4 mb-8">
               {residenceType === 'office' && (
                 <div>
-                  <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
+                  <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
                     {t('companyName')}
                   </label>
                   <input
@@ -470,7 +471,7 @@ export function MapPicker({
               {(residenceType === 'apartment' || residenceType === 'office') && (
                 <div className="flex gap-3">
                   <div className="flex-1">
-                    <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
+                    <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
                       {t('buildingResidence')}
                     </label>
                     <input
@@ -487,7 +488,7 @@ export function MapPicker({
                     />
                   </div>
                   <div className="w-1/3">
-                    <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
+                    <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
                       {t('floor')}
                     </label>
                     <input
@@ -505,7 +506,7 @@ export function MapPicker({
 
               {residenceType === 'apartment' && (
                 <div>
-                  <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
+                  <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
                     {t('apartmentNumber')}
                   </label>
                   <input
@@ -525,7 +526,7 @@ export function MapPicker({
 
               {residenceType === 'house' && (
                 <div>
-                  <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
+                  <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
                     {t('villaHouseNumber')}
                   </label>
                   <input
@@ -544,7 +545,7 @@ export function MapPicker({
               )}
 
               <div>
-                <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
+                <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
                   {t('instructions')}
                 </label>
                 <input
@@ -581,7 +582,7 @@ export function MapPicker({
                   className={`w-10 h-6 rounded-full transition-colors relative ${saveAddress ? 'bg-emerald-500' : 'bg-zinc-700'}`}
                 >
                   <div
-                    className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${saveAddress ? 'left-5' : 'left-1'}`}
+                    className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${saveAddress ? 'start-5' : 'start-1'}`}
                   />
                 </button>
               </div>

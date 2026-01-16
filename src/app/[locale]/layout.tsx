@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
-import { Noto_Sans_Arabic, Inter } from 'next/font/google';
+import { Noto_Sans_Arabic, Inter, Cairo } from 'next/font/google';
 import { locales, isRTL, type Locale } from '@/i18n/config';
 import { AuthProvider } from '@/presentation/providers/AuthProvider';
 
@@ -16,6 +16,13 @@ const notoSansArabic = Noto_Sans_Arabic({
   variable: '--font-noto-arabic',
   display: 'swap',
   weight: ['400', '500', '600', '700'],
+});
+
+const cairo = Cairo({
+  subsets: ['arabic'],
+  variable: '--font-cairo',
+  display: 'swap',
+  weight: ['600', '700', '800'],
 });
 
 interface LocaleLayoutProps {
@@ -46,7 +53,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       dir={rtl ? 'rtl' : 'ltr'}
-      className={`${inter.variable} ${notoSansArabic.variable}`}
+      className={`${inter.variable} ${notoSansArabic.variable} ${cairo.variable}`}
       suppressHydrationWarning
     >
       <body

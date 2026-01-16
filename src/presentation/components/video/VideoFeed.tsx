@@ -3,6 +3,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Volume2, VolumeX, ArrowLeft, ShoppingBag, AlertCircle } from 'lucide-react';
+import { DirectionalIcon } from '../ui/DirectionalIcon';
 import { SwipeButton } from '../ui/SwipeButton';
 import { CheckoutDrawer } from '../checkout/CheckoutDrawer';
 import type { Product } from '@/domain/entities/Product';
@@ -78,13 +79,21 @@ export function VideoFeed({
       ref={containerRef}
       className="h-[100dvh] w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar bg-black relative"
     >
-      {/* Back Button */}
+      {/* Fixed Controls - Back button on LEFT, Volume on RIGHT */}
       <div className="fixed top-4 left-4 z-30">
         <button
           onClick={onBack}
           className="p-2 bg-black/40 backdrop-blur-md rounded-full text-white border border-white/10 hover:bg-black/60 transition-colors"
         >
-          <ArrowLeft size={24} />
+          <DirectionalIcon icon={ArrowLeft} size={24} flipInRTL={false} />
+        </button>
+      </div>
+      <div className="fixed top-4 right-4 z-30">
+        <button
+          onClick={() => setIsMuted(!isMuted)}
+          className="p-2 bg-black/40 backdrop-blur-md rounded-full text-white border border-white/10 hover:bg-black/60 transition-colors"
+        >
+          {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
         </button>
       </div>
 
@@ -95,7 +104,6 @@ export function VideoFeed({
           product={product}
           isActive={activeVideoId === product.id}
           isMuted={isMuted}
-          toggleMute={() => setIsMuted(!isMuted)}
           onBuy={() => setCheckoutProduct(product)}
         />
       ))}
@@ -117,7 +125,6 @@ interface VideoCardProps {
   product: Product;
   isActive: boolean;
   isMuted: boolean;
-  toggleMute: () => void;
   onBuy: () => void;
 }
 
@@ -130,7 +137,6 @@ function VideoCard({
   product,
   isActive,
   isMuted,
-  toggleMute,
   onBuy,
 }: VideoCardProps) {
   const t = useTranslations();
@@ -157,8 +163,8 @@ function VideoCard({
       data-id={product.id}
       className="video-card w-full h-[100dvh] snap-start flex flex-col bg-black p-3 pb-8"
     >
-      {/* Video Container */}
-      <div className="relative flex-1 w-full rounded-[2rem] overflow-hidden shadow-[0_0_40px_-10px_rgba(255,255,255,0.15)] border border-zinc-800/50 bg-zinc-900">
+      {/* Video Container - corners match button roundness */}
+      <div className="relative flex-1 w-full rounded-3xl overflow-hidden shadow-[0_0_40px_-10px_rgba(255,255,255,0.15)] border border-zinc-800/50 bg-zinc-900">
         <video
           ref={videoRef}
           src={product.videoUrl || undefined}
@@ -168,18 +174,8 @@ function VideoCard({
           muted={isMuted}
         />
 
-        {/* Mute Toggle */}
-        <div className="absolute top-4 right-4 z-20">
-          <button
-            onClick={toggleMute}
-            className="p-2.5 bg-black/30 backdrop-blur-md rounded-full text-white/90 border border-white/10 hover:bg-black/50 transition-colors"
-          >
-            {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-          </button>
-        </div>
-
         {/* Badges */}
-        <div className="absolute bottom-4 left-4 z-20 flex gap-2">
+        <div className="absolute bottom-4 start-4 z-20 flex gap-2">
           {stock < 10 && stock > 0 && (
             <div className="flex items-center gap-1 bg-red-500/90 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full animate-pulse">
               <AlertCircle size={10} />
@@ -206,7 +202,7 @@ function VideoCard({
               <>
                 <span className="text-2xl font-bold text-emerald-400">
                   {discountPrice.amount}
-                  <span className="text-sm ml-1 text-emerald-500/80">{discountPrice.currency}</span>
+                  <span className="text-sm ms-1 text-emerald-500/80">{discountPrice.currency}</span>
                 </span>
                 <span className="text-xs text-zinc-600 line-through font-medium">
                   {price.amount}
@@ -215,7 +211,7 @@ function VideoCard({
             ) : (
               <span className="text-2xl font-bold text-white">
                 {price.amount}
-                <span className="text-sm ml-1 text-zinc-500">{price.currency}</span>
+                <span className="text-sm ms-1 text-zinc-500">{price.currency}</span>
               </span>
             )}
           </div>

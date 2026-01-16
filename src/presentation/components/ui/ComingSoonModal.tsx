@@ -29,7 +29,7 @@ export function ComingSoonModal({ isOpen, onClose, featureName }: ComingSoonModa
       <div className="relative bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-sm mx-4 animate-fade-in">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors"
+          className="absolute top-4 end-4 text-zinc-500 hover:text-white transition-colors"
         >
           <X size={20} />
         </button>

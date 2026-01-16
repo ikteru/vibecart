@@ -62,8 +62,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
-        arabic: ['var(--font-noto-arabic)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        arabic: ['var(--font-noto-arabic)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
+        'arabic-display': ['var(--font-cairo)', 'var(--font-noto-arabic)', 'system-ui', 'sans-serif'],
       },
       // RTL-aware spacing utilities
       spacing: {
