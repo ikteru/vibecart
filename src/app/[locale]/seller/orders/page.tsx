@@ -1,0 +1,206 @@
+'use client';
+
+import React, { useState } from 'react';
+import {
+  Filter,
+  Search,
+  MessageCircle,
+  MoreHorizontal,
+  Info,
+} from 'lucide-react';
+
+/**
+ * Order status type
+ */
+type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+
+/**
+ * Order interface
+ */
+interface Order {
+  id: string;
+  customerName: string;
+  date: string;
+  items: string;
+  total: number;
+  currency: string;
+  status: OrderStatus;
+  hasNewMessage: boolean;
+}
+
+/**
+ * Seller Orders Page
+ *
+ * Shows all orders with filtering by status.
+ */
+export default function OrdersPage() {
+  const [filterStatus, setFilterStatus] = useState<string>('All');
+
+  // TODO: Fetch from API
+  const orders: Order[] = [
+    {
+      id: 'ORD-2341',
+      customerName: 'Fatima Zahra',
+      date: '2 hours ago',
+      items: '2x Handmade Berber Rug, 1x Ceramic Vase',
+      total: 630,
+      currency: 'MAD',
+      status: 'pending',
+      hasNewMessage: true,
+    },
+    {
+      id: 'ORD-2340',
+      customerName: 'Mohammed Ali',
+      date: '5 hours ago',
+      items: '1x Argan Oil Set',
+      total: 280,
+      currency: 'MAD',
+      status: 'confirmed',
+      hasNewMessage: false,
+    },
+    {
+      id: 'ORD-2339',
+      customerName: 'Amina Benali',
+      date: '1 day ago',
+      items: '3x Leather Pouf',
+      total: 1200,
+      currency: 'MAD',
+      status: 'shipped',
+      hasNewMessage: false,
+    },
+    {
+      id: 'ORD-2338',
+      customerName: 'Youssef Kadiri',
+      date: '2 days ago',
+      items: '1x Tagine Set',
+      total: 450,
+      currency: 'MAD',
+      status: 'delivered',
+      hasNewMessage: false,
+    },
+  ];
+
+  const filteredOrders = orders.filter((order) => {
+    if (filterStatus === 'All') return true;
+    return order.status.toLowerCase() === filterStatus.toLowerCase();
+  });
+
+  const getStatusStyle = (status: OrderStatus) => {
+    switch (status) {
+      case 'pending':
+        return 'bg-orange-500/20 text-orange-400';
+      case 'confirmed':
+        return 'bg-emerald-500/20 text-emerald-400';
+      case 'shipped':
+        return 'bg-blue-500/20 text-blue-400';
+      case 'delivered':
+        return 'bg-zinc-700 text-zinc-400';
+      case 'cancelled':
+        return 'bg-red-500/20 text-red-400';
+      default:
+        return 'bg-zinc-700 text-zinc-400';
+    }
+  };
+
+  const getStatusLabel = (status: OrderStatus) => {
+    return status === 'pending' ? 'Awaiting Confirm' : status;
+  };
+
+  return (
+    <div className="animate-fade-in pb-24">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-white">Orders</h2>
+        <div className="flex gap-2">
+          <button className="p-2 bg-zinc-900 rounded-lg text-zinc-400 hover:text-white">
+            <Filter size={16} />
+          </button>
+          <button className="p-2 bg-zinc-900 rounded-lg text-zinc-400 hover:text-white">
+            <Search size={16} />
+          </button>
+        </div>
+      </div>
+
+      <div className="flex gap-2 mb-4 overflow-x-auto no-scrollbar">
+        {['All', 'Pending', 'Confirmed', 'Shipped', 'Delivered'].map((status) => (
+          <button
+            key={status}
+            onClick={() => setFilterStatus(status)}
+            className={`px-4 py-1.5 rounded-full border text-xs font-bold whitespace-nowrap transition-colors ${
+              filterStatus === status
+                ? 'bg-white text-black border-white'
+                : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600'
+            }`}
+          >
+            {status}
+          </button>
+        ))}
+      </div>
+
+      <div className="mb-4 bg-emerald-900/20 border border-emerald-500/20 p-3 rounded-xl flex gap-3">
+        <Info size={18} className="text-emerald-500 shrink-0 mt-0.5" />
+        <p className="text-xs text-emerald-200">
+          <span className="font-bold">Pending status</span> means the customer received the
+          order message but hasn&apos;t clicked &quot;Confirm&quot; yet.
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        {filteredOrders.length === 0 ? (
+          <div className="py-10 text-center">
+            <p className="text-zinc-500 text-sm">No orders found in &quot;{filterStatus}&quot;</p>
+          </div>
+        ) : (
+          filteredOrders.map((order) => (
+            <div
+              key={order.id}
+              className="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl animate-fade-in"
+            >
+              <div className="flex justify-between items-start mb-3">
+                <div className="flex gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                    {order.customerName.charAt(0)}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-sm text-white">{order.customerName}</h3>
+                    <p className="text-[10px] text-zinc-500">
+                      {order.id} • {order.date}
+                    </p>
+                  </div>
+                </div>
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${getStatusStyle(order.status)}`}
+                >
+                  {getStatusLabel(order.status)}
+                </span>
+              </div>
+
+              <div className="bg-black/30 p-3 rounded-xl mb-3">
+                <p className="text-xs text-zinc-300 line-clamp-2">{order.items}</p>
+                <div className="mt-2 flex justify-between items-center">
+                  <span className="text-xs text-zinc-500">Total</span>
+                  <span className="text-sm font-bold text-white">
+                    {order.total} {order.currency}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <button className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-black hover:text-white transition-colors py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+                  <MessageCircle size={14} /> View Chat
+                  {order.hasNewMessage && (
+                    <span className="bg-red-500 text-white text-[9px] px-1.5 rounded-full">
+                      New
+                    </span>
+                  )}
+                </button>
+                <button className="p-2 bg-zinc-800 text-zinc-400 hover:text-white rounded-xl">
+                  <MoreHorizontal size={16} />
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
