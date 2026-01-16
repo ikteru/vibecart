@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { Noto_Sans_Arabic, Inter } from 'next/font/google';
 import { locales, isRTL, type Locale } from '@/i18n/config';
+import { AuthProvider } from '@/presentation/providers/AuthProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -54,9 +55,11 @@ export default async function LocaleLayout({
         }`}
       >
         <NextIntlClientProvider messages={messages}>
-          <div className="relative flex min-h-screen flex-col">
-            <main className="flex-1">{children}</main>
-          </div>
+          <AuthProvider>
+            <div className="relative flex min-h-screen flex-col">
+              <main className="flex-1">{children}</main>
+            </div>
+          </AuthProvider>
         </NextIntlClientProvider>
       </body>
     </html>
