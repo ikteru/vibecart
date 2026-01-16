@@ -1,0 +1,254 @@
+{
+  "app": {
+    "name": "ڤايب كارت",
+    "tagline": "التجارة بالڤيديو",
+    "description": "تسوق بالڤيديو، طلب عبر واتساب"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "shop": "الحانوت",
+    "orders": "الطلبات",
+    "inventory": "المخزون",
+    "vibe": "الڤايب",
+    "settings": "الإعدادات",
+    "back": "رجوع"
+  },
+  "auth": {
+    "login": "دخول",
+    "logout": "خروج",
+    "register": "إنشاء حساب",
+    "phone": "رقم الواتساب",
+    "email": "الإيميل",
+    "password": "كلمة السر",
+    "forgotPassword": "نسيتي كلمة السر؟",
+    "orContinueWith": "ولا كمل بـ",
+    "sendOtp": "صيفط الكود",
+    "verifyOtp": "تأكد الكود",
+    "otpSent": "صيفطنا ليك كود على {phone}",
+    "welcomeBack": "مرحبا بيك!",
+    "createSellerAccount": "كري حسابك ديال البيع"
+  },
+  "landing": {
+    "hero": {
+      "title": "بيع بالڤيديو",
+      "subtitle": "حول الإنستا ديالك لحانوت",
+      "cta": "بدا البيع"
+    },
+    "features": {
+      "video": "التسوق بالڤيديو",
+      "whatsapp": "الطلب بالواتساب",
+      "instagram": "ربط مع إنستا"
+    },
+    "roles": {
+      "seller": "أنا بياع",
+      "buyer": "أنا كنتسوق"
+    }
+  },
+  "product": {
+    "outOfStock": "سالي",
+    "lowStock": "باقي غير {count}",
+    "inStock": "كاين",
+    "addToCart": "زيد للسلة",
+    "buyNow": "شري دابا",
+    "variants": "الخيارات",
+    "description": "الوصف",
+    "price": "الثمن",
+    "discountPrice": "الثمن الجديد",
+    "stock": "المخزون",
+    "category": "الصنف",
+    "categories": {
+      "clothing": "الملابس",
+      "shoes": "الصباط",
+      "jewelry": "المجوهرات",
+      "beauty": "الجمال",
+      "home": "الدار",
+      "other": "آخر"
+    }
+  },
+  "checkout": {
+    "title": "كمل الطلب",
+    "customerDetails": "المعلومات ديالك",
+    "fullName": "الاسم الكامل",
+    "phone": "رقم التيليفون",
+    "deliveryAddress": "عنوان التوصيل",
+    "city": "المدينة",
+    "selectCity": "اختار المدينة",
+    "neighborhood": "الحي",
+    "selectNeighborhood": "اختار الحي",
+    "address": "العنوان",
+    "pinLocation": "حدد البلاصة فالخريطة",
+    "locationPinned": "البلاصة محددة",
+    "saveAddress": "حفظ هاد العنوان",
+    "useSavedAddress": "استعمل العنوان المحفوظ",
+    "orderSummary": "ملخص الطلب",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "التوصيل",
+    "freeShipping": "مجاني",
+    "total": "المجموع",
+    "quantity": "الكمية",
+    "slideToOrder": "سحب للطلب",
+    "orderConfirmed": "الطلب تصيفط!",
+    "confirmationMessage": "حل الواتساب باش تأكد الطلب مع البياع",
+    "openWhatsApp": "حل الواتساب"
+  },
+  "map": {
+    "title": "حدد البلاصة ديالك",
+    "searchPlaceholder": "قلب على بلاصة",
+    "currentLocation": "استعمل البلاصة الحالية",
+    "confirm": "أكد البلاصة",
+    "cancel": "إلغاء",
+    "satelliteView": "ساتاليت",
+    "streetView": "خريطة",
+    "buildingDetails": "تفاصيل البناية",
+    "apartmentNumber": "رقم الشقة",
+    "floor": "الطابق",
+    "buildingName": "اسم البناية",
+    "deliveryInstructions": "تعليمات التوصيل",
+    "residenceType": {
+      "title": "نوع السكن",
+      "apartment": "شقة",
+      "house": "دار",
+      "office": "مكتب",
+      "other": "آخر"
+    }
+  },
+  "seller": {
+    "dashboard": {
+      "title": "لوحة التحكم",
+      "welcome": "مرحبا، {name}",
+      "todayOrders": "طلبات اليوم",
+      "totalRevenue": "المداخيل",
+      "activeProducts": "المنتجات النشطة",
+      "pendingOrders": "الطلبات المعلقة"
+    },
+    "orders": {
+      "title": "الطلبات",
+      "noOrders": "مازال ما كاين طلبات",
+      "filterAll": "الكل",
+      "filterPending": "معلق",
+      "filterConfirmed": "مأكد",
+      "filterShipped": "مصيفط",
+      "filterDelivered": "موصل",
+      "viewDetails": "شوف التفاصيل",
+      "confirmOrder": "أكد الطلب",
+      "markShipped": "صيفط",
+      "markDelivered": "وصل",
+      "chat": "تواصل مع الزبون"
+    },
+    "inventory": {
+      "title": "المخزون",
+      "addProduct": "زيد منتوج",
+      "editProduct": "عدل المنتوج",
+      "deleteProduct": "حذف المنتوج",
+      "productTitle": "اسم المنتوج",
+      "generateDescription": "كتب بالذكاء الاصطناعي",
+      "generatingDescription": "كيكتب...",
+      "selectCategory": "اختار الصنف",
+      "selectVariants": "اختار الخيارات",
+      "uploadVideo": "طلع ڤيديو",
+      "importFromInstagram": "جيب من إنستا",
+      "saveProduct": "حفظ المنتوج",
+      "cancel": "إلغاء"
+    },
+    "vibe": {
+      "title": "ڤايب الحانوت",
+      "spotlight": {
+        "title": "بانير العرض",
+        "description": "بانير الترويج فالحانوت",
+        "bannerTitle": "عنوان البانير",
+        "bannerSubtitle": "عنوان فرعي",
+        "bannerColor": "لون البانير"
+      },
+      "makerBio": {
+        "title": "قصة الصانع",
+        "description": "احكي قصتك للزبائن",
+        "name": "سميتك",
+        "role": "الدور ديالك",
+        "bio": "القصة ديالك",
+        "image": "الصورة ديالك"
+      },
+      "reviews": {
+        "title": "آراء الزبائن",
+        "description": "ستوريات إنستا من الزبائن",
+        "addReview": "زيد رأي",
+        "noReviews": "مازال ما كاين آراء"
+      }
+    },
+    "settings": {
+      "title": "الإعدادات",
+      "whatsapp": {
+        "title": "واتساب بزنس",
+        "businessNumber": "رقم البزنس",
+        "businessName": "اسم البزنس",
+        "welcomeMessage": "رسالة الترحيب"
+      },
+      "instagram": {
+        "title": "إنستاغرام",
+        "connect": "ربط إنستا",
+        "connected": "مربوط بـ @{handle}",
+        "disconnect": "فصل"
+      },
+      "shipping": {
+        "title": "قواعد التوصيل",
+        "defaultRate": "الثمن الافتراضي",
+        "cityRules": "أثمنة حسب المدينة",
+        "addRule": "زيد قاعدة",
+        "city": "المدينة",
+        "rate": "الثمن",
+        "importCsv": "جيب من CSV"
+      },
+      "googleMaps": {
+        "title": "خرائط گوگل",
+        "connect": "ربط الخرائط",
+        "placeId": "معرف المكان",
+        "syncNow": "مزامنة دابا"
+      }
+    },
+    "profile": {
+      "title": "الحانوت",
+      "shopName": "اسم الحانوت",
+      "shopHandle": "معرف الحانوت",
+      "shopUrl": "رابط الحانوت ديالك"
+    }
+  },
+  "chat": {
+    "placeholder": "كتب رسالة...",
+    "send": "صيفط",
+    "systemMessage": "النظام",
+    "templates": {
+      "confirmOrder": "الطلب مأكد! غادي نجهزو ليك المنتجات.",
+      "shipped": "الطلب تصيفط! رقم التتبع: {tracking}",
+      "delivered": "الطلب وصل! شكرا على التسوق معانا."
+    }
+  },
+  "common": {
+    "loading": "كيحمل...",
+    "error": "كاين مشكل",
+    "retry": "عاود",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "confirm": "تأكيد",
+    "close": "سد",
+    "search": "بحث",
+    "noResults": "ما لقينا والو",
+    "currency": "درهم",
+    "share": "شارك",
+    "copy": "نسخ",
+    "copied": "تنسخ!",
+    "enabled": "فعال",
+    "disabled": "معطل"
+  },
+  "errors": {
+    "required": "هاد الخانة ضرورية",
+    "invalidPhone": "رقم التيليفون غالط",
+    "invalidEmail": "الإيميل غالط",
+    "minLength": "خاص على الأقل {min} حروف",
+    "maxLength": "خاص على الأكثر {max} حروف",
+    "serverError": "مشكل فالسيرفر. عاود مرة أخرى.",
+    "networkError": "مشكل فالاتصال. شوف الإنترنت.",
+    "notFound": "ما لقيناش",
+    "unauthorized": "خاصك تدخل باش تكمل"
+  }
+}

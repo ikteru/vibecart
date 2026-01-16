@@ -1,0 +1,254 @@
+{
+  "app": {
+    "name": "VibeCart",
+    "tagline": "Commerce vidéo-natif",
+    "description": "Achetez en vidéo, commandez via WhatsApp"
+  },
+  "nav": {
+    "home": "Accueil",
+    "shop": "Boutique",
+    "orders": "Commandes",
+    "inventory": "Inventaire",
+    "vibe": "Ambiance",
+    "settings": "Paramètres",
+    "back": "Retour"
+  },
+  "auth": {
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "register": "Créer un compte",
+    "phone": "Numéro WhatsApp",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "orContinueWith": "Ou continuer avec",
+    "sendOtp": "Envoyer le code",
+    "verifyOtp": "Vérifier le code",
+    "otpSent": "Nous avons envoyé un code à {phone}",
+    "welcomeBack": "Bon retour !",
+    "createSellerAccount": "Créez votre compte vendeur"
+  },
+  "landing": {
+    "hero": {
+      "title": "Vendez en vidéo",
+      "subtitle": "Transformez votre Instagram en boutique",
+      "cta": "Commencer à vendre"
+    },
+    "features": {
+      "video": "Shopping en vidéo",
+      "whatsapp": "Paiement WhatsApp",
+      "instagram": "Intégration Instagram"
+    },
+    "roles": {
+      "seller": "Je suis vendeur",
+      "buyer": "Je fais du shopping"
+    }
+  },
+  "product": {
+    "outOfStock": "Rupture de stock",
+    "lowStock": "Plus que {count}",
+    "inStock": "En stock",
+    "addToCart": "Ajouter au panier",
+    "buyNow": "Acheter maintenant",
+    "variants": "Options",
+    "description": "Description",
+    "price": "Prix",
+    "discountPrice": "Prix soldé",
+    "stock": "Stock",
+    "category": "Catégorie",
+    "categories": {
+      "clothing": "Vêtements",
+      "shoes": "Chaussures",
+      "jewelry": "Bijoux",
+      "beauty": "Beauté",
+      "home": "Maison",
+      "other": "Autre"
+    }
+  },
+  "checkout": {
+    "title": "Finaliser la commande",
+    "customerDetails": "Vos informations",
+    "fullName": "Nom complet",
+    "phone": "Numéro de téléphone",
+    "deliveryAddress": "Adresse de livraison",
+    "city": "Ville",
+    "selectCity": "Sélectionner une ville",
+    "neighborhood": "Quartier",
+    "selectNeighborhood": "Sélectionner un quartier",
+    "address": "Adresse",
+    "pinLocation": "Épingler sur la carte",
+    "locationPinned": "Localisation épinglée",
+    "saveAddress": "Enregistrer cette adresse",
+    "useSavedAddress": "Utiliser l'adresse enregistrée",
+    "orderSummary": "Résumé de commande",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "freeShipping": "GRATUITE",
+    "total": "Total",
+    "quantity": "Quantité",
+    "slideToOrder": "Glisser pour commander",
+    "orderConfirmed": "Commande envoyée !",
+    "confirmationMessage": "Ouvrez WhatsApp pour confirmer votre commande avec le vendeur",
+    "openWhatsApp": "Ouvrir WhatsApp"
+  },
+  "map": {
+    "title": "Épinglez votre emplacement",
+    "searchPlaceholder": "Rechercher un lieu",
+    "currentLocation": "Utiliser ma position",
+    "confirm": "Confirmer l'emplacement",
+    "cancel": "Annuler",
+    "satelliteView": "Satellite",
+    "streetView": "Carte",
+    "buildingDetails": "Détails du bâtiment",
+    "apartmentNumber": "Numéro d'appartement",
+    "floor": "Étage",
+    "buildingName": "Nom du bâtiment",
+    "deliveryInstructions": "Instructions de livraison",
+    "residenceType": {
+      "title": "Type de résidence",
+      "apartment": "Appartement",
+      "house": "Maison",
+      "office": "Bureau",
+      "other": "Autre"
+    }
+  },
+  "seller": {
+    "dashboard": {
+      "title": "Tableau de bord",
+      "welcome": "Bienvenue, {name}",
+      "todayOrders": "Commandes du jour",
+      "totalRevenue": "Revenu total",
+      "activeProducts": "Produits actifs",
+      "pendingOrders": "Commandes en attente"
+    },
+    "orders": {
+      "title": "Commandes",
+      "noOrders": "Pas encore de commandes",
+      "filterAll": "Toutes",
+      "filterPending": "En attente",
+      "filterConfirmed": "Confirmées",
+      "filterShipped": "Expédiées",
+      "filterDelivered": "Livrées",
+      "viewDetails": "Voir les détails",
+      "confirmOrder": "Confirmer la commande",
+      "markShipped": "Marquer comme expédiée",
+      "markDelivered": "Marquer comme livrée",
+      "chat": "Discuter avec le client"
+    },
+    "inventory": {
+      "title": "Inventaire",
+      "addProduct": "Ajouter un produit",
+      "editProduct": "Modifier le produit",
+      "deleteProduct": "Supprimer le produit",
+      "productTitle": "Nom du produit",
+      "generateDescription": "Générer avec l'IA",
+      "generatingDescription": "Génération en cours...",
+      "selectCategory": "Sélectionner une catégorie",
+      "selectVariants": "Sélectionner les variantes",
+      "uploadVideo": "Télécharger une vidéo",
+      "importFromInstagram": "Importer depuis Instagram",
+      "saveProduct": "Enregistrer le produit",
+      "cancel": "Annuler"
+    },
+    "vibe": {
+      "title": "Ambiance de la boutique",
+      "spotlight": {
+        "title": "Bannière promotionnelle",
+        "description": "Bannière affichée dans votre boutique",
+        "bannerTitle": "Titre de la bannière",
+        "bannerSubtitle": "Sous-titre",
+        "bannerColor": "Couleur de la bannière"
+      },
+      "makerBio": {
+        "title": "Biographie de l'artisan",
+        "description": "Racontez votre histoire aux clients",
+        "name": "Votre nom",
+        "role": "Votre rôle",
+        "bio": "Votre histoire",
+        "image": "Votre photo"
+      },
+      "reviews": {
+        "title": "Avis clients",
+        "description": "Stories Instagram de clients satisfaits",
+        "addReview": "Ajouter un avis",
+        "noReviews": "Pas encore d'avis"
+      }
+    },
+    "settings": {
+      "title": "Paramètres",
+      "whatsapp": {
+        "title": "WhatsApp Business",
+        "businessNumber": "Numéro professionnel",
+        "businessName": "Nom de l'entreprise",
+        "welcomeMessage": "Message d'accueil"
+      },
+      "instagram": {
+        "title": "Instagram",
+        "connect": "Connecter Instagram",
+        "connected": "Connecté en tant que @{handle}",
+        "disconnect": "Déconnecter"
+      },
+      "shipping": {
+        "title": "Règles de livraison",
+        "defaultRate": "Tarif par défaut",
+        "cityRules": "Tarifs par ville",
+        "addRule": "Ajouter une règle",
+        "city": "Ville",
+        "rate": "Tarif",
+        "importCsv": "Importer depuis CSV"
+      },
+      "googleMaps": {
+        "title": "Google Maps",
+        "connect": "Connecter Google Maps",
+        "placeId": "ID du lieu",
+        "syncNow": "Synchroniser"
+      }
+    },
+    "profile": {
+      "title": "Profil de la boutique",
+      "shopName": "Nom de la boutique",
+      "shopHandle": "Identifiant de la boutique",
+      "shopUrl": "URL de votre boutique"
+    }
+  },
+  "chat": {
+    "placeholder": "Écrire un message...",
+    "send": "Envoyer",
+    "systemMessage": "Système",
+    "templates": {
+      "confirmOrder": "Commande confirmée ! Nous préparons vos articles.",
+      "shipped": "Votre commande a été expédiée ! Suivi : {tracking}",
+      "delivered": "Commande livrée ! Merci pour votre achat."
+    }
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "retry": "Réessayer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "confirm": "Confirmer",
+    "close": "Fermer",
+    "search": "Rechercher",
+    "noResults": "Aucun résultat",
+    "currency": "MAD",
+    "share": "Partager",
+    "copy": "Copier",
+    "copied": "Copié !",
+    "enabled": "Activé",
+    "disabled": "Désactivé"
+  },
+  "errors": {
+    "required": "Ce champ est requis",
+    "invalidPhone": "Numéro de téléphone invalide",
+    "invalidEmail": "Adresse e-mail invalide",
+    "minLength": "Doit contenir au moins {min} caractères",
+    "maxLength": "Doit contenir au plus {max} caractères",
+    "serverError": "Erreur serveur. Veuillez réessayer.",
+    "networkError": "Erreur réseau. Vérifiez votre connexion.",
+    "notFound": "Non trouvé",
+    "unauthorized": "Veuillez vous connecter pour continuer"
+  }
+}

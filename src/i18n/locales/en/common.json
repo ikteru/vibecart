@@ -1,0 +1,254 @@
+{
+  "app": {
+    "name": "VibeCart",
+    "tagline": "Video-native commerce",
+    "description": "Shop through video, order via WhatsApp"
+  },
+  "nav": {
+    "home": "Home",
+    "shop": "Shop",
+    "orders": "Orders",
+    "inventory": "Inventory",
+    "vibe": "Vibe",
+    "settings": "Settings",
+    "back": "Back"
+  },
+  "auth": {
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "register": "Create Account",
+    "phone": "WhatsApp Number",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "orContinueWith": "Or continue with",
+    "sendOtp": "Send Code",
+    "verifyOtp": "Verify Code",
+    "otpSent": "We sent a code to {phone}",
+    "welcomeBack": "Welcome back!",
+    "createSellerAccount": "Create your seller account"
+  },
+  "landing": {
+    "hero": {
+      "title": "Sell with video",
+      "subtitle": "Turn your Instagram into a shop",
+      "cta": "Start Selling"
+    },
+    "features": {
+      "video": "Video-first shopping",
+      "whatsapp": "WhatsApp checkout",
+      "instagram": "Instagram integration"
+    },
+    "roles": {
+      "seller": "I'm a Seller",
+      "buyer": "I'm Shopping"
+    }
+  },
+  "product": {
+    "outOfStock": "Out of stock",
+    "lowStock": "Only {count} left",
+    "inStock": "In stock",
+    "addToCart": "Add to cart",
+    "buyNow": "Buy Now",
+    "variants": "Options",
+    "description": "Description",
+    "price": "Price",
+    "discountPrice": "Sale price",
+    "stock": "Stock",
+    "category": "Category",
+    "categories": {
+      "clothing": "Clothing",
+      "shoes": "Shoes",
+      "jewelry": "Jewelry",
+      "beauty": "Beauty",
+      "home": "Home",
+      "other": "Other"
+    }
+  },
+  "checkout": {
+    "title": "Complete Order",
+    "customerDetails": "Your Details",
+    "fullName": "Full Name",
+    "phone": "Phone Number",
+    "deliveryAddress": "Delivery Address",
+    "city": "City",
+    "selectCity": "Select city",
+    "neighborhood": "Neighborhood",
+    "selectNeighborhood": "Select neighborhood",
+    "address": "Street Address",
+    "pinLocation": "Pin location on map",
+    "locationPinned": "Location pinned",
+    "saveAddress": "Save this address",
+    "useSavedAddress": "Use saved address",
+    "orderSummary": "Order Summary",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "freeShipping": "FREE",
+    "total": "Total",
+    "quantity": "Quantity",
+    "slideToOrder": "Slide to Order",
+    "orderConfirmed": "Order Sent!",
+    "confirmationMessage": "Open WhatsApp to confirm your order with the seller",
+    "openWhatsApp": "Open WhatsApp"
+  },
+  "map": {
+    "title": "Pin Your Location",
+    "searchPlaceholder": "Search for location",
+    "currentLocation": "Use current location",
+    "confirm": "Confirm Location",
+    "cancel": "Cancel",
+    "satelliteView": "Satellite",
+    "streetView": "Map",
+    "buildingDetails": "Building Details",
+    "apartmentNumber": "Apartment/Unit Number",
+    "floor": "Floor",
+    "buildingName": "Building Name",
+    "deliveryInstructions": "Delivery Instructions",
+    "residenceType": {
+      "title": "Residence Type",
+      "apartment": "Apartment",
+      "house": "House",
+      "office": "Office",
+      "other": "Other"
+    }
+  },
+  "seller": {
+    "dashboard": {
+      "title": "Dashboard",
+      "welcome": "Welcome, {name}",
+      "todayOrders": "Today's Orders",
+      "totalRevenue": "Total Revenue",
+      "activeProducts": "Active Products",
+      "pendingOrders": "Pending Orders"
+    },
+    "orders": {
+      "title": "Orders",
+      "noOrders": "No orders yet",
+      "filterAll": "All",
+      "filterPending": "Pending",
+      "filterConfirmed": "Confirmed",
+      "filterShipped": "Shipped",
+      "filterDelivered": "Delivered",
+      "viewDetails": "View Details",
+      "confirmOrder": "Confirm Order",
+      "markShipped": "Mark as Shipped",
+      "markDelivered": "Mark as Delivered",
+      "chat": "Chat with Customer"
+    },
+    "inventory": {
+      "title": "Inventory",
+      "addProduct": "Add Product",
+      "editProduct": "Edit Product",
+      "deleteProduct": "Delete Product",
+      "productTitle": "Product Title",
+      "generateDescription": "Generate with AI",
+      "generatingDescription": "Generating...",
+      "selectCategory": "Select category",
+      "selectVariants": "Select variants",
+      "uploadVideo": "Upload Video",
+      "importFromInstagram": "Import from Instagram",
+      "saveProduct": "Save Product",
+      "cancel": "Cancel"
+    },
+    "vibe": {
+      "title": "Shop Vibe",
+      "spotlight": {
+        "title": "Spotlight Banner",
+        "description": "Promotional banner shown in your shop",
+        "bannerTitle": "Banner Title",
+        "bannerSubtitle": "Banner Subtitle",
+        "bannerColor": "Banner Color"
+      },
+      "makerBio": {
+        "title": "Maker Bio",
+        "description": "Tell your story to customers",
+        "name": "Your Name",
+        "role": "Your Role",
+        "bio": "Your Story",
+        "image": "Profile Image"
+      },
+      "reviews": {
+        "title": "Customer Reviews",
+        "description": "Instagram stories from happy customers",
+        "addReview": "Add Review",
+        "noReviews": "No reviews yet"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "whatsapp": {
+        "title": "WhatsApp Business",
+        "businessNumber": "Business Number",
+        "businessName": "Business Name",
+        "welcomeMessage": "Welcome Message"
+      },
+      "instagram": {
+        "title": "Instagram",
+        "connect": "Connect Instagram",
+        "connected": "Connected as @{handle}",
+        "disconnect": "Disconnect"
+      },
+      "shipping": {
+        "title": "Shipping Rules",
+        "defaultRate": "Default Rate",
+        "cityRules": "City-specific Rates",
+        "addRule": "Add Rule",
+        "city": "City",
+        "rate": "Rate",
+        "importCsv": "Import from CSV"
+      },
+      "googleMaps": {
+        "title": "Google Maps",
+        "connect": "Connect Google Maps",
+        "placeId": "Place ID",
+        "syncNow": "Sync Now"
+      }
+    },
+    "profile": {
+      "title": "Shop Profile",
+      "shopName": "Shop Name",
+      "shopHandle": "Shop Handle",
+      "shopUrl": "Your shop URL"
+    }
+  },
+  "chat": {
+    "placeholder": "Type a message...",
+    "send": "Send",
+    "systemMessage": "System",
+    "templates": {
+      "confirmOrder": "Order confirmed! We'll prepare your items.",
+      "shipped": "Your order has been shipped! Track: {tracking}",
+      "delivered": "Order delivered! Thank you for shopping with us."
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try again",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirm": "Confirm",
+    "close": "Close",
+    "search": "Search",
+    "noResults": "No results found",
+    "currency": "MAD",
+    "share": "Share",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
+  },
+  "errors": {
+    "required": "This field is required",
+    "invalidPhone": "Invalid phone number",
+    "invalidEmail": "Invalid email address",
+    "minLength": "Must be at least {min} characters",
+    "maxLength": "Must be at most {max} characters",
+    "serverError": "Server error. Please try again.",
+    "networkError": "Network error. Check your connection.",
+    "notFound": "Not found",
+    "unauthorized": "Please sign in to continue"
+  }
+}

@@ -1,0 +1,254 @@
+{
+  "app": {
+    "name": "فايب كارت",
+    "tagline": "التجارة بالفيديو",
+    "description": "تسوق عبر الفيديو، اطلب عبر واتساب"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "shop": "المتجر",
+    "orders": "الطلبات",
+    "inventory": "المخزون",
+    "vibe": "الأجواء",
+    "settings": "الإعدادات",
+    "back": "رجوع"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "register": "إنشاء حساب",
+    "phone": "رقم الواتساب",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "orContinueWith": "أو تابع بـ",
+    "sendOtp": "إرسال الرمز",
+    "verifyOtp": "تأكيد الرمز",
+    "otpSent": "أرسلنا رمزاً إلى {phone}",
+    "welcomeBack": "مرحباً بعودتك!",
+    "createSellerAccount": "أنشئ حساب البائع الخاص بك"
+  },
+  "landing": {
+    "hero": {
+      "title": "بيع بالفيديو",
+      "subtitle": "حوّل إنستغرام إلى متجر",
+      "cta": "ابدأ البيع"
+    },
+    "features": {
+      "video": "التسوق بالفيديو",
+      "whatsapp": "الدفع بالواتساب",
+      "instagram": "ربط مع إنستغرام"
+    },
+    "roles": {
+      "seller": "أنا بائع",
+      "buyer": "أنا أتسوق"
+    }
+  },
+  "product": {
+    "outOfStock": "نفد المخزون",
+    "lowStock": "متبقي {count} فقط",
+    "inStock": "متوفر",
+    "addToCart": "أضف إلى السلة",
+    "buyNow": "اشترِ الآن",
+    "variants": "الخيارات",
+    "description": "الوصف",
+    "price": "السعر",
+    "discountPrice": "سعر التخفيض",
+    "stock": "المخزون",
+    "category": "الفئة",
+    "categories": {
+      "clothing": "الملابس",
+      "shoes": "الأحذية",
+      "jewelry": "المجوهرات",
+      "beauty": "الجمال",
+      "home": "المنزل",
+      "other": "أخرى"
+    }
+  },
+  "checkout": {
+    "title": "إتمام الطلب",
+    "customerDetails": "بياناتك",
+    "fullName": "الاسم الكامل",
+    "phone": "رقم الهاتف",
+    "deliveryAddress": "عنوان التوصيل",
+    "city": "المدينة",
+    "selectCity": "اختر المدينة",
+    "neighborhood": "الحي",
+    "selectNeighborhood": "اختر الحي",
+    "address": "العنوان",
+    "pinLocation": "حدد الموقع على الخريطة",
+    "locationPinned": "تم تحديد الموقع",
+    "saveAddress": "حفظ هذا العنوان",
+    "useSavedAddress": "استخدم العنوان المحفوظ",
+    "orderSummary": "ملخص الطلب",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "التوصيل",
+    "freeShipping": "مجاني",
+    "total": "المجموع",
+    "quantity": "الكمية",
+    "slideToOrder": "اسحب للطلب",
+    "orderConfirmed": "تم إرسال الطلب!",
+    "confirmationMessage": "افتح واتساب لتأكيد طلبك مع البائع",
+    "openWhatsApp": "افتح واتساب"
+  },
+  "map": {
+    "title": "حدد موقعك",
+    "searchPlaceholder": "ابحث عن موقع",
+    "currentLocation": "استخدم الموقع الحالي",
+    "confirm": "تأكيد الموقع",
+    "cancel": "إلغاء",
+    "satelliteView": "قمر صناعي",
+    "streetView": "خريطة",
+    "buildingDetails": "تفاصيل المبنى",
+    "apartmentNumber": "رقم الشقة",
+    "floor": "الطابق",
+    "buildingName": "اسم المبنى",
+    "deliveryInstructions": "تعليمات التوصيل",
+    "residenceType": {
+      "title": "نوع السكن",
+      "apartment": "شقة",
+      "house": "منزل",
+      "office": "مكتب",
+      "other": "أخرى"
+    }
+  },
+  "seller": {
+    "dashboard": {
+      "title": "لوحة التحكم",
+      "welcome": "مرحباً، {name}",
+      "todayOrders": "طلبات اليوم",
+      "totalRevenue": "إجمالي الإيرادات",
+      "activeProducts": "المنتجات النشطة",
+      "pendingOrders": "الطلبات المعلقة"
+    },
+    "orders": {
+      "title": "الطلبات",
+      "noOrders": "لا توجد طلبات بعد",
+      "filterAll": "الكل",
+      "filterPending": "معلق",
+      "filterConfirmed": "مؤكد",
+      "filterShipped": "شُحن",
+      "filterDelivered": "تم التوصيل",
+      "viewDetails": "عرض التفاصيل",
+      "confirmOrder": "تأكيد الطلب",
+      "markShipped": "تعيين كمشحون",
+      "markDelivered": "تعيين كموصَّل",
+      "chat": "التواصل مع العميل"
+    },
+    "inventory": {
+      "title": "المخزون",
+      "addProduct": "إضافة منتج",
+      "editProduct": "تعديل المنتج",
+      "deleteProduct": "حذف المنتج",
+      "productTitle": "اسم المنتج",
+      "generateDescription": "إنشاء بالذكاء الاصطناعي",
+      "generatingDescription": "جارٍ الإنشاء...",
+      "selectCategory": "اختر الفئة",
+      "selectVariants": "اختر الخيارات",
+      "uploadVideo": "رفع فيديو",
+      "importFromInstagram": "استيراد من إنستغرام",
+      "saveProduct": "حفظ المنتج",
+      "cancel": "إلغاء"
+    },
+    "vibe": {
+      "title": "أجواء المتجر",
+      "spotlight": {
+        "title": "لافتة العرض",
+        "description": "لافتة ترويجية في متجرك",
+        "bannerTitle": "عنوان اللافتة",
+        "bannerSubtitle": "العنوان الفرعي",
+        "bannerColor": "لون اللافتة"
+      },
+      "makerBio": {
+        "title": "قصة الصانع",
+        "description": "احكِ قصتك للعملاء",
+        "name": "اسمك",
+        "role": "دورك",
+        "bio": "قصتك",
+        "image": "صورتك"
+      },
+      "reviews": {
+        "title": "آراء العملاء",
+        "description": "قصص إنستغرام من العملاء السعداء",
+        "addReview": "إضافة رأي",
+        "noReviews": "لا توجد آراء بعد"
+      }
+    },
+    "settings": {
+      "title": "الإعدادات",
+      "whatsapp": {
+        "title": "واتساب للأعمال",
+        "businessNumber": "رقم الأعمال",
+        "businessName": "اسم الأعمال",
+        "welcomeMessage": "رسالة الترحيب"
+      },
+      "instagram": {
+        "title": "إنستغرام",
+        "connect": "ربط إنستغرام",
+        "connected": "متصل بـ @{handle}",
+        "disconnect": "فصل"
+      },
+      "shipping": {
+        "title": "قواعد الشحن",
+        "defaultRate": "السعر الافتراضي",
+        "cityRules": "أسعار حسب المدينة",
+        "addRule": "إضافة قاعدة",
+        "city": "المدينة",
+        "rate": "السعر",
+        "importCsv": "استيراد من CSV"
+      },
+      "googleMaps": {
+        "title": "خرائط جوجل",
+        "connect": "ربط الخرائط",
+        "placeId": "معرف المكان",
+        "syncNow": "مزامنة الآن"
+      }
+    },
+    "profile": {
+      "title": "ملف المتجر",
+      "shopName": "اسم المتجر",
+      "shopHandle": "معرف المتجر",
+      "shopUrl": "رابط متجرك"
+    }
+  },
+  "chat": {
+    "placeholder": "اكتب رسالة...",
+    "send": "إرسال",
+    "systemMessage": "النظام",
+    "templates": {
+      "confirmOrder": "تم تأكيد الطلب! سنجهز لك المنتجات.",
+      "shipped": "تم شحن طلبك! رقم التتبع: {tracking}",
+      "delivered": "تم توصيل الطلب! شكراً لتسوقك معنا."
+    }
+  },
+  "common": {
+    "loading": "جارٍ التحميل...",
+    "error": "حدث خطأ ما",
+    "retry": "إعادة المحاولة",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "confirm": "تأكيد",
+    "close": "إغلاق",
+    "search": "بحث",
+    "noResults": "لا توجد نتائج",
+    "currency": "درهم",
+    "share": "مشاركة",
+    "copy": "نسخ",
+    "copied": "تم النسخ!",
+    "enabled": "مفعل",
+    "disabled": "معطل"
+  },
+  "errors": {
+    "required": "هذا الحقل مطلوب",
+    "invalidPhone": "رقم الهاتف غير صالح",
+    "invalidEmail": "البريد الإلكتروني غير صالح",
+    "minLength": "يجب أن يكون على الأقل {min} أحرف",
+    "maxLength": "يجب أن يكون على الأكثر {max} أحرف",
+    "serverError": "خطأ في الخادم. يرجى المحاولة مرة أخرى.",
+    "networkError": "خطأ في الشبكة. تحقق من اتصالك.",
+    "notFound": "غير موجود",
+    "unauthorized": "يرجى تسجيل الدخول للمتابعة"
+  }
+}
