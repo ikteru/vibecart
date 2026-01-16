@@ -266,5 +266,30 @@
     "networkError": "Erreur réseau. Vérifiez votre connexion.",
     "notFound": "Non trouvé",
     "unauthorized": "Veuillez vous connecter pour continuer"
+  },
+  "shipping": {
+    "pageTitle": "Paramètres de livraison",
+    "pageDescription": "Configurez vos tarifs d'expédition et options de livraison.",
+    "currentSettings": "Paramètres actuels",
+    "defaultRate": "Tarif d'expédition par défaut",
+    "freeShippingThreshold": "Livraison gratuite au-dessus de",
+    "cityRules": "Tarifs par ville",
+    "addRule": "Ajouter une règle",
+    "saveSettings": "Enregistrer",
+    "aggregatorSection": "Agrégateur de livraison",
+    "title": "Intégration des partenaires de livraison",
+    "description": "Connectez-vous à plusieurs prestataires de livraison, comparez les tarifs et imprimez les étiquettes d'expédition - tout en un seul endroit.",
+    "comingSoon": "Bientôt disponible",
+    "features": {
+      "multiProvider": "Plusieurs prestataires",
+      "multiProviderDesc": "Comparez les tarifs d'Amana, Glovo, CTM et plus",
+      "labels": "Imprimer les étiquettes",
+      "labelsDesc": "Générez et imprimez les étiquettes d'expédition instantanément",
+      "tracking": "Suivi en direct",
+      "trackingDesc": "Suivi en temps réel de tous vos envois"
+    },
+    "supportedProviders": "Prestataires supportés :",
+    "notifyPlaceholder": "Entrez votre e-mail pour être notifié",
+    "notifyButton": "Me notifier"
   }
 }

@@ -266,5 +266,30 @@
     "networkError": "Network error. Check your connection.",
     "notFound": "Not found",
     "unauthorized": "Please sign in to continue"
+  },
+  "shipping": {
+    "pageTitle": "Shipping Settings",
+    "pageDescription": "Configure your shipping rates and delivery options.",
+    "currentSettings": "Current Settings",
+    "defaultRate": "Default Shipping Rate",
+    "freeShippingThreshold": "Free Shipping Above",
+    "cityRules": "City-specific Rates",
+    "addRule": "Add Rule",
+    "saveSettings": "Save Settings",
+    "aggregatorSection": "Shipping Aggregator",
+    "title": "Delivery Partner Integration",
+    "description": "Connect with multiple delivery providers, compare rates, and print shipping labels - all from one place.",
+    "comingSoon": "Coming Soon",
+    "features": {
+      "multiProvider": "Multiple Providers",
+      "multiProviderDesc": "Compare rates from Amana, Glovo, CTM and more",
+      "labels": "Print Labels",
+      "labelsDesc": "Generate and print shipping labels instantly",
+      "tracking": "Live Tracking",
+      "trackingDesc": "Real-time tracking for all your shipments"
+    },
+    "supportedProviders": "Supported providers:",
+    "notifyPlaceholder": "Enter your email to be notified",
+    "notifyButton": "Notify Me"
   }
 }

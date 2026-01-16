@@ -266,5 +266,30 @@
     "networkError": "مشكل فالاتصال. شوف الإنترنت.",
     "notFound": "ما لقيناش",
     "unauthorized": "خاصك تدخل باش تكمل"
+  },
+  "shipping": {
+    "pageTitle": "إعدادات الشحن",
+    "pageDescription": "خصص أسعار الشحن وخيارات التوصيل ديالك.",
+    "currentSettings": "الإعدادات الحالية",
+    "defaultRate": "سعر الشحن الأساسي",
+    "freeShippingThreshold": "شحن مجاني فوق",
+    "cityRules": "أسعار حسب المدينة",
+    "addRule": "زيد قاعدة",
+    "saveSettings": "حفظ الإعدادات",
+    "aggregatorSection": "تجميع التوصيل",
+    "title": "ربط مع شركات التوصيل",
+    "description": "تواصل مع شركات توصيل متعددة، قارن الأسعار، وطبع أوراق الشحن - كلشي من بلاصة وحدة.",
+    "comingSoon": "قريبا",
+    "features": {
+      "multiProvider": "شركات متعددة",
+      "multiProviderDesc": "قارن أسعار أمانة، جلوفو، CTM وغيرهم",
+      "labels": "طباعة الملصقات",
+      "labelsDesc": "طبع ملصقات الشحن فالحين",
+      "tracking": "تتبع مباشر",
+      "trackingDesc": "تتبع مباشر لجميع الشحنات"
+    },
+    "supportedProviders": "شركات التوصيل المدعومة:",
+    "notifyPlaceholder": "دخل الإيميل ديالك باش نعلموك",
+    "notifyButton": "عرفني"
   }
 }

@@ -248,3 +248,60 @@ $$ language 'plpgsql';
 CREATE TRIGGER set_order_number BEFORE INSERT ON orders
   FOR EACH ROW WHEN (NEW.order_number IS NULL)
   EXECUTE FUNCTION generate_order_number();
+
+-- WhatsApp Commands (Slash Commands)
+-- Tracks command history for analytics and debugging
+CREATE TABLE whatsapp_commands (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  seller_id UUID NOT NULL REFERENCES sellers(id) ON DELETE CASCADE,
+  buyer_phone VARCHAR(20) NOT NULL,
+  raw_message TEXT NOT NULL,
+  parsed_command VARCHAR(50),
+  command_args JSONB DEFAULT '{}',
+  execution_result JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_whatsapp_commands_seller ON whatsapp_commands(seller_id);
+CREATE INDEX idx_whatsapp_commands_buyer ON whatsapp_commands(buyer_phone);
+CREATE INDEX idx_whatsapp_commands_created ON whatsapp_commands(created_at DESC);
+
+-- Shipping providers (for future shipping aggregator feature)
+CREATE TABLE shipping_providers (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name VARCHAR(100) NOT NULL,
+  code VARCHAR(50) UNIQUE NOT NULL,
+  api_endpoint TEXT,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Seller shipping provider preferences
+CREATE TABLE seller_shipping_providers (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  seller_id UUID NOT NULL REFERENCES sellers(id) ON DELETE CASCADE,
+  provider_id UUID NOT NULL REFERENCES shipping_providers(id) ON DELETE CASCADE,
+  is_default BOOLEAN DEFAULT FALSE,
+  credentials_encrypted TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+
+  UNIQUE(seller_id, provider_id)
+);
+
+-- Individual shipments
+CREATE TABLE shipments (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  order_id UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  provider_id UUID REFERENCES shipping_providers(id),
+  tracking_number VARCHAR(100),
+  label_url TEXT,
+  status VARCHAR(50) DEFAULT 'pending',
+  quoted_price DECIMAL(10,2),
+  actual_price DECIMAL(10,2),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  shipped_at TIMESTAMPTZ,
+  delivered_at TIMESTAMPTZ
+);
+
+CREATE INDEX idx_shipments_order ON shipments(order_id);
+CREATE INDEX idx_shipments_tracking ON shipments(tracking_number) WHERE tracking_number IS NOT NULL;

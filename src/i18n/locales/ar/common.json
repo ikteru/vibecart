@@ -266,5 +266,30 @@
     "networkError": "خطأ في الشبكة. تحقق من اتصالك.",
     "notFound": "غير موجود",
     "unauthorized": "يرجى تسجيل الدخول للمتابعة"
+  },
+  "shipping": {
+    "pageTitle": "إعدادات الشحن",
+    "pageDescription": "قم بتكوين أسعار الشحن وخيارات التوصيل.",
+    "currentSettings": "الإعدادات الحالية",
+    "defaultRate": "سعر الشحن الافتراضي",
+    "freeShippingThreshold": "شحن مجاني فوق",
+    "cityRules": "أسعار حسب المدينة",
+    "addRule": "إضافة قاعدة",
+    "saveSettings": "حفظ الإعدادات",
+    "aggregatorSection": "تجميع خدمات التوصيل",
+    "title": "التكامل مع شركات التوصيل",
+    "description": "تواصل مع شركات توصيل متعددة، قارن الأسعار، واطبع ملصقات الشحن - كل ذلك من مكان واحد.",
+    "comingSoon": "قريباً",
+    "features": {
+      "multiProvider": "شركات متعددة",
+      "multiProviderDesc": "قارن أسعار أمانة، جلوفو، CTM وغيرها",
+      "labels": "طباعة الملصقات",
+      "labelsDesc": "إنشاء وطباعة ملصقات الشحن فوراً",
+      "tracking": "تتبع مباشر",
+      "trackingDesc": "تتبع مباشر لجميع شحناتك"
+    },
+    "supportedProviders": "شركات التوصيل المدعومة:",
+    "notifyPlaceholder": "أدخل بريدك الإلكتروني للإشعار",
+    "notifyButton": "أعلمني"
   }
 }
