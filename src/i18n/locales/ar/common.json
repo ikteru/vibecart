@@ -368,7 +368,14 @@
     "enabled": "مفعل",
     "disabled": "معطل",
     "or": "أو",
-    "saveChanges": "حفظ التغييرات"
+    "saveChanges": "حفظ التغييرات",
+    "comingSoon": "قريباً",
+    "featureComingSoon": "ميزة {feature} قادمة قريباً!",
+    "workingOnFeature": "نعمل بجد لتقديم هذه الميزة لك.",
+    "gotIt": "فهمت",
+    "confirmDelete": "تأكيد الحذف",
+    "deleteMessage": "هل أنت متأكد من حذف هذا العنصر؟ لا يمكن التراجع عن هذا الإجراء.",
+    "deleting": "جارٍ الحذف..."
   },
   "errors": {
     "required": "هذا الحقل مطلوب",

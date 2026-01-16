@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { Product } from '@/domain/entities/Product';
 import {
@@ -14,6 +14,7 @@ import {
   Clock,
   Quote,
 } from 'lucide-react';
+import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
 
 /**
  * Shop Configuration for SellerProfile
@@ -81,6 +82,13 @@ export function SellerProfile({
   onSelectProduct,
 }: SellerProfileProps) {
   const t = useTranslations();
+  const [showComingSoon, setShowComingSoon] = useState(false);
+  const [comingSoonFeature, setComingSoonFeature] = useState('');
+
+  const showFeatureComingSoon = (feature: string) => {
+    setComingSoonFeature(feature);
+    setShowComingSoon(true);
+  };
 
   // Algorithmically mix content based on shopConfig
   const mixedContent: GridItemType[] = useMemo(() => {
@@ -170,7 +178,10 @@ export function SellerProfile({
           <ArrowLeft size={20} />
         </button>
         <div className="flex gap-2">
-          <button className="p-2 rounded-full hover:bg-zinc-800 transition-colors">
+          <button
+            onClick={() => showFeatureComingSoon(t('common.share'))}
+            className="p-2 rounded-full hover:bg-zinc-800 transition-colors"
+          >
             <Share2 size={18} />
           </button>
         </div>
@@ -309,7 +320,10 @@ export function SellerProfile({
                     <p className="text-[10px] text-zinc-800 font-bold leading-tight mb-2">
                       &quot;{item.address}&quot;
                     </p>
-                    <button className="w-full py-1.5 bg-[#4285F4] text-white text-[10px] font-bold rounded-lg flex items-center justify-center gap-1 hover:bg-blue-600 transition-colors">
+                    <button
+                      onClick={() => showFeatureComingSoon(t('seller.profile.findUs'))}
+                      className="w-full py-1.5 bg-[#4285F4] text-white text-[10px] font-bold rounded-lg flex items-center justify-center gap-1 hover:bg-blue-600 transition-colors"
+                    >
                       {t('seller.profile.findUs')}
                     </button>
                   </div>
@@ -373,7 +387,10 @@ export function SellerProfile({
                     </h3>
                     <p className="text-white/90 text-xs font-medium mt-1">{item.subtitle}</p>
                   </div>
-                  <button className="mt-4 bg-white text-black text-[10px] font-bold py-2 rounded-full w-full">
+                  <button
+                    onClick={() => showFeatureComingSoon(t('seller.profile.shopNow'))}
+                    className="mt-4 bg-white text-black text-[10px] font-bold py-2 rounded-full w-full"
+                  >
                     {t('seller.profile.shopNow')}
                   </button>
                 </div>
@@ -412,6 +429,12 @@ export function SellerProfile({
           })}
         </div>
       </div>
+
+      <ComingSoonModal
+        isOpen={showComingSoon}
+        onClose={() => setShowComingSoon(false)}
+        featureName={comingSoonFeature}
+      />
     </div>
   );
 }

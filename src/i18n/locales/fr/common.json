@@ -368,7 +368,14 @@
     "enabled": "Activé",
     "disabled": "Désactivé",
     "or": "Ou",
-    "saveChanges": "Enregistrer"
+    "saveChanges": "Enregistrer",
+    "comingSoon": "Bientôt disponible",
+    "featureComingSoon": "La fonctionnalité {feature} arrive bientôt !",
+    "workingOnFeature": "Nous travaillons dur pour vous apporter cette fonctionnalité.",
+    "gotIt": "Compris",
+    "confirmDelete": "Confirmer la suppression",
+    "deleteMessage": "Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.",
+    "deleting": "Suppression..."
   },
   "errors": {
     "required": "Ce champ est requis",

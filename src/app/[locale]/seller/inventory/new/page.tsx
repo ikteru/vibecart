@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { ArrowLeft, Instagram, Upload, Loader2, Plus, Check, Sparkles } from 'lucide-react';
 import type { ProductCategoryType } from '@/lib/constants';
+import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
 
 /**
  * Mock Instagram media for demo
@@ -63,6 +64,7 @@ export default function NewProductPage() {
   const [isConnecting, setIsConnecting] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<(typeof MOCK_IG_MEDIA)[0] | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showComingSoon, setShowComingSoon] = useState(false);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -177,7 +179,10 @@ export default function NewProductPage() {
               </div>
             </div>
 
-            <button className="w-full bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold py-3 rounded-xl hover:text-white transition-colors flex items-center justify-center gap-2">
+            <button
+              onClick={() => setShowComingSoon(true)}
+              className="w-full bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold py-3 rounded-xl hover:text-white transition-colors flex items-center justify-center gap-2"
+            >
               <Upload size={18} /> {t('seller.inventory.uploadVideo')}
             </button>
           </div>
@@ -345,6 +350,12 @@ export default function NewProductPage() {
           </div>
         )}
       </div>
+
+      <ComingSoonModal
+        isOpen={showComingSoon}
+        onClose={() => setShowComingSoon(false)}
+        featureName={t('seller.inventory.uploadVideo')}
+      />
     </div>
   );
 }

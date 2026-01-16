@@ -368,7 +368,14 @@
     "enabled": "فعال",
     "disabled": "معطل",
     "or": "ولا",
-    "saveChanges": "حفظ التغييرات"
+    "saveChanges": "حفظ التغييرات",
+    "comingSoon": "قريبا",
+    "featureComingSoon": "{feature} جاية قريبا!",
+    "workingOnFeature": "كنخدمو بزاف باش نجيبو هاد الميزة.",
+    "gotIt": "واخا",
+    "confirmDelete": "تأكيد الحذف",
+    "deleteMessage": "واش متأكد بغيتي تحذف هاد العنصر؟ ما يمكنش ترجع من هاد القرار.",
+    "deleting": "كيتحذف..."
   },
   "errors": {
     "required": "هاد الخانة ضرورية",

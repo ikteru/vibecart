@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { TrendingUp, ShoppingBag, Plus, Sparkles, User } from 'lucide-react';
+import { TrendingUp, ShoppingBag, Plus, Sparkles } from 'lucide-react';
 
 /**
  * Seller Dashboard Overview Page
@@ -48,16 +48,11 @@ export default function DashboardPage() {
   return (
     <div className="animate-fade-in pb-24">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-white">
-            {t('seller.dashboard.hello', { name: sellerName.split(' ')[0] })} 👋
-          </h2>
-          <p className="text-zinc-400 text-xs">{t('seller.dashboard.subtitle')}</p>
-        </div>
-        <div className="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center border border-zinc-700">
-          <User size={18} className="text-zinc-400" />
-        </div>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-white">
+          {t('seller.dashboard.hello', { name: sellerName.split(' ')[0] })} 👋
+        </h2>
+        <p className="text-zinc-400 text-xs">{t('seller.dashboard.subtitle')}</p>
       </div>
 
       {/* Stats Grid */}

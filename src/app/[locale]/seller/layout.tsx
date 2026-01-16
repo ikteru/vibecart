@@ -38,12 +38,12 @@ export default function SellerLayout({ children, params }: SellerLayoutProps) {
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
 
   return (
-    <div className="h-full flex flex-col bg-zinc-950 text-white">
-      <div className="flex-1 overflow-y-auto no-scrollbar p-6">{children}</div>
+    <div className="h-full bg-zinc-950 text-white">
+      <div className="h-full overflow-y-auto no-scrollbar p-6 pb-24">{children}</div>
 
-      {/* Bottom Navigation */}
-      <div className="bg-zinc-900 border-t border-zinc-800 p-2 safe-area-pb">
-        <div className="flex justify-between items-center px-2">
+      {/* Bottom Navigation - Fixed */}
+      <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 p-2 safe-area-pb z-50">
+        <div className="flex justify-between items-center px-2 max-w-lg mx-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.href);

@@ -9,6 +9,7 @@ import {
   MoreHorizontal,
   Info,
 } from 'lucide-react';
+import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
 
 /**
  * Order status type
@@ -37,6 +38,13 @@ interface Order {
 export default function OrdersPage() {
   const t = useTranslations();
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [showComingSoon, setShowComingSoon] = useState(false);
+  const [comingSoonFeature, setComingSoonFeature] = useState('');
+
+  const showFeatureComingSoon = (feature: string) => {
+    setComingSoonFeature(feature);
+    setShowComingSoon(true);
+  };
 
   // TODO: Fetch from API
   const orders: Order[] = [
@@ -128,10 +136,16 @@ export default function OrdersPage() {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-white">{t('seller.orders.title')}</h2>
         <div className="flex gap-2">
-          <button className="p-2 bg-zinc-900 rounded-lg text-zinc-400 hover:text-white">
+          <button
+            onClick={() => showFeatureComingSoon(t('common.search'))}
+            className="p-2 bg-zinc-900 rounded-lg text-zinc-400 hover:text-white"
+          >
             <Filter size={16} />
           </button>
-          <button className="p-2 bg-zinc-900 rounded-lg text-zinc-400 hover:text-white">
+          <button
+            onClick={() => showFeatureComingSoon(t('common.search'))}
+            className="p-2 bg-zinc-900 rounded-lg text-zinc-400 hover:text-white"
+          >
             <Search size={16} />
           </button>
         </div>
@@ -201,7 +215,10 @@ export default function OrdersPage() {
               </div>
 
               <div className="flex gap-2">
-                <button className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-black hover:text-white transition-colors py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+                <button
+                  onClick={() => showFeatureComingSoon(t('seller.orders.viewChat'))}
+                  className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-black hover:text-white transition-colors py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2"
+                >
                   <MessageCircle size={14} /> {t('seller.orders.viewChat')}
                   {order.hasNewMessage && (
                     <span className="bg-red-500 text-white text-[9px] px-1.5 rounded-full">
@@ -209,7 +226,10 @@ export default function OrdersPage() {
                     </span>
                   )}
                 </button>
-                <button className="p-2 bg-zinc-800 text-zinc-400 hover:text-white rounded-xl">
+                <button
+                  onClick={() => showFeatureComingSoon(t('seller.orders.viewDetails'))}
+                  className="p-2 bg-zinc-800 text-zinc-400 hover:text-white rounded-xl"
+                >
                   <MoreHorizontal size={16} />
                 </button>
               </div>
@@ -217,6 +237,12 @@ export default function OrdersPage() {
           ))
         )}
       </div>
+
+      <ComingSoonModal
+        isOpen={showComingSoon}
+        onClose={() => setShowComingSoon(false)}
+        featureName={comingSoonFeature}
+      />
     </div>
   );
 }

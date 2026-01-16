@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter, usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   UserCircle,
@@ -23,6 +23,7 @@ import {
   FileSpreadsheet,
   Rocket,
 } from 'lucide-react';
+import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
 
 /**
  * Shipping rule interface
@@ -56,7 +57,12 @@ interface SettingsConfig {
   };
 }
 
-type Language = 'english' | 'darija' | 'arabic' | 'french';
+const LANGUAGES = [
+  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+  { code: 'ar-MA', name: 'الدارجة', flag: '🇲🇦' },
+];
 
 /**
  * Seller Settings Page
@@ -66,15 +72,17 @@ type Language = 'english' | 'darija' | 'arabic' | 'french';
 export default function SettingsPage() {
   const params = useParams();
   const locale = params.locale as string;
+  const router = useRouter();
+  const pathname = usePathname();
   const t = useTranslations();
   const sellerName = 'Ayyuur Home';
-
-  const [language, setLanguage] = useState<Language>('english');
   const [instagramHandle, setInstagramHandle] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
   const [isSyncingMaps, setIsSyncingMaps] = useState(false);
   const [newCity, setNewCity] = useState('');
   const [newRate, setNewRate] = useState('');
+  const [showComingSoon, setShowComingSoon] = useState(false);
+  const [comingSoonFeature, setComingSoonFeature] = useState('');
 
   const [config, setConfig] = useState<SettingsConfig>({
     whatsapp: {
@@ -195,8 +203,19 @@ export default function SettingsPage() {
   };
 
   const handleSave = () => {
-    // TODO: Save to API
-    console.log('Saving settings:', config);
+    setComingSoonFeature(t('seller.settings.saveChanges'));
+    setShowComingSoon(true);
+  };
+
+  const showFeatureComingSoon = (feature: string) => {
+    setComingSoonFeature(feature);
+    setShowComingSoon(true);
+  };
+
+  const switchLanguage = (newLocale: string) => {
+    // Replace the current locale in the pathname with the new one
+    const newPathname = pathname.replace(`/${locale}`, `/${newLocale}`);
+    router.push(newPathname);
   };
 
   const copyProfileLink = () => {
@@ -272,7 +291,10 @@ export default function SettingsPage() {
             <span className="text-[10px] text-zinc-400 px-2">
               {config.whatsapp.enabled ? t('seller.settings.connected') : t('seller.settings.notConnected')}
             </span>
-            <button className="text-[10px] font-bold text-[#25D366] hover:underline px-2">
+            <button
+              onClick={() => showFeatureComingSoon(t('seller.settings.manageKeys'))}
+              className="text-[10px] font-bold text-[#25D366] hover:underline px-2"
+            >
               {t('seller.settings.manageKeys')}
             </button>
           </div>
@@ -511,17 +533,18 @@ export default function SettingsPage() {
           <h3 className="font-bold text-sm text-white">{t('seller.settings.language')}</h3>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          {(['English', 'French', 'Arabic', 'Darija'] as const).map((lang) => (
+          {LANGUAGES.map((lang) => (
             <button
-              key={lang}
-              onClick={() => setLanguage(lang.toLowerCase() as Language)}
-              className={`px-3 py-2 rounded-lg text-xs font-bold border transition-all ${
-                language === lang.toLowerCase()
+              key={lang.code}
+              onClick={() => switchLanguage(lang.code)}
+              className={`px-3 py-2 rounded-lg text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
+                locale === lang.code
                   ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50'
                   : 'bg-black border-zinc-800 text-zinc-500 hover:border-zinc-700'
               }`}
             >
-              {lang}
+              <span>{lang.flag}</span>
+              <span>{lang.name}</span>
             </button>
           ))}
         </div>
@@ -550,21 +573,36 @@ export default function SettingsPage() {
 
       {/* System Links */}
       <div className="space-y-2 pt-4">
-        <button className="w-full flex items-center gap-3 p-3 text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-xl transition-colors">
+        <button
+          onClick={() => showFeatureComingSoon(t('seller.settings.termsOfService'))}
+          className="w-full flex items-center gap-3 p-3 text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-xl transition-colors"
+        >
           <FileText size={18} />
           <span className="text-sm font-medium">{t('seller.settings.termsOfService')}</span>
         </button>
-        <button className="w-full flex items-center gap-3 p-3 text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-xl transition-colors">
+        <button
+          onClick={() => showFeatureComingSoon(t('seller.settings.privacyPolicy'))}
+          className="w-full flex items-center gap-3 p-3 text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-xl transition-colors"
+        >
           <Shield size={18} />
           <span className="text-sm font-medium">{t('seller.settings.privacyPolicy')}</span>
         </button>
-        <button className="w-full flex items-center gap-3 p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-colors">
+        <button
+          onClick={() => showFeatureComingSoon(t('auth.logout'))}
+          className="w-full flex items-center gap-3 p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-colors"
+        >
           <LogOut size={18} />
           <span className="text-sm font-bold">{t('auth.logout')}</span>
         </button>
       </div>
 
       <div className="text-center text-[10px] text-zinc-600 pb-4">VibeCart Seller Pro v1.2.4</div>
+
+      <ComingSoonModal
+        isOpen={showComingSoon}
+        onClose={() => setShowComingSoon(false)}
+        featureName={comingSoonFeature}
+      />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { Zap, User, Upload, Plus, X } from 'lucide-react';
+import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
 
 /**
  * Review interface
@@ -67,6 +68,7 @@ export default function VibePage() {
   const t = useTranslations();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSelectingStory, setIsSelectingStory] = useState(false);
+  const [showComingSoon, setShowComingSoon] = useState(false);
 
   const [config, setConfig] = useState<VibeConfig>({
     spotlight: {
@@ -117,8 +119,7 @@ export default function VibePage() {
   };
 
   const handleSave = () => {
-    // TODO: Save to API
-    console.log('Saving vibe config:', config);
+    setShowComingSoon(true);
   };
 
   return (
@@ -356,6 +357,12 @@ export default function VibePage() {
           ))}
         </div>
       </div>
+
+      <ComingSoonModal
+        isOpen={showComingSoon}
+        onClose={() => setShowComingSoon(false)}
+        featureName={t('seller.vibe.title')}
+      />
     </div>
   );
 }

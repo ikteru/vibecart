@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Truck, Package, Printer, Clock } from 'lucide-react';
+import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
 
 interface ComingSoonBannerProps {
   className?: string;
@@ -15,6 +17,8 @@ interface ComingSoonBannerProps {
  */
 export function ComingSoonBanner({ className = '' }: ComingSoonBannerProps) {
   const t = useTranslations('shipping');
+  const tCommon = useTranslations('common');
+  const [showComingSoon, setShowComingSoon] = useState(false);
 
   const features = [
     {
@@ -106,16 +110,21 @@ export function ComingSoonBanner({ className = '' }: ComingSoonBannerProps) {
             type="email"
             placeholder={t('notifyPlaceholder')}
             className="flex-1 w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50"
-            disabled
           />
           <button
-            disabled
-            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-violet-500/50 text-white text-sm font-medium cursor-not-allowed opacity-60"
+            onClick={() => setShowComingSoon(true)}
+            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-violet-500 hover:bg-violet-600 text-white text-sm font-medium transition-colors"
           >
             {t('notifyButton')}
           </button>
         </div>
       </div>
+
+      <ComingSoonModal
+        isOpen={showComingSoon}
+        onClose={() => setShowComingSoon(false)}
+        featureName={t('title')}
+      />
 
       {/* Background Decoration */}
       <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
