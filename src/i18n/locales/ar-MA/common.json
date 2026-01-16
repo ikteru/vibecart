@@ -65,12 +65,14 @@
     "inStock": "كاين",
     "addToCart": "زيد للسلة",
     "buyNow": "شري دابا",
+    "slideToBuy": "سحب باش تشري",
     "variants": "الخيارات",
     "description": "الوصف",
     "price": "الثمن",
     "discountPrice": "الثمن الجديد",
     "stock": "المخزون",
     "category": "الصنف",
+    "title": "العنوان",
     "categories": {
       "clothing": "الملابس",
       "shoes": "الصباط",
@@ -104,7 +106,34 @@
     "slideToOrder": "سحب للطلب",
     "orderConfirmed": "الطلب تصيفط!",
     "confirmationMessage": "حل الواتساب باش تأكد الطلب مع البياع",
-    "openWhatsApp": "حل الواتساب"
+    "openWhatsApp": "حل الواتساب",
+    "secureOrder": "طلب آمن",
+    "verifyOrder": "تأكد الطلب",
+    "cashOnDelivery": "الدفع عند التوصيل",
+    "checkWhatsApp": "شوف الواتساب ديالك للتأكيد",
+    "selectOption": "اختار خيار",
+    "yourNamePlaceholder": "سميتك",
+    "whatsapp": "واتساب",
+    "phonePlaceholder": "06...",
+    "deliveryLocation": "بلاصة التوصيل",
+    "useSavedLocation": "استعمل البلاصة المحفوظة",
+    "autofill": "ملء تلقائي",
+    "tapToEditPin": "كليك باش تبدل البلاصة",
+    "preciseDeliverySpot": "بلاصة التوصيل بالضبط",
+    "cityFirst": "المدينة أولا",
+    "streetAddressPlaceholder": "العنوان، البناية، الطابق",
+    "shippingTo": "لـ {city}",
+    "sent": "تصيفط!",
+    "confirmationSent": "التأكيد تصيفط",
+    "verificationSentTo": "صيفطنا رسالة التأكيد لـ",
+    "oneLastStep": "باقي خطوة وحدة",
+    "whatsappConfirmText": "حل الواتساب وكليك على \"تأكيد\" باش تأكد الرقم ديالك وتكمل الشراء.",
+    "closeWindow": "سد الشباك",
+    "validation": {
+      "pinLocation": "حدد البلاصة ديالك GPS",
+      "selectCity": "اختار المدينة",
+      "fillDetails": "عمر كاع المعلومات باش تكمل"
+    }
   },
   "map": {
     "title": "حدد البلاصة ديالك",
@@ -119,6 +148,24 @@
     "floor": "الطابق",
     "buildingName": "اسم البناية",
     "deliveryInstructions": "تعليمات التوصيل",
+    "deliveryLocation": "بلاصة التوصيل",
+    "refiningLocation": "كنحسنو البلاصة...",
+    "pinnedLocation": "البلاصة المحددة",
+    "updatingAddress": "كنحدثو العنوان...",
+    "waitASec": "تسنا شوية...",
+    "moreDetails": "تفاصيل أكثر",
+    "buildingResidence": "البناية/السكن",
+    "nameOrNumber": "الاسم أو الرقم",
+    "floorPlaceholder": "0",
+    "apartmentExample": "مثلا 4B",
+    "villaHouseNumber": "رقم الفيلا / الدار",
+    "houseNumberExample": "مثلا 12",
+    "companyName": "اسم الشركة",
+    "companyNameExample": "مثلا VibeCart HQ",
+    "instructions": "تعليمات للسائق (اختياري)",
+    "instructionsExample": "مثلا: عيط منين توصل، السونيط خاسر...",
+    "saveAddress": "حفظ العنوان",
+    "rememberForNextTime": "تفكر للمرة الجاية",
     "residenceType": {
       "title": "نوع السكن",
       "apartment": "شقة",
@@ -131,10 +178,17 @@
     "dashboard": {
       "title": "لوحة التحكم",
       "welcome": "مرحبا، {name}",
+      "hello": "أهلا، {name}",
+      "subtitle": "هاشنو كاين اليوم.",
       "todayOrders": "طلبات اليوم",
       "totalRevenue": "المداخيل",
       "activeProducts": "المنتجات النشطة",
-      "pendingOrders": "الطلبات المعلقة"
+      "pendingOrders": "الطلبات المعلقة",
+      "revenueChange": "+{percent}% مقارنة بالسيمانة اللي فاتت",
+      "needsAttention": "خاصو انتباه",
+      "quickActions": "الإجراءات السريعة",
+      "newDrop": "دروب جديد",
+      "recentActivity": "النشاط الأخير"
     },
     "orders": {
       "title": "الطلبات",
@@ -148,7 +202,12 @@
       "confirmOrder": "أكد الطلب",
       "markShipped": "صيفط",
       "markDelivered": "وصل",
-      "chat": "تواصل مع الزبون"
+      "chat": "تواصل مع الزبون",
+      "awaitingConfirm": "كيتسنا التأكيد",
+      "pendingStatusExplainer": "الطلب المعلق معناه الزبون استلم الرسالة ولكن مازال ماكليكاش على \"تأكيد\".",
+      "noOrdersInFilter": "ما لقينا حتى طلب فـ \"{filter}\"",
+      "viewChat": "شوف المحادثة",
+      "new": "جديد"
     },
     "inventory": {
       "title": "المخزون",
@@ -163,16 +222,33 @@
       "uploadVideo": "طلع ڤيديو",
       "importFromInstagram": "جيب من إنستا",
       "saveProduct": "حفظ المنتوج",
-      "cancel": "إلغاء"
+      "cancel": "إلغاء",
+      "outOfStock": "سالي",
+      "setupDrop": "سيتوب دروب",
+      "selectVideo": "اختار ڤيديو",
+      "newProduct": "منتوج جديد",
+      "enterHandle": "دخل الهاندل ديالك باش نجيبو الريلز الأخيرة.",
+      "usernamePlaceholder": "@username",
+      "fetchMedia": "جيب الميديا",
+      "selectVideoHint": "اختار ڤيديو باش تحولو لمنتوج.",
+      "magicWrite": "كتابة سحرية",
+      "descriptionPlaceholder": "وصف المنتوج...",
+      "keyFeatures": "المميزات للذكاء الاصطناعي (مثلا: عضوي، صنع يدوي)",
+      "publishDrop": "نشر الدروب"
     },
     "vibe": {
       "title": "ڤايب الحانوت",
+      "saveChanges": "حفظ التغييرات",
       "spotlight": {
         "title": "بانير العرض",
         "description": "بانير الترويج فالحانوت",
         "bannerTitle": "عنوان البانير",
         "bannerSubtitle": "عنوان فرعي",
-        "bannerColor": "لون البانير"
+        "bannerColor": "لون البانير",
+        "offer": "عرض مميز",
+        "featuredCard": "كارط مميزة فالبروفايل",
+        "titlePlaceholder": "العنوان (مثلا: تخفيضات الشتاء)",
+        "subtitlePlaceholder": "العنوان الفرعي (مثلا: حتى 50% تخفيض)"
       },
       "makerBio": {
         "title": "قصة الصانع",
@@ -180,28 +256,46 @@
         "name": "سميتك",
         "role": "الدور ديالك",
         "bio": "القصة ديالك",
-        "image": "الصورة ديالك"
+        "image": "الصورة ديالك",
+        "personalize": "شخصن الحانوت ديالك",
+        "rolePlaceholder": "الدور (مثلا: حرفي)",
+        "bioPlaceholder": "قصة قصيرة..."
       },
       "reviews": {
         "title": "آراء الزبائن",
         "description": "ستوريات إنستا من الزبائن",
         "addReview": "زيد رأي",
-        "noReviews": "مازال ما كاين آراء"
+        "noReviews": "مازال ما كاين آراء",
+        "pinned": "آراء مثبتة",
+        "showcase": "بين حب الزبائن من الستوريز",
+        "addNote": "زيد ملاحظة..."
       }
     },
     "settings": {
       "title": "الإعدادات",
+      "saveChanges": "حفظ التغييرات",
+      "accountDetails": "تفاصيل الحساب",
+      "connections": "الاتصالات",
+      "connected": "متصل",
+      "notConnected": "غير متصل",
+      "manageKeys": "إدارة المفاتيح",
+      "language": "اللغة",
+      "publicProfileLink": "رابط البروفايل العام",
+      "termsOfService": "شروط الاستخدام",
+      "privacyPolicy": "سياسة الخصوصية",
       "whatsapp": {
         "title": "واتساب بزنس",
         "businessNumber": "رقم البزنس",
         "businessName": "اسم البزنس",
-        "welcomeMessage": "رسالة الترحيب"
+        "welcomeMessage": "رسالة الترحيب",
+        "cloudApi": "ربط Cloud API"
       },
       "instagram": {
         "title": "إنستاغرام",
         "connect": "ربط إنستا",
         "connected": "مربوط بـ @{handle}",
-        "disconnect": "فصل"
+        "disconnect": "فصل",
+        "syncProducts": "مزامنة المنتجات والآراء"
       },
       "shipping": {
         "title": "قواعد التوصيل",
@@ -210,20 +304,37 @@
         "addRule": "زيد قاعدة",
         "city": "المدينة",
         "rate": "الثمن",
-        "importCsv": "جيب من CSV"
+        "importCsv": "جيب من CSV",
+        "defaultRateEverywhere": "الثمن الافتراضي (أي مكان آخر)",
+        "cityPlaceholder": "المدينة (مثلا: الرباط)"
       },
       "googleMaps": {
         "title": "خرائط گوگل",
         "connect": "ربط الخرائط",
         "placeId": "معرف المكان",
-        "syncNow": "مزامنة دابا"
+        "syncNow": "مزامنة دابا",
+        "description": "بين الموقع وكارط التقييم",
+        "syncMetadata": "مزامنة البيانات"
       }
     },
     "profile": {
       "title": "الحانوت",
       "shopName": "اسم الحانوت",
       "shopHandle": "معرف الحانوت",
-      "shopUrl": "رابط الحانوت ديالك"
+      "shopUrl": "رابط الحانوت ديالك",
+      "followers": "المتابعين",
+      "rating": "التقييم",
+      "reviews": "الآراء",
+      "findUs": "لقانا",
+      "limited": "محدود",
+      "shopNow": "تسوق دابا",
+      "categories": {
+        "all": "الكل",
+        "newDrops": "دروبات جديدة",
+        "bestSellers": "الأكثر مبيعا",
+        "vintage": "ڤينتاج",
+        "sale": "تخفيضات"
+      }
     }
   },
   "chat": {
@@ -254,7 +365,9 @@
     "copy": "نسخ",
     "copied": "تنسخ!",
     "enabled": "فعال",
-    "disabled": "معطل"
+    "disabled": "معطل",
+    "or": "ولا",
+    "saveChanges": "حفظ التغييرات"
   },
   "errors": {
     "required": "هاد الخانة ضرورية",

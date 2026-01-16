@@ -65,12 +65,14 @@
     "inStock": "En stock",
     "addToCart": "Ajouter au panier",
     "buyNow": "Acheter maintenant",
+    "slideToBuy": "Glisser pour acheter",
     "variants": "Options",
     "description": "Description",
     "price": "Prix",
     "discountPrice": "Prix soldé",
     "stock": "Stock",
     "category": "Catégorie",
+    "title": "Titre",
     "categories": {
       "clothing": "Vêtements",
       "shoes": "Chaussures",
@@ -104,7 +106,34 @@
     "slideToOrder": "Glisser pour commander",
     "orderConfirmed": "Commande envoyée !",
     "confirmationMessage": "Ouvrez WhatsApp pour confirmer votre commande avec le vendeur",
-    "openWhatsApp": "Ouvrir WhatsApp"
+    "openWhatsApp": "Ouvrir WhatsApp",
+    "secureOrder": "Commande sécurisée",
+    "verifyOrder": "Vérifier la commande",
+    "cashOnDelivery": "Paiement à la livraison",
+    "checkWhatsApp": "Vérifiez WhatsApp pour la confirmation",
+    "selectOption": "Sélectionner une option",
+    "yourNamePlaceholder": "Votre nom",
+    "whatsapp": "WhatsApp",
+    "phonePlaceholder": "06...",
+    "deliveryLocation": "Lieu de livraison",
+    "useSavedLocation": "Utiliser le lieu enregistré",
+    "autofill": "Remplissage auto",
+    "tapToEditPin": "Appuyez pour modifier l'épingle",
+    "preciseDeliverySpot": "Point de livraison précis",
+    "cityFirst": "Ville d'abord",
+    "streetAddressPlaceholder": "Adresse, Bâtiment, Étage",
+    "shippingTo": "vers {city}",
+    "sent": "Envoyé !",
+    "confirmationSent": "Confirmation envoyée",
+    "verificationSentTo": "Nous avons envoyé un message de vérification à",
+    "oneLastStep": "Une dernière étape",
+    "whatsappConfirmText": "Ouvrez WhatsApp et cliquez sur \"Confirmer\" pour vérifier votre numéro et finaliser l'achat.",
+    "closeWindow": "Fermer la fenêtre",
+    "validation": {
+      "pinLocation": "Veuillez épingler votre position GPS",
+      "selectCity": "Veuillez sélectionner une ville",
+      "fillDetails": "Remplissez tous les détails pour continuer"
+    }
   },
   "map": {
     "title": "Épinglez votre emplacement",
@@ -119,6 +148,24 @@
     "floor": "Étage",
     "buildingName": "Nom du bâtiment",
     "deliveryInstructions": "Instructions de livraison",
+    "deliveryLocation": "Lieu de livraison",
+    "refiningLocation": "Affinage de la position...",
+    "pinnedLocation": "Position épinglée",
+    "updatingAddress": "Mise à jour de l'adresse...",
+    "waitASec": "Un instant...",
+    "moreDetails": "Plus de détails",
+    "buildingResidence": "Bâtiment/Résidence",
+    "nameOrNumber": "Nom ou N°",
+    "floorPlaceholder": "0",
+    "apartmentExample": "ex. 4B",
+    "villaHouseNumber": "N° de villa / maison",
+    "houseNumberExample": "ex. 12",
+    "companyName": "Nom de l'entreprise",
+    "companyNameExample": "ex. VibeCart HQ",
+    "instructions": "Instructions pour le livreur (Optionnel)",
+    "instructionsExample": "ex. Appelez à l'arrivée, sonnette cassée...",
+    "saveAddress": "Enregistrer l'adresse",
+    "rememberForNextTime": "Mémoriser pour la prochaine fois",
     "residenceType": {
       "title": "Type de résidence",
       "apartment": "Appartement",
@@ -131,10 +178,17 @@
     "dashboard": {
       "title": "Tableau de bord",
       "welcome": "Bienvenue, {name}",
+      "hello": "Bonjour, {name}",
+      "subtitle": "Voici ce qui se passe aujourd'hui.",
       "todayOrders": "Commandes du jour",
       "totalRevenue": "Revenu total",
       "activeProducts": "Produits actifs",
-      "pendingOrders": "Commandes en attente"
+      "pendingOrders": "Commandes en attente",
+      "revenueChange": "+{percent}% vs semaine dernière",
+      "needsAttention": "Nécessite attention",
+      "quickActions": "Actions rapides",
+      "newDrop": "Nouveau drop",
+      "recentActivity": "Activité récente"
     },
     "orders": {
       "title": "Commandes",
@@ -148,7 +202,12 @@
       "confirmOrder": "Confirmer la commande",
       "markShipped": "Marquer comme expédiée",
       "markDelivered": "Marquer comme livrée",
-      "chat": "Discuter avec le client"
+      "chat": "Discuter avec le client",
+      "awaitingConfirm": "En attente de confirmation",
+      "pendingStatusExplainer": "Le statut en attente signifie que le client a reçu le message mais n'a pas encore cliqué sur \"Confirmer\".",
+      "noOrdersInFilter": "Aucune commande trouvée dans \"{filter}\"",
+      "viewChat": "Voir la conversation",
+      "new": "Nouveau"
     },
     "inventory": {
       "title": "Inventaire",
@@ -163,16 +222,33 @@
       "uploadVideo": "Télécharger une vidéo",
       "importFromInstagram": "Importer depuis Instagram",
       "saveProduct": "Enregistrer le produit",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "outOfStock": "ÉPUISÉ",
+      "setupDrop": "Configurer le drop",
+      "selectVideo": "Sélectionner une vidéo",
+      "newProduct": "Nouveau produit",
+      "enterHandle": "Entrez votre identifiant pour récupérer vos derniers Reels.",
+      "usernamePlaceholder": "@username",
+      "fetchMedia": "Récupérer les médias",
+      "selectVideoHint": "Sélectionnez une vidéo pour la transformer en produit.",
+      "magicWrite": "Écriture magique",
+      "descriptionPlaceholder": "Description du produit...",
+      "keyFeatures": "Caractéristiques pour l'IA (ex. Bio, Fait main)",
+      "publishDrop": "Publier le drop"
     },
     "vibe": {
       "title": "Ambiance de la boutique",
+      "saveChanges": "Enregistrer",
       "spotlight": {
         "title": "Bannière promotionnelle",
         "description": "Bannière affichée dans votre boutique",
         "bannerTitle": "Titre de la bannière",
         "bannerSubtitle": "Sous-titre",
-        "bannerColor": "Couleur de la bannière"
+        "bannerColor": "Couleur de la bannière",
+        "offer": "Offre vedette",
+        "featuredCard": "Carte vedette sur le profil",
+        "titlePlaceholder": "Titre (ex. Soldes d'hiver)",
+        "subtitlePlaceholder": "Sous-titre (ex. Jusqu'à 50% de réduction)"
       },
       "makerBio": {
         "title": "Biographie de l'artisan",
@@ -180,28 +256,46 @@
         "name": "Votre nom",
         "role": "Votre rôle",
         "bio": "Votre histoire",
-        "image": "Votre photo"
+        "image": "Votre photo",
+        "personalize": "Personnalisez votre boutique",
+        "rolePlaceholder": "Rôle (ex. Artisan)",
+        "bioPlaceholder": "Courte biographie..."
       },
       "reviews": {
         "title": "Avis clients",
         "description": "Stories Instagram de clients satisfaits",
         "addReview": "Ajouter un avis",
-        "noReviews": "Pas encore d'avis"
+        "noReviews": "Pas encore d'avis",
+        "pinned": "Avis épinglés",
+        "showcase": "Montrez l'amour des clients via les Stories",
+        "addNote": "Ajouter une note..."
       }
     },
     "settings": {
       "title": "Paramètres",
+      "saveChanges": "Enregistrer",
+      "accountDetails": "Détails du compte",
+      "connections": "Connexions",
+      "connected": "Connecté",
+      "notConnected": "Non connecté",
+      "manageKeys": "Gérer les clés",
+      "language": "Langue",
+      "publicProfileLink": "Lien du profil public",
+      "termsOfService": "Conditions d'utilisation",
+      "privacyPolicy": "Politique de confidentialité",
       "whatsapp": {
         "title": "WhatsApp Business",
         "businessNumber": "Numéro professionnel",
         "businessName": "Nom de l'entreprise",
-        "welcomeMessage": "Message d'accueil"
+        "welcomeMessage": "Message d'accueil",
+        "cloudApi": "Intégration Cloud API"
       },
       "instagram": {
         "title": "Instagram",
         "connect": "Connecter Instagram",
         "connected": "Connecté en tant que @{handle}",
-        "disconnect": "Déconnecter"
+        "disconnect": "Déconnecter",
+        "syncProducts": "Synchroniser produits et avis"
       },
       "shipping": {
         "title": "Règles de livraison",
@@ -210,20 +304,37 @@
         "addRule": "Ajouter une règle",
         "city": "Ville",
         "rate": "Tarif",
-        "importCsv": "Importer depuis CSV"
+        "importCsv": "Importer depuis CSV",
+        "defaultRateEverywhere": "Tarif par défaut (partout ailleurs)",
+        "cityPlaceholder": "Ville (ex. Rabat)"
       },
       "googleMaps": {
         "title": "Google Maps",
         "connect": "Connecter Google Maps",
         "placeId": "ID du lieu",
-        "syncNow": "Synchroniser"
+        "syncNow": "Synchroniser",
+        "description": "Afficher la localisation et la carte d'évaluation",
+        "syncMetadata": "Synchroniser les métadonnées"
       }
     },
     "profile": {
       "title": "Profil de la boutique",
       "shopName": "Nom de la boutique",
       "shopHandle": "Identifiant de la boutique",
-      "shopUrl": "URL de votre boutique"
+      "shopUrl": "URL de votre boutique",
+      "followers": "Abonnés",
+      "rating": "Note",
+      "reviews": "Avis",
+      "findUs": "Nous trouver",
+      "limited": "Limité",
+      "shopNow": "Acheter maintenant",
+      "categories": {
+        "all": "Tout",
+        "newDrops": "Nouveautés",
+        "bestSellers": "Meilleures ventes",
+        "vintage": "Vintage",
+        "sale": "Soldes"
+      }
     }
   },
   "chat": {
@@ -254,7 +365,9 @@
     "copy": "Copier",
     "copied": "Copié !",
     "enabled": "Activé",
-    "disabled": "Désactivé"
+    "disabled": "Désactivé",
+    "or": "Ou",
+    "saveChanges": "Enregistrer"
   },
   "errors": {
     "required": "Ce champ est requis",

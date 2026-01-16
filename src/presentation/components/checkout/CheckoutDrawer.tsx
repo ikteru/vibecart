@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   X,
   ShoppingBag,
@@ -57,6 +58,7 @@ export function CheckoutDrawer({
   onClose,
   shopConfig,
 }: CheckoutDrawerProps) {
+  const t = useTranslations();
   const [step, setStep] = useState<'form' | 'success'>('form');
 
   // Map Picker State
@@ -282,12 +284,12 @@ export function CheckoutDrawer({
           <div className="flex justify-between items-start mb-6">
             <div>
               <h2 className="text-2xl font-bold text-white tracking-tight">
-                {step === 'form' ? 'Secure Order' : 'Verify Order'}
+                {step === 'form' ? t('checkout.secureOrder') : t('checkout.verifyOrder')}
               </h2>
               <p className="text-zinc-500 text-sm font-medium">
                 {step === 'form'
-                  ? 'Cash on Delivery'
-                  : 'Check your WhatsApp for confirmation'}
+                  ? t('checkout.cashOnDelivery')
+                  : t('checkout.checkWhatsApp')}
               </p>
             </div>
             <button
@@ -311,7 +313,7 @@ export function CheckoutDrawer({
                   </h3>
                   <div className="flex items-center justify-between mt-1">
                     <p className="text-emerald-400 font-bold">
-                      {product.price.amount} MAD
+                      {product.price.amount} {t('common.currency')}
                     </p>
                     <div className="flex items-center gap-2">
                       <button
@@ -351,7 +353,7 @@ export function CheckoutDrawer({
                 {product.variants && product.variants.length > 0 && (
                   <div className="space-y-2">
                     <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1 flex items-center gap-1">
-                      <Ruler size={10} /> Select Option
+                      <Ruler size={10} /> {t('checkout.selectOption')}
                     </label>
                     <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
                       {product.variants.map((v) => (
@@ -377,12 +379,12 @@ export function CheckoutDrawer({
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
                     <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
-                      Full Name
+                      {t('checkout.fullName')}
                     </label>
                     <input
                       required
                       type="text"
-                      placeholder="Your Name"
+                      placeholder={t('checkout.yourNamePlaceholder')}
                       className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl px-4 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-colors"
                       value={order.fullName}
                       onChange={(e) =>
@@ -392,12 +394,12 @@ export function CheckoutDrawer({
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
-                      WhatsApp
+                      {t('checkout.whatsapp')}
                     </label>
                     <input
                       required
                       type="tel"
-                      placeholder="06..."
+                      placeholder={t('checkout.phonePlaceholder')}
                       className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl px-4 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-colors"
                       value={order.phone}
                       onChange={(e) =>
@@ -411,7 +413,7 @@ export function CheckoutDrawer({
                 <div className="space-y-3 pt-2">
                   <div className="flex justify-between items-center px-1">
                     <label className="text-[10px] text-zinc-500 font-bold uppercase">
-                      Delivery Location
+                      {t('checkout.deliveryLocation')}
                     </label>
                   </div>
 
@@ -427,7 +429,7 @@ export function CheckoutDrawer({
                         </div>
                         <div className="flex flex-col items-start truncate">
                           <span className="text-xs font-bold text-white">
-                            Use Saved Location
+                            {t('checkout.useSavedLocation')}
                           </span>
                           <span className="text-[10px] text-zinc-500 truncate max-w-[200px]">
                             {savedAddress.addressString}
@@ -435,7 +437,7 @@ export function CheckoutDrawer({
                         </div>
                       </div>
                       <div className="text-[10px] font-bold text-purple-400 group-hover:underline">
-                        Autofill
+                        {t('checkout.autofill')}
                       </div>
                     </button>
                   )}
@@ -473,13 +475,13 @@ export function CheckoutDrawer({
                           className={`block text-xs font-bold ${order.locationUrl ? 'text-white' : 'text-zinc-300'}`}
                         >
                           {order.locationUrl
-                            ? 'Location Pinned'
-                            : 'Pin Location on Map'}
+                            ? t('checkout.locationPinned')
+                            : t('checkout.pinLocation')}
                         </span>
                         <span className="block text-[10px] text-zinc-500">
                           {order.locationUrl
-                            ? 'Tap to edit pin'
-                            : 'Precise delivery spot'}
+                            ? t('checkout.tapToEditPin')
+                            : t('checkout.preciseDeliverySpot')}
                         </span>
                       </div>
                     </div>
@@ -497,7 +499,7 @@ export function CheckoutDrawer({
                         <input
                           ref={cityInputRef}
                           type="text"
-                          placeholder="City"
+                          placeholder={t('checkout.city')}
                           className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl pl-4 pr-8 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-all cursor-pointer"
                           value={citySearch}
                           onChange={(e) => {
@@ -543,7 +545,7 @@ export function CheckoutDrawer({
                           ref={neighborhoodInputRef}
                           type="text"
                           disabled={!order.city}
-                          placeholder={!order.city ? 'City First' : 'Neighborhood'}
+                          placeholder={!order.city ? t('checkout.cityFirst') : t('checkout.neighborhood')}
                           className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl pl-4 pr-8 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                           value={neighborhoodSearch}
                           onChange={(e) => {
@@ -589,7 +591,7 @@ export function CheckoutDrawer({
                     <input
                       required
                       type="text"
-                      placeholder="Street Address, Building, Floor"
+                      placeholder={t('checkout.streetAddressPlaceholder')}
                       className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl px-4 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-all"
                       value={order.address}
                       onChange={(e) =>
@@ -603,13 +605,13 @@ export function CheckoutDrawer({
               {/* Order Summary */}
               <div className="mt-8 mb-4 border-t border-dashed border-zinc-800 pt-4 space-y-2">
                 <div className="flex justify-between text-xs text-zinc-400">
-                  <span>Subtotal</span>
-                  <span>{product.price.amount * order.quantity} MAD</span>
+                  <span>{t('checkout.subtotal')}</span>
+                  <span>{product.price.amount * order.quantity} {t('common.currency')}</span>
                 </div>
                 <div className="flex justify-between text-xs text-zinc-400">
                   <span className="flex items-center gap-1">
-                    <Truck size={12} /> Shipping{' '}
-                    {order.city ? `to ${order.city}` : ''}
+                    <Truck size={12} /> {t('checkout.shipping')}{' '}
+                    {order.city ? t('checkout.shippingTo', { city: order.city }) : ''}
                   </span>
                   <span
                     className={
@@ -619,21 +621,21 @@ export function CheckoutDrawer({
                     }
                   >
                     {order.shippingCost === 0
-                      ? 'FREE'
-                      : `${order.shippingCost} MAD`}
+                      ? t('checkout.freeShipping')
+                      : `${order.shippingCost} ${t('common.currency')}`}
                   </span>
                 </div>
                 <div className="flex justify-between text-lg font-bold text-white pt-2">
-                  <span>Total</span>
-                  <span>{total} MAD</span>
+                  <span>{t('checkout.total')}</span>
+                  <span>{total} {t('common.currency')}</span>
                 </div>
               </div>
 
               {/* Confirm Button */}
               <div className="mt-4">
                 <SwipeButton
-                  label="Slide to Order"
-                  successLabel="Sent!"
+                  label={t('checkout.slideToOrder')}
+                  successLabel={t('checkout.sent')}
                   disabled={!isFormValid()}
                   onConfirm={handleConfirmOrder}
                   icon={<Send size={20} className="text-white ml-0.5" />}
@@ -641,10 +643,10 @@ export function CheckoutDrawer({
                 {!isFormValid() && (
                   <p className="text-center text-xs text-zinc-600 mt-2">
                     {!order.locationUrl
-                      ? 'Please pin your GPS location'
+                      ? t('checkout.validation.pinLocation')
                       : !order.city
-                        ? 'Please select a city'
-                        : 'Fill all details to continue'}
+                        ? t('checkout.validation.selectCity')
+                        : t('checkout.validation.fillDetails')}
                   </p>
                 )}
               </div>
@@ -658,10 +660,10 @@ export function CheckoutDrawer({
 
               <div className="text-center space-y-2">
                 <h3 className="text-2xl font-bold text-white">
-                  Confirmation Sent
+                  {t('checkout.confirmationSent')}
                 </h3>
                 <p className="text-zinc-400 text-sm max-w-[280px] mx-auto">
-                  We&apos;ve sent a verification message to{' '}
+                  {t('checkout.verificationSentTo')}{' '}
                   <span className="text-white font-mono">{order.phone}</span>.
                 </p>
               </div>
@@ -671,13 +673,9 @@ export function CheckoutDrawer({
                   <CheckCircle size={16} className="text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-bold text-white">One last step</p>
+                  <p className="text-sm font-bold text-white">{t('checkout.oneLastStep')}</p>
                   <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
-                    Open WhatsApp and click{' '}
-                    <span className="text-emerald-400 font-bold">
-                      &quot;Confirm&quot;
-                    </span>{' '}
-                    to verify your number and complete the purchase.
+                    {t('checkout.whatsappConfirmText')}
                   </p>
                 </div>
               </div>
@@ -686,7 +684,7 @@ export function CheckoutDrawer({
                 onClick={onClose}
                 className="text-zinc-500 text-sm font-medium hover:text-white transition-colors"
               >
-                Close Window
+                {t('checkout.closeWindow')}
               </button>
             </div>
           )}

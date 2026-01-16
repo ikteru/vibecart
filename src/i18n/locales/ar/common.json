@@ -65,12 +65,14 @@
     "inStock": "متوفر",
     "addToCart": "أضف إلى السلة",
     "buyNow": "اشترِ الآن",
+    "slideToBuy": "اسحب للشراء",
     "variants": "الخيارات",
     "description": "الوصف",
     "price": "السعر",
     "discountPrice": "سعر التخفيض",
     "stock": "المخزون",
     "category": "الفئة",
+    "title": "العنوان",
     "categories": {
       "clothing": "الملابس",
       "shoes": "الأحذية",
@@ -104,7 +106,34 @@
     "slideToOrder": "اسحب للطلب",
     "orderConfirmed": "تم إرسال الطلب!",
     "confirmationMessage": "افتح واتساب لتأكيد طلبك مع البائع",
-    "openWhatsApp": "افتح واتساب"
+    "openWhatsApp": "افتح واتساب",
+    "secureOrder": "طلب آمن",
+    "verifyOrder": "تأكيد الطلب",
+    "cashOnDelivery": "الدفع عند التوصيل",
+    "checkWhatsApp": "تحقق من واتساب للتأكيد",
+    "selectOption": "اختر خياراً",
+    "yourNamePlaceholder": "اسمك",
+    "whatsapp": "واتساب",
+    "phonePlaceholder": "06...",
+    "deliveryLocation": "موقع التوصيل",
+    "useSavedLocation": "استخدم الموقع المحفوظ",
+    "autofill": "ملء تلقائي",
+    "tapToEditPin": "انقر لتعديل الموقع",
+    "preciseDeliverySpot": "موقع التوصيل الدقيق",
+    "cityFirst": "المدينة أولاً",
+    "streetAddressPlaceholder": "العنوان، المبنى، الطابق",
+    "shippingTo": "إلى {city}",
+    "sent": "تم الإرسال!",
+    "confirmationSent": "تم إرسال التأكيد",
+    "verificationSentTo": "أرسلنا رسالة تأكيد إلى",
+    "oneLastStep": "خطوة أخيرة",
+    "whatsappConfirmText": "افتح واتساب وانقر على \"تأكيد\" للتحقق من رقمك وإتمام الشراء.",
+    "closeWindow": "إغلاق النافذة",
+    "validation": {
+      "pinLocation": "يرجى تحديد موقعك GPS",
+      "selectCity": "يرجى اختيار المدينة",
+      "fillDetails": "أكمل جميع البيانات للمتابعة"
+    }
   },
   "map": {
     "title": "حدد موقعك",
@@ -119,6 +148,24 @@
     "floor": "الطابق",
     "buildingName": "اسم المبنى",
     "deliveryInstructions": "تعليمات التوصيل",
+    "deliveryLocation": "موقع التوصيل",
+    "refiningLocation": "جارٍ تحسين الموقع...",
+    "pinnedLocation": "الموقع المحدد",
+    "updatingAddress": "جارٍ تحديث العنوان...",
+    "waitASec": "انتظر لحظة...",
+    "moreDetails": "تفاصيل أكثر",
+    "buildingResidence": "المبنى/السكن",
+    "nameOrNumber": "الاسم أو الرقم",
+    "floorPlaceholder": "0",
+    "apartmentExample": "مثال: 4B",
+    "villaHouseNumber": "رقم الفيلا / المنزل",
+    "houseNumberExample": "مثال: 12",
+    "companyName": "اسم الشركة",
+    "companyNameExample": "مثال: VibeCart HQ",
+    "instructions": "تعليمات للسائق (اختياري)",
+    "instructionsExample": "مثال: اتصل عند الوصول، الجرس معطل...",
+    "saveAddress": "حفظ العنوان",
+    "rememberForNextTime": "تذكر للمرة القادمة",
     "residenceType": {
       "title": "نوع السكن",
       "apartment": "شقة",
@@ -131,10 +178,17 @@
     "dashboard": {
       "title": "لوحة التحكم",
       "welcome": "مرحباً، {name}",
+      "hello": "أهلاً، {name}",
+      "subtitle": "إليك ما يحدث اليوم.",
       "todayOrders": "طلبات اليوم",
       "totalRevenue": "إجمالي الإيرادات",
       "activeProducts": "المنتجات النشطة",
-      "pendingOrders": "الطلبات المعلقة"
+      "pendingOrders": "الطلبات المعلقة",
+      "revenueChange": "+{percent}% مقارنة بالأسبوع الماضي",
+      "needsAttention": "يحتاج اهتمام",
+      "quickActions": "إجراءات سريعة",
+      "newDrop": "إصدار جديد",
+      "recentActivity": "النشاط الأخير"
     },
     "orders": {
       "title": "الطلبات",
@@ -148,7 +202,12 @@
       "confirmOrder": "تأكيد الطلب",
       "markShipped": "تعيين كمشحون",
       "markDelivered": "تعيين كموصَّل",
-      "chat": "التواصل مع العميل"
+      "chat": "التواصل مع العميل",
+      "awaitingConfirm": "بانتظار التأكيد",
+      "pendingStatusExplainer": "الطلب المعلق يعني أن العميل استلم الرسالة لكنه لم ينقر على \"تأكيد\" بعد.",
+      "noOrdersInFilter": "لا توجد طلبات في \"{filter}\"",
+      "viewChat": "عرض المحادثة",
+      "new": "جديد"
     },
     "inventory": {
       "title": "المخزون",
@@ -163,16 +222,33 @@
       "uploadVideo": "رفع فيديو",
       "importFromInstagram": "استيراد من إنستغرام",
       "saveProduct": "حفظ المنتج",
-      "cancel": "إلغاء"
+      "cancel": "إلغاء",
+      "outOfStock": "نفد",
+      "setupDrop": "إعداد الإصدار",
+      "selectVideo": "اختر فيديو",
+      "newProduct": "منتج جديد",
+      "enterHandle": "أدخل معرفك لجلب أحدث الريلز.",
+      "usernamePlaceholder": "@username",
+      "fetchMedia": "جلب الوسائط",
+      "selectVideoHint": "اختر فيديو لتحويله إلى منتج.",
+      "magicWrite": "كتابة سحرية",
+      "descriptionPlaceholder": "وصف المنتج...",
+      "keyFeatures": "الميزات للذكاء الاصطناعي (مثل: عضوي، صناعة يدوية)",
+      "publishDrop": "نشر الإصدار"
     },
     "vibe": {
       "title": "أجواء المتجر",
+      "saveChanges": "حفظ التغييرات",
       "spotlight": {
         "title": "لافتة العرض",
         "description": "لافتة ترويجية في متجرك",
         "bannerTitle": "عنوان اللافتة",
         "bannerSubtitle": "العنوان الفرعي",
-        "bannerColor": "لون اللافتة"
+        "bannerColor": "لون اللافتة",
+        "offer": "عرض مميز",
+        "featuredCard": "بطاقة مميزة في الملف الشخصي",
+        "titlePlaceholder": "العنوان (مثال: تخفيضات الشتاء)",
+        "subtitlePlaceholder": "العنوان الفرعي (مثال: خصم حتى 50%)"
       },
       "makerBio": {
         "title": "قصة الصانع",
@@ -180,28 +256,46 @@
         "name": "اسمك",
         "role": "دورك",
         "bio": "قصتك",
-        "image": "صورتك"
+        "image": "صورتك",
+        "personalize": "خصص متجرك",
+        "rolePlaceholder": "الدور (مثال: حرفي)",
+        "bioPlaceholder": "قصة قصيرة..."
       },
       "reviews": {
         "title": "آراء العملاء",
         "description": "قصص إنستغرام من العملاء السعداء",
         "addReview": "إضافة رأي",
-        "noReviews": "لا توجد آراء بعد"
+        "noReviews": "لا توجد آراء بعد",
+        "pinned": "آراء مثبتة",
+        "showcase": "اعرض حب العملاء من القصص",
+        "addNote": "أضف ملاحظة..."
       }
     },
     "settings": {
       "title": "الإعدادات",
+      "saveChanges": "حفظ التغييرات",
+      "accountDetails": "تفاصيل الحساب",
+      "connections": "الاتصالات",
+      "connected": "متصل",
+      "notConnected": "غير متصل",
+      "manageKeys": "إدارة المفاتيح",
+      "language": "اللغة",
+      "publicProfileLink": "رابط الملف الشخصي العام",
+      "termsOfService": "شروط الخدمة",
+      "privacyPolicy": "سياسة الخصوصية",
       "whatsapp": {
         "title": "واتساب للأعمال",
         "businessNumber": "رقم الأعمال",
         "businessName": "اسم الأعمال",
-        "welcomeMessage": "رسالة الترحيب"
+        "welcomeMessage": "رسالة الترحيب",
+        "cloudApi": "تكامل Cloud API"
       },
       "instagram": {
         "title": "إنستغرام",
         "connect": "ربط إنستغرام",
         "connected": "متصل بـ @{handle}",
-        "disconnect": "فصل"
+        "disconnect": "فصل",
+        "syncProducts": "مزامنة المنتجات والآراء"
       },
       "shipping": {
         "title": "قواعد الشحن",
@@ -210,20 +304,37 @@
         "addRule": "إضافة قاعدة",
         "city": "المدينة",
         "rate": "السعر",
-        "importCsv": "استيراد من CSV"
+        "importCsv": "استيراد من CSV",
+        "defaultRateEverywhere": "السعر الافتراضي (أي مكان آخر)",
+        "cityPlaceholder": "المدينة (مثال: الرباط)"
       },
       "googleMaps": {
         "title": "خرائط جوجل",
         "connect": "ربط الخرائط",
         "placeId": "معرف المكان",
-        "syncNow": "مزامنة الآن"
+        "syncNow": "مزامنة الآن",
+        "description": "عرض الموقع وبطاقة التقييم",
+        "syncMetadata": "مزامنة البيانات"
       }
     },
     "profile": {
       "title": "ملف المتجر",
       "shopName": "اسم المتجر",
       "shopHandle": "معرف المتجر",
-      "shopUrl": "رابط متجرك"
+      "shopUrl": "رابط متجرك",
+      "followers": "المتابعون",
+      "rating": "التقييم",
+      "reviews": "الآراء",
+      "findUs": "جدنا",
+      "limited": "محدود",
+      "shopNow": "تسوق الآن",
+      "categories": {
+        "all": "الكل",
+        "newDrops": "إصدارات جديدة",
+        "bestSellers": "الأكثر مبيعاً",
+        "vintage": "كلاسيكي",
+        "sale": "تخفيضات"
+      }
     }
   },
   "chat": {
@@ -254,7 +365,9 @@
     "copy": "نسخ",
     "copied": "تم النسخ!",
     "enabled": "مفعل",
-    "disabled": "معطل"
+    "disabled": "معطل",
+    "or": "أو",
+    "saveChanges": "حفظ التغييرات"
   },
   "errors": {
     "required": "هذا الحقل مطلوب",

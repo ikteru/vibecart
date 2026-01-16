@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   Filter,
   Search,
@@ -34,7 +35,8 @@ interface Order {
  * Shows all orders with filtering by status.
  */
 export default function OrdersPage() {
-  const [filterStatus, setFilterStatus] = useState<string>('All');
+  const t = useTranslations();
+  const [filterStatus, setFilterStatus] = useState<string>('all');
 
   // TODO: Fetch from API
   const orders: Order[] = [
@@ -81,9 +83,17 @@ export default function OrdersPage() {
   ];
 
   const filteredOrders = orders.filter((order) => {
-    if (filterStatus === 'All') return true;
-    return order.status.toLowerCase() === filterStatus.toLowerCase();
+    if (filterStatus === 'all') return true;
+    return order.status === filterStatus;
   });
+
+  const filterOptions = [
+    { key: 'all', label: t('seller.orders.filterAll') },
+    { key: 'pending', label: t('seller.orders.filterPending') },
+    { key: 'confirmed', label: t('seller.orders.filterConfirmed') },
+    { key: 'shipped', label: t('seller.orders.filterShipped') },
+    { key: 'delivered', label: t('seller.orders.filterDelivered') },
+  ];
 
   const getStatusStyle = (status: OrderStatus) => {
     switch (status) {
@@ -103,13 +113,13 @@ export default function OrdersPage() {
   };
 
   const getStatusLabel = (status: OrderStatus) => {
-    return status === 'pending' ? 'Awaiting Confirm' : status;
+    return status === 'pending' ? t('seller.orders.awaitingConfirm') : status;
   };
 
   return (
     <div className="animate-fade-in pb-24">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-white">Orders</h2>
+        <h2 className="text-xl font-bold text-white">{t('seller.orders.title')}</h2>
         <div className="flex gap-2">
           <button className="p-2 bg-zinc-900 rounded-lg text-zinc-400 hover:text-white">
             <Filter size={16} />
@@ -121,17 +131,17 @@ export default function OrdersPage() {
       </div>
 
       <div className="flex gap-2 mb-4 overflow-x-auto no-scrollbar">
-        {['All', 'Pending', 'Confirmed', 'Shipped', 'Delivered'].map((status) => (
+        {filterOptions.map((option) => (
           <button
-            key={status}
-            onClick={() => setFilterStatus(status)}
+            key={option.key}
+            onClick={() => setFilterStatus(option.key)}
             className={`px-4 py-1.5 rounded-full border text-xs font-bold whitespace-nowrap transition-colors ${
-              filterStatus === status
+              filterStatus === option.key
                 ? 'bg-white text-black border-white'
                 : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600'
             }`}
           >
-            {status}
+            {option.label}
           </button>
         ))}
       </div>
@@ -139,15 +149,14 @@ export default function OrdersPage() {
       <div className="mb-4 bg-emerald-900/20 border border-emerald-500/20 p-3 rounded-xl flex gap-3">
         <Info size={18} className="text-emerald-500 shrink-0 mt-0.5" />
         <p className="text-xs text-emerald-200">
-          <span className="font-bold">Pending status</span> means the customer received the
-          order message but hasn&apos;t clicked &quot;Confirm&quot; yet.
+          {t('seller.orders.pendingStatusExplainer')}
         </p>
       </div>
 
       <div className="space-y-3">
         {filteredOrders.length === 0 ? (
           <div className="py-10 text-center">
-            <p className="text-zinc-500 text-sm">No orders found in &quot;{filterStatus}&quot;</p>
+            <p className="text-zinc-500 text-sm">{t('seller.orders.noOrdersInFilter', { filter: filterOptions.find(o => o.key === filterStatus)?.label || filterStatus })}</p>
           </div>
         ) : (
           filteredOrders.map((order) => (
@@ -177,7 +186,7 @@ export default function OrdersPage() {
               <div className="bg-black/30 p-3 rounded-xl mb-3">
                 <p className="text-xs text-zinc-300 line-clamp-2">{order.items}</p>
                 <div className="mt-2 flex justify-between items-center">
-                  <span className="text-xs text-zinc-500">Total</span>
+                  <span className="text-xs text-zinc-500">{t('checkout.total')}</span>
                   <span className="text-sm font-bold text-white">
                     {order.total} {order.currency}
                   </span>
@@ -186,10 +195,10 @@ export default function OrdersPage() {
 
               <div className="flex gap-2">
                 <button className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-black hover:text-white transition-colors py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
-                  <MessageCircle size={14} /> View Chat
+                  <MessageCircle size={14} /> {t('seller.orders.viewChat')}
                   {order.hasNewMessage && (
                     <span className="bg-red-500 text-white text-[9px] px-1.5 rounded-full">
-                      New
+                      {t('seller.orders.new')}
                     </span>
                   )}
                 </button>

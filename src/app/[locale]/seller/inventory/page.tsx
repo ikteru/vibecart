@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Plus, Edit2 } from 'lucide-react';
 
 /**
@@ -25,6 +26,7 @@ interface InventoryProduct {
 export default function InventoryPage() {
   const params = useParams();
   const locale = params.locale as string;
+  const t = useTranslations();
 
   // TODO: Fetch from API and integrate with state management
   const [products, setProducts] = useState<InventoryProduct[]>([
@@ -76,13 +78,13 @@ export default function InventoryPage() {
     <div className="animate-fade-in pb-24">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-white">
-          Inventory <span className="text-zinc-500 text-sm font-normal">({products.length})</span>
+          {t('seller.inventory.title')} <span className="text-zinc-500 text-sm font-normal">({products.length})</span>
         </h2>
         <Link
           href={`/${locale}/seller/inventory/new`}
           className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1"
         >
-          <Plus size={14} /> Add Product
+          <Plus size={14} /> {t('seller.inventory.addProduct')}
         </Link>
       </div>
 
@@ -101,7 +103,7 @@ export default function InventoryPage() {
               />
               {product.stock === 0 && (
                 <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                  <span className="text-[8px] font-bold text-red-500">OUT</span>
+                  <span className="text-[8px] font-bold text-red-500">{t('seller.inventory.outOfStock')}</span>
                 </div>
               )}
             </div>

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { ArrowLeft, Instagram, Upload, Loader2, Plus, Check, Sparkles } from 'lucide-react';
 import type { ProductCategoryType } from '@/lib/constants';
 
@@ -55,6 +56,7 @@ export default function NewProductPage() {
   const router = useRouter();
   const params = useParams();
   const locale = params.locale as string;
+  const t = useTranslations();
 
   const [step, setStep] = useState<Step>('connect');
   const [instagramHandle, setInstagramHandle] = useState('');
@@ -131,9 +133,9 @@ export default function NewProductPage() {
           <ArrowLeft />
         </button>
         <h1 className="text-2xl font-bold">
-          {step === 'connect' && 'Setup Drop'}
-          {step === 'select' && 'Select Video'}
-          {step === 'create' && 'New Product'}
+          {step === 'connect' && t('seller.inventory.setupDrop')}
+          {step === 'select' && t('seller.inventory.selectVideo')}
+          {step === 'create' && t('seller.inventory.newProduct')}
         </h1>
       </div>
 
@@ -145,14 +147,14 @@ export default function NewProductPage() {
               <div className="w-16 h-16 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-purple-500/20">
                 <Instagram size={32} className="text-white" />
               </div>
-              <h2 className="text-xl font-bold text-white">Import from Instagram</h2>
-              <p className="text-zinc-400 text-sm">Enter your handle to fetch your latest Reels.</p>
+              <h2 className="text-xl font-bold text-white">{t('seller.inventory.importFromInstagram')}</h2>
+              <p className="text-zinc-400 text-sm">{t('seller.inventory.enterHandle')}</p>
             </div>
 
             <form onSubmit={handleConnectInstagram} className="space-y-4">
               <input
                 type="text"
-                placeholder="@username"
+                placeholder={t('seller.inventory.usernamePlaceholder')}
                 className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
                 value={instagramHandle}
                 onChange={(e) => setInstagramHandle(e.target.value)}
@@ -162,7 +164,7 @@ export default function NewProductPage() {
                 disabled={!instagramHandle || isConnecting}
                 className="w-full bg-white text-black font-bold py-3 rounded-xl hover:bg-zinc-200 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
               >
-                {isConnecting ? <Loader2 size={18} className="animate-spin" /> : 'Fetch Media'}
+                {isConnecting ? <Loader2 size={18} className="animate-spin" /> : t('seller.inventory.fetchMedia')}
               </button>
             </form>
 
@@ -171,12 +173,12 @@ export default function NewProductPage() {
                 <div className="w-full border-t border-zinc-800"></div>
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-zinc-950 px-2 text-zinc-600 font-bold">Or</span>
+                <span className="bg-zinc-950 px-2 text-zinc-600 font-bold">{t('common.or')}</span>
               </div>
             </div>
 
             <button className="w-full bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold py-3 rounded-xl hover:text-white transition-colors flex items-center justify-center gap-2">
-              <Upload size={18} /> Upload Video File
+              <Upload size={18} /> {t('seller.inventory.uploadVideo')}
             </button>
           </div>
         )}
@@ -184,7 +186,7 @@ export default function NewProductPage() {
         {/* Step 2: Select Video */}
         {step === 'select' && (
           <div className="space-y-4 animate-fade-in">
-            <p className="text-sm text-zinc-400">Select a video to turn into a product.</p>
+            <p className="text-sm text-zinc-400">{t('seller.inventory.selectVideoHint')}</p>
             <div className="grid grid-cols-2 gap-3">
               {MOCK_IG_MEDIA.map((media) => (
                 <div
@@ -220,10 +222,10 @@ export default function NewProductPage() {
               </div>
               <div className="flex-1 space-y-3">
                 <div>
-                  <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">Title</label>
+                  <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">{t('product.title')}</label>
                   <input
                     type="text"
-                    placeholder="Product Name"
+                    placeholder={t('seller.inventory.productTitle')}
                     className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -231,7 +233,7 @@ export default function NewProductPage() {
                 </div>
                 <div className="flex gap-2">
                   <div className="flex-1">
-                    <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">Price</label>
+                    <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">{t('product.price')}</label>
                     <input
                       type="number"
                       placeholder="0.00"
@@ -241,7 +243,7 @@ export default function NewProductPage() {
                     />
                   </div>
                   <div className="w-24">
-                    <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">Stock</label>
+                    <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">{t('product.stock')}</label>
                     <input
                       type="number"
                       placeholder="1"
@@ -256,7 +258,7 @@ export default function NewProductPage() {
 
             <div className="space-y-2">
               <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1 flex justify-between">
-                <span>Description</span>
+                <span>{t('product.description')}</span>
                 <span
                   className="text-emerald-500 flex items-center gap-1 cursor-pointer"
                   onClick={handleMagicWrite}
@@ -266,19 +268,19 @@ export default function NewProductPage() {
                   ) : (
                     <Sparkles size={10} />
                   )}
-                  Magic Write
+                  {t('seller.inventory.magicWrite')}
                 </span>
               </label>
               <textarea
                 rows={3}
                 className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 resize-none"
-                placeholder="Product description..."
+                placeholder={t('seller.inventory.descriptionPlaceholder')}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
               <input
                 type="text"
-                placeholder="Key features for AI (e.g. Organic, Handmade)"
+                placeholder={t('seller.inventory.keyFeatures')}
                 className="w-full bg-zinc-900/50 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-zinc-400 focus:outline-none focus:text-white"
                 value={formData.features}
                 onChange={(e) => setFormData({ ...formData, features: e.target.value })}
@@ -288,7 +290,7 @@ export default function NewProductPage() {
             <div className="space-y-4 pt-2">
               <div>
                 <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1 mb-2 block">
-                  Category
+                  {t('product.category')}
                 </label>
                 <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
                   {(['clothing', 'shoes', 'jewelry', 'beauty', 'home', 'other'] as const).map(
@@ -302,7 +304,7 @@ export default function NewProductPage() {
                             : 'bg-zinc-900 text-zinc-400 border-zinc-800'
                         }`}
                       >
-                        {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                        {t(`product.categories.${cat}`)}
                       </button>
                     )
                   )}
@@ -311,7 +313,7 @@ export default function NewProductPage() {
 
               <div>
                 <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1 mb-2 block">
-                  Variants
+                  {t('product.variants')}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {PRESET_VARIANTS[formData.category]?.map((variant) => (
@@ -337,7 +339,7 @@ export default function NewProductPage() {
                 disabled={!formData.title || !formData.price}
                 className="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-zinc-200 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
               >
-                <Plus size={20} /> Publish Drop
+                <Plus size={20} /> {t('seller.inventory.publishDrop')}
               </button>
             </div>
           </div>

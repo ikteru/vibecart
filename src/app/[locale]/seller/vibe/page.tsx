@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { Zap, User, Upload, Plus, X } from 'lucide-react';
 
 /**
@@ -63,6 +64,7 @@ const MOCK_ARCHIVED_STORIES = [
  * Customize shop appearance with spotlight offers, maker bio, and reviews.
  */
 export default function VibePage() {
+  const t = useTranslations();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSelectingStory, setIsSelectingStory] = useState(false);
 
@@ -122,12 +124,12 @@ export default function VibePage() {
   return (
     <div className="animate-fade-in pb-24 space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Shop Vibe</h2>
+        <h2 className="text-xl font-bold text-white">{t('seller.vibe.title')}</h2>
         <button
           onClick={handleSave}
           className="text-xs font-bold text-emerald-400 hover:text-emerald-300"
         >
-          Save Changes
+          {t('seller.vibe.saveChanges')}
         </button>
       </div>
 
@@ -139,8 +141,8 @@ export default function VibePage() {
               <Zap size={20} />
             </div>
             <div>
-              <h3 className="font-bold text-sm text-white">Spotlight Offer</h3>
-              <p className="text-[10px] text-zinc-500">Featured card on profile</p>
+              <h3 className="font-bold text-sm text-white">{t('seller.vibe.spotlight.offer')}</h3>
+              <p className="text-[10px] text-zinc-500">{t('seller.vibe.spotlight.featuredCard')}</p>
             </div>
           </div>
           <button
@@ -173,7 +175,7 @@ export default function VibePage() {
                 }))
               }
               className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none"
-              placeholder="Title (e.g. Winter Sale)"
+              placeholder={t('seller.vibe.spotlight.titlePlaceholder')}
             />
             <input
               type="text"
@@ -185,7 +187,7 @@ export default function VibePage() {
                 }))
               }
               className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none"
-              placeholder="Subtitle (e.g. Up to 50% Off)"
+              placeholder={t('seller.vibe.spotlight.subtitlePlaceholder')}
             />
           </div>
         )}
@@ -199,8 +201,8 @@ export default function VibePage() {
               <User size={20} className="text-zinc-400" />
             </div>
             <div>
-              <h3 className="font-bold text-sm text-white">Maker Profile</h3>
-              <p className="text-[10px] text-zinc-500">Personalize your shop</p>
+              <h3 className="font-bold text-sm text-white">{t('seller.vibe.makerBio.title')}</h3>
+              <p className="text-[10px] text-zinc-500">{t('seller.vibe.makerBio.personalize')}</p>
             </div>
           </div>
           <button
@@ -245,7 +247,7 @@ export default function VibePage() {
               <div className="flex-1 space-y-2">
                 <input
                   type="text"
-                  placeholder="Name"
+                  placeholder={t('seller.vibe.makerBio.name')}
                   className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none"
                   value={config.makerBio.name}
                   onChange={(e) =>
@@ -257,7 +259,7 @@ export default function VibePage() {
                 />
                 <input
                   type="text"
-                  placeholder="Role (e.g. Artisan)"
+                  placeholder={t('seller.vibe.makerBio.rolePlaceholder')}
                   className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none"
                   value={config.makerBio.role}
                   onChange={(e) =>
@@ -272,7 +274,7 @@ export default function VibePage() {
             <textarea
               rows={2}
               className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none resize-none"
-              placeholder="Short bio..."
+              placeholder={t('seller.vibe.makerBio.bioPlaceholder')}
               value={config.makerBio.bio}
               onChange={(e) =>
                 setConfig((prev) => ({
@@ -289,8 +291,8 @@ export default function VibePage() {
       <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="font-bold text-sm text-white">Pinned Reviews</h3>
-            <p className="text-[10px] text-zinc-500">Showcase customer love from Stories</p>
+            <h3 className="font-bold text-sm text-white">{t('seller.vibe.reviews.pinned')}</h3>
+            <p className="text-[10px] text-zinc-500">{t('seller.vibe.reviews.showcase')}</p>
           </div>
           <button
             onClick={() => setIsSelectingStory(!isSelectingStory)}
@@ -338,7 +340,7 @@ export default function VibePage() {
                     setConfig((prev) => ({ ...prev, reviews: newReviews }));
                   }}
                   className="w-full bg-transparent text-[10px] text-zinc-400 focus:text-white focus:outline-none mt-0.5"
-                  placeholder="Add note..."
+                  placeholder={t('seller.vibe.reviews.addNote')}
                 />
               </div>
               <button

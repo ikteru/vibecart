@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Volume2, VolumeX, ArrowLeft, ShoppingBag, AlertCircle } from 'lucide-react';
 import { SwipeButton } from '../ui/SwipeButton';
 import { CheckoutDrawer } from '../checkout/CheckoutDrawer';
@@ -132,6 +133,7 @@ function VideoCard({
   toggleMute,
   onBuy,
 }: VideoCardProps) {
+  const t = useTranslations();
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // Auto-play/pause based on visibility
@@ -181,7 +183,7 @@ function VideoCard({
           {stock < 10 && stock > 0 && (
             <div className="flex items-center gap-1 bg-red-500/90 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full animate-pulse">
               <AlertCircle size={10} />
-              <span>Only {stock} left</span>
+              <span>{t('product.lowStock', { count: stock })}</span>
             </div>
           )}
           {product.promotionLabel && (
@@ -223,7 +225,7 @@ function VideoCard({
         <SwipeButton
           onConfirm={onBuy}
           disabled={stock === 0}
-          label={stock === 0 ? 'Out of Stock' : 'Slide to Buy'}
+          label={stock === 0 ? t('product.outOfStock') : t('product.slideToBuy')}
           icon={<ShoppingBag size={20} className="text-white fill-white/20" />}
         />
       </div>

@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { TrendingUp, ShoppingBag, Plus, Sparkles, User } from 'lucide-react';
 
 /**
@@ -13,6 +14,7 @@ import { TrendingUp, ShoppingBag, Plus, Sparkles, User } from 'lucide-react';
 export default function DashboardPage() {
   const params = useParams();
   const locale = params.locale as string;
+  const t = useTranslations();
 
   // TODO: Fetch from API/context
   const sellerName = 'Ayyuur Home';
@@ -49,9 +51,9 @@ export default function DashboardPage() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h2 className="text-2xl font-bold text-white">
-            Hello, {sellerName.split(' ')[0]} 👋
+            {t('seller.dashboard.hello', { name: sellerName.split(' ')[0] })} 👋
           </h2>
-          <p className="text-zinc-400 text-xs">Here&apos;s what&apos;s happening today.</p>
+          <p className="text-zinc-400 text-xs">{t('seller.dashboard.subtitle')}</p>
         </div>
         <div className="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center border border-zinc-700">
           <User size={18} className="text-zinc-400" />
@@ -64,27 +66,27 @@ export default function DashboardPage() {
           <div className="absolute top-0 right-0 p-3 opacity-10">
             <TrendingUp size={40} />
           </div>
-          <p className="text-xs font-bold text-zinc-500 uppercase mb-1">Total Revenue</p>
+          <p className="text-xs font-bold text-zinc-500 uppercase mb-1">{t('seller.dashboard.totalRevenue')}</p>
           <h3 className="text-2xl font-bold text-white">
             {totalRevenue.toLocaleString()}{' '}
-            <span className="text-xs font-normal text-zinc-500">MAD</span>
+            <span className="text-xs font-normal text-zinc-500">{t('common.currency')}</span>
           </h3>
           <div className="mt-2 text-[10px] text-emerald-400 flex items-center gap-1">
-            <TrendingUp size={10} /> +12% vs last week
+            <TrendingUp size={10} /> {t('seller.dashboard.revenueChange', { percent: 12 })}
           </div>
         </div>
         <div className="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 p-3 opacity-10">
             <ShoppingBag size={40} />
           </div>
-          <p className="text-xs font-bold text-zinc-500 uppercase mb-1">Pending Orders</p>
+          <p className="text-xs font-bold text-zinc-500 uppercase mb-1">{t('seller.dashboard.pendingOrders')}</p>
           <h3 className="text-2xl font-bold text-white">{pendingOrderCount}</h3>
-          <div className="mt-2 text-[10px] text-zinc-500">Needs attention</div>
+          <div className="mt-2 text-[10px] text-zinc-500">{t('seller.dashboard.needsAttention')}</div>
         </div>
       </div>
 
       {/* Action Buttons */}
-      <h3 className="text-sm font-bold text-white mb-3">Quick Actions</h3>
+      <h3 className="text-sm font-bold text-white mb-3">{t('seller.dashboard.quickActions')}</h3>
       <div className="grid grid-cols-2 gap-3 mb-8">
         <Link
           href={`/${locale}/seller/inventory/new`}
@@ -93,7 +95,7 @@ export default function DashboardPage() {
           <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white flex items-center justify-center transition-all">
             <Plus size={20} />
           </div>
-          <span className="text-xs font-bold text-white">New Drop</span>
+          <span className="text-xs font-bold text-white">{t('seller.dashboard.newDrop')}</span>
         </Link>
 
         <Link
@@ -103,12 +105,12 @@ export default function DashboardPage() {
           <div className="w-10 h-10 rounded-full bg-purple-500/20 text-purple-400 group-hover:bg-purple-500 group-hover:text-white flex items-center justify-center transition-all">
             <Sparkles size={20} />
           </div>
-          <span className="text-xs font-bold text-white">Shop Vibe</span>
+          <span className="text-xs font-bold text-white">{t('seller.vibe.title')}</span>
         </Link>
       </div>
 
       {/* Recent Activity */}
-      <h3 className="text-sm font-bold text-white mb-3">Recent Activity</h3>
+      <h3 className="text-sm font-bold text-white mb-3">{t('seller.dashboard.recentActivity')}</h3>
       <div className="space-y-2">
         {recentOrders.map((order) => (
           <div

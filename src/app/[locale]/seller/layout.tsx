@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import {
   LayoutGrid,
   ShoppingBag,
@@ -24,13 +25,14 @@ interface SellerLayoutProps {
 export default function SellerLayout({ children, params }: SellerLayoutProps) {
   const pathname = usePathname();
   const { locale } = params;
+  const t = useTranslations('nav');
 
   const navItems = [
-    { href: `/${locale}/seller/dashboard`, icon: LayoutGrid, label: 'Home', key: 'dashboard' },
-    { href: `/${locale}/seller/orders`, icon: ShoppingBag, label: 'Orders', key: 'orders' },
-    { href: `/${locale}/seller/inventory`, icon: Package, label: 'Items', key: 'inventory' },
-    { href: `/${locale}/seller/vibe`, icon: Palette, label: 'Vibe', key: 'vibe' },
-    { href: `/${locale}/seller/settings`, icon: Settings, label: 'Settings', key: 'settings' },
+    { href: `/${locale}/seller/dashboard`, icon: LayoutGrid, labelKey: 'home', key: 'dashboard' },
+    { href: `/${locale}/seller/orders`, icon: ShoppingBag, labelKey: 'orders', key: 'orders' },
+    { href: `/${locale}/seller/inventory`, icon: Package, labelKey: 'inventory', key: 'inventory' },
+    { href: `/${locale}/seller/vibe`, icon: Palette, labelKey: 'vibe', key: 'vibe' },
+    { href: `/${locale}/seller/settings`, icon: Settings, labelKey: 'settings', key: 'settings' },
   ];
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
@@ -56,7 +58,7 @@ export default function SellerLayout({ children, params }: SellerLayoutProps) {
                 }`}
               >
                 <Icon size={20} strokeWidth={active ? 2.5 : 2} />
-                <span className="text-[9px] font-bold">{item.label}</span>
+                <span className="text-[9px] font-bold">{t(item.labelKey)}</span>
               </Link>
             );
           })}

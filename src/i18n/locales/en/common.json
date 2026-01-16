@@ -65,12 +65,14 @@
     "inStock": "In stock",
     "addToCart": "Add to cart",
     "buyNow": "Buy Now",
+    "slideToBuy": "Slide to Buy",
     "variants": "Options",
     "description": "Description",
     "price": "Price",
     "discountPrice": "Sale price",
     "stock": "Stock",
     "category": "Category",
+    "title": "Title",
     "categories": {
       "clothing": "Clothing",
       "shoes": "Shoes",
@@ -104,7 +106,34 @@
     "slideToOrder": "Slide to Order",
     "orderConfirmed": "Order Sent!",
     "confirmationMessage": "Open WhatsApp to confirm your order with the seller",
-    "openWhatsApp": "Open WhatsApp"
+    "openWhatsApp": "Open WhatsApp",
+    "secureOrder": "Secure Order",
+    "verifyOrder": "Verify Order",
+    "cashOnDelivery": "Cash on Delivery",
+    "checkWhatsApp": "Check your WhatsApp for confirmation",
+    "selectOption": "Select Option",
+    "yourNamePlaceholder": "Your Name",
+    "whatsapp": "WhatsApp",
+    "phonePlaceholder": "06...",
+    "deliveryLocation": "Delivery Location",
+    "useSavedLocation": "Use Saved Location",
+    "autofill": "Autofill",
+    "tapToEditPin": "Tap to edit pin",
+    "preciseDeliverySpot": "Precise delivery spot",
+    "cityFirst": "City First",
+    "streetAddressPlaceholder": "Street Address, Building, Floor",
+    "shippingTo": "to {city}",
+    "sent": "Sent!",
+    "confirmationSent": "Confirmation Sent",
+    "verificationSentTo": "We've sent a verification message to",
+    "oneLastStep": "One last step",
+    "whatsappConfirmText": "Open WhatsApp and click \"Confirm\" to verify your number and complete the purchase.",
+    "closeWindow": "Close Window",
+    "validation": {
+      "pinLocation": "Please pin your GPS location",
+      "selectCity": "Please select a city",
+      "fillDetails": "Fill all details to continue"
+    }
   },
   "map": {
     "title": "Pin Your Location",
@@ -119,6 +148,24 @@
     "floor": "Floor",
     "buildingName": "Building Name",
     "deliveryInstructions": "Delivery Instructions",
+    "deliveryLocation": "Delivery Location",
+    "refiningLocation": "Refining location...",
+    "pinnedLocation": "Pinned Location",
+    "updatingAddress": "Updating address...",
+    "waitASec": "Wait a sec...",
+    "moreDetails": "More Details",
+    "buildingResidence": "Building/Residence",
+    "nameOrNumber": "Name or No.",
+    "floorPlaceholder": "0",
+    "apartmentExample": "e.g. 4B",
+    "villaHouseNumber": "Villa / House Number",
+    "houseNumberExample": "e.g. 12",
+    "companyName": "Company Name",
+    "companyNameExample": "e.g. VibeCart HQ",
+    "instructions": "Instructions for Rider (Optional)",
+    "instructionsExample": "e.g. Call when near, doorbell broken...",
+    "saveAddress": "Save Address",
+    "rememberForNextTime": "Remember for next time",
     "residenceType": {
       "title": "Residence Type",
       "apartment": "Apartment",
@@ -131,10 +178,17 @@
     "dashboard": {
       "title": "Dashboard",
       "welcome": "Welcome, {name}",
+      "hello": "Hello, {name}",
+      "subtitle": "Here's what's happening today.",
       "todayOrders": "Today's Orders",
       "totalRevenue": "Total Revenue",
       "activeProducts": "Active Products",
-      "pendingOrders": "Pending Orders"
+      "pendingOrders": "Pending Orders",
+      "revenueChange": "+{percent}% vs last week",
+      "needsAttention": "Needs attention",
+      "quickActions": "Quick Actions",
+      "newDrop": "New Drop",
+      "recentActivity": "Recent Activity"
     },
     "orders": {
       "title": "Orders",
@@ -148,7 +202,12 @@
       "confirmOrder": "Confirm Order",
       "markShipped": "Mark as Shipped",
       "markDelivered": "Mark as Delivered",
-      "chat": "Chat with Customer"
+      "chat": "Chat with Customer",
+      "awaitingConfirm": "Awaiting Confirm",
+      "pendingStatusExplainer": "Pending status means the customer received the order message but hasn't clicked \"Confirm\" yet.",
+      "noOrdersInFilter": "No orders found in \"{filter}\"",
+      "viewChat": "View Chat",
+      "new": "New"
     },
     "inventory": {
       "title": "Inventory",
@@ -163,16 +222,33 @@
       "uploadVideo": "Upload Video",
       "importFromInstagram": "Import from Instagram",
       "saveProduct": "Save Product",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "outOfStock": "OUT",
+      "setupDrop": "Setup Drop",
+      "selectVideo": "Select Video",
+      "newProduct": "New Product",
+      "enterHandle": "Enter your handle to fetch your latest Reels.",
+      "usernamePlaceholder": "@username",
+      "fetchMedia": "Fetch Media",
+      "selectVideoHint": "Select a video to turn into a product.",
+      "magicWrite": "Magic Write",
+      "descriptionPlaceholder": "Product description...",
+      "keyFeatures": "Key features for AI (e.g. Organic, Handmade)",
+      "publishDrop": "Publish Drop"
     },
     "vibe": {
       "title": "Shop Vibe",
+      "saveChanges": "Save Changes",
       "spotlight": {
         "title": "Spotlight Banner",
         "description": "Promotional banner shown in your shop",
         "bannerTitle": "Banner Title",
         "bannerSubtitle": "Banner Subtitle",
-        "bannerColor": "Banner Color"
+        "bannerColor": "Banner Color",
+        "offer": "Spotlight Offer",
+        "featuredCard": "Featured card on profile",
+        "titlePlaceholder": "Title (e.g. Winter Sale)",
+        "subtitlePlaceholder": "Subtitle (e.g. Up to 50% Off)"
       },
       "makerBio": {
         "title": "Maker Bio",
@@ -180,28 +256,46 @@
         "name": "Your Name",
         "role": "Your Role",
         "bio": "Your Story",
-        "image": "Profile Image"
+        "image": "Profile Image",
+        "personalize": "Personalize your shop",
+        "rolePlaceholder": "Role (e.g. Artisan)",
+        "bioPlaceholder": "Short bio..."
       },
       "reviews": {
         "title": "Customer Reviews",
         "description": "Instagram stories from happy customers",
         "addReview": "Add Review",
-        "noReviews": "No reviews yet"
+        "noReviews": "No reviews yet",
+        "pinned": "Pinned Reviews",
+        "showcase": "Showcase customer love from Stories",
+        "addNote": "Add note..."
       }
     },
     "settings": {
       "title": "Settings",
+      "saveChanges": "Save Changes",
+      "accountDetails": "Account Details",
+      "connections": "Connections",
+      "connected": "Connected",
+      "notConnected": "Not Connected",
+      "manageKeys": "Manage Keys",
+      "language": "Language",
+      "publicProfileLink": "Public Profile Link",
+      "termsOfService": "Terms of Service",
+      "privacyPolicy": "Privacy Policy",
       "whatsapp": {
         "title": "WhatsApp Business",
         "businessNumber": "Business Number",
         "businessName": "Business Name",
-        "welcomeMessage": "Welcome Message"
+        "welcomeMessage": "Welcome Message",
+        "cloudApi": "Cloud API Integration"
       },
       "instagram": {
         "title": "Instagram",
         "connect": "Connect Instagram",
         "connected": "Connected as @{handle}",
-        "disconnect": "Disconnect"
+        "disconnect": "Disconnect",
+        "syncProducts": "Sync products & reviews"
       },
       "shipping": {
         "title": "Shipping Rules",
@@ -210,20 +304,37 @@
         "addRule": "Add Rule",
         "city": "City",
         "rate": "Rate",
-        "importCsv": "Import from CSV"
+        "importCsv": "Import from CSV",
+        "defaultRateEverywhere": "Default Rate (Everywhere else)",
+        "cityPlaceholder": "City (e.g. Rabat)"
       },
       "googleMaps": {
         "title": "Google Maps",
         "connect": "Connect Google Maps",
         "placeId": "Place ID",
-        "syncNow": "Sync Now"
+        "syncNow": "Sync Now",
+        "description": "Show location & rating card",
+        "syncMetadata": "Sync Metadata"
       }
     },
     "profile": {
       "title": "Shop Profile",
       "shopName": "Shop Name",
       "shopHandle": "Shop Handle",
-      "shopUrl": "Your shop URL"
+      "shopUrl": "Your shop URL",
+      "followers": "Followers",
+      "rating": "Rating",
+      "reviews": "Reviews",
+      "findUs": "Find Us",
+      "limited": "Limited",
+      "shopNow": "Shop Now",
+      "categories": {
+        "all": "All",
+        "newDrops": "New Drops",
+        "bestSellers": "Best Sellers",
+        "vintage": "Vintage",
+        "sale": "Sale"
+      }
     }
   },
   "chat": {
@@ -254,7 +365,9 @@
     "copy": "Copy",
     "copied": "Copied!",
     "enabled": "Enabled",
-    "disabled": "Disabled"
+    "disabled": "Disabled",
+    "or": "Or",
+    "saveChanges": "Save Changes"
   },
   "errors": {
     "required": "This field is required",

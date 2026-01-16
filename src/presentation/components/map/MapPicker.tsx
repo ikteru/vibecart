@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   X,
   Navigation,
@@ -44,6 +45,7 @@ export function MapPicker({
   onConfirm,
   initialLocation,
 }: MapPickerProps) {
+  const t = useTranslations('map');
   // UI State
   const [step, setStep] = useState<'map' | 'details'>('map');
   const [residenceType, setResidenceType] = useState<ResidenceType>('apartment');
@@ -55,7 +57,7 @@ export function MapPicker({
   const streetLayerRef = useRef<any>(null);
   const satelliteLayerRef = useRef<any>(null);
 
-  const [address, setAddress] = useState<string>('Moving map...');
+  const [address, setAddress] = useState<string>('');
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentCenter, setCurrentCenter] = useState<{
@@ -146,7 +148,6 @@ export function MapPicker({
 
       map.on('movestart', () => {
         setIsDragging(true);
-        setAddress('Locating...');
       });
 
       map.on('moveend', () => {
@@ -211,12 +212,12 @@ export function MapPicker({
         if (street && area) display += `, ${area}`;
         if (!street && area) display = area;
 
-        setAddress(display || 'Pinned Location');
+        setAddress(display || '');
       } else {
-        setAddress('Unknown Location');
+        setAddress('');
       }
     } catch {
-      setAddress('Network Error');
+      setAddress('');
     } finally {
       setIsLoading(false);
     }
@@ -286,10 +287,10 @@ export function MapPicker({
   if (!isOpen) return null;
 
   const residenceTypes = [
-    { id: 'apartment' as const, icon: Building2, label: 'Apartment' },
-    { id: 'house' as const, icon: Home, label: 'House' },
-    { id: 'office' as const, icon: Briefcase, label: 'Office' },
-    { id: 'other' as const, icon: Flag, label: 'Other' },
+    { id: 'apartment' as const, icon: Building2, labelKey: 'residenceType.apartment' },
+    { id: 'house' as const, icon: Home, labelKey: 'residenceType.house' },
+    { id: 'office' as const, icon: Briefcase, labelKey: 'residenceType.office' },
+    { id: 'other' as const, icon: Flag, labelKey: 'residenceType.other' },
   ];
 
   return (
@@ -323,7 +324,7 @@ export function MapPicker({
           >
             {mapType === 'standard' ? <Globe size={20} /> : <Layers size={20} />}
             <span className="text-xs font-bold">
-              {mapType === 'standard' ? 'Satellite' : 'Map'}
+              {mapType === 'standard' ? t('satelliteView') : t('streetView')}
             </span>
           </button>
         )}
@@ -386,15 +387,14 @@ export function MapPicker({
               </div>
               <div className="flex-1">
                 <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1">
-                  Delivery Location
+                  {t('deliveryLocation')}
                 </p>
                 <h3 className="text-lg font-bold text-white leading-tight">
-                  {isDragging ? 'Refining location...' : address}
+                  {isDragging ? t('refiningLocation') : (address || t('pinnedLocation'))}
                 </h3>
                 {isLoading && (
                   <span className="text-xs text-emerald-400 flex items-center gap-1 mt-1">
-                    <Loader2 size={10} className="animate-spin" /> Updating
-                    address...
+                    <Loader2 size={10} className="animate-spin" /> {t('updatingAddress')}
                   </span>
                 )}
               </div>
@@ -406,10 +406,10 @@ export function MapPicker({
               className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-4 rounded-xl shadow-lg shadow-emerald-900/20 disabled:opacity-50 disabled:scale-95 transition-all flex items-center justify-center gap-2"
             >
               {isLoading ? (
-                'Wait a sec...'
+                t('waitASec')
               ) : (
                 <>
-                  <Check size={20} /> Confirm Location
+                  <Check size={20} /> {t('confirm')}
                 </>
               )}
             </button>
@@ -420,13 +420,13 @@ export function MapPicker({
         {step === 'details' && (
           <div className="p-6 animate-slide-up">
             <div className="mb-6 border-b border-zinc-800 pb-4">
-              <h3 className="text-white font-bold text-lg mb-1">More Details</h3>
-              <p className="text-zinc-500 text-sm truncate">{address}</p>
+              <h3 className="text-white font-bold text-lg mb-1">{t('moreDetails')}</h3>
+              <p className="text-zinc-500 text-sm truncate">{address || t('pinnedLocation')}</p>
             </div>
 
             {/* Residence Type Selector */}
             <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-3">
-              Residence Type
+              {t('residenceType.title')}
             </p>
             <div className="grid grid-cols-4 gap-3 mb-6">
               {residenceTypes.map((type) => (
@@ -440,7 +440,7 @@ export function MapPicker({
                   }`}
                 >
                   <type.icon size={20} />
-                  <span className="text-[10px] font-bold">{type.label}</span>
+                  <span className="text-[10px] font-bold">{t(type.labelKey)}</span>
                 </button>
               ))}
             </div>
@@ -450,11 +450,11 @@ export function MapPicker({
               {residenceType === 'office' && (
                 <div>
                   <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
-                    Company Name
+                    {t('companyName')}
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. VibeCart HQ"
+                    placeholder={t('companyNameExample')}
                     className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
                     value={detailsForm.companyName}
                     onChange={(e) =>
@@ -471,11 +471,11 @@ export function MapPicker({
                 <div className="flex gap-3">
                   <div className="flex-1">
                     <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
-                      Building/Residence
+                      {t('buildingResidence')}
                     </label>
                     <input
                       type="text"
-                      placeholder="Name or No."
+                      placeholder={t('nameOrNumber')}
                       className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
                       value={detailsForm.buildingNumber}
                       onChange={(e) =>
@@ -488,11 +488,11 @@ export function MapPicker({
                   </div>
                   <div className="w-1/3">
                     <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
-                      Floor
+                      {t('floor')}
                     </label>
                     <input
                       type="text"
-                      placeholder="0"
+                      placeholder={t('floorPlaceholder')}
                       className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
                       value={detailsForm.floor}
                       onChange={(e) =>
@@ -506,11 +506,11 @@ export function MapPicker({
               {residenceType === 'apartment' && (
                 <div>
                   <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
-                    Apartment Number
+                    {t('apartmentNumber')}
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. 4B"
+                    placeholder={t('apartmentExample')}
                     className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
                     value={detailsForm.apartmentNumber}
                     onChange={(e) =>
@@ -526,11 +526,11 @@ export function MapPicker({
               {residenceType === 'house' && (
                 <div>
                   <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
-                    Villa / House Number
+                    {t('villaHouseNumber')}
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. 12"
+                    placeholder={t('houseNumberExample')}
                     className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
                     value={detailsForm.buildingNumber}
                     onChange={(e) =>
@@ -545,11 +545,11 @@ export function MapPicker({
 
               <div>
                 <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
-                  Instructions for Rider (Optional)
+                  {t('instructions')}
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Call when near, doorbell broken..."
+                  placeholder={t('instructionsExample')}
                   className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
                   value={detailsForm.instructions}
                   onChange={(e) =>
@@ -570,9 +570,9 @@ export function MapPicker({
                     <Bookmark size={16} />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-white">Save Address</p>
+                    <p className="text-xs font-bold text-white">{t('saveAddress')}</p>
                     <p className="text-[9px] text-zinc-500">
-                      Remember for next time
+                      {t('rememberForNextTime')}
                     </p>
                   </div>
                 </div>
@@ -591,7 +591,7 @@ export function MapPicker({
               onClick={handleFinalConfirm}
               className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-4 rounded-xl shadow-lg shadow-emerald-900/20 disabled:opacity-50 transition-all flex items-center justify-center gap-2 mb-6"
             >
-              <Check size={20} /> Save Address
+              <Check size={20} /> {t('saveAddress')}
             </button>
           </div>
         )}

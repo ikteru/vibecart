@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import {
   UserCircle,
   Phone,
@@ -65,6 +66,7 @@ type Language = 'english' | 'darija' | 'arabic' | 'french';
 export default function SettingsPage() {
   const params = useParams();
   const locale = params.locale as string;
+  const t = useTranslations();
   const sellerName = 'Ayyuur Home';
 
   const [language, setLanguage] = useState<Language>('english');
@@ -205,12 +207,12 @@ export default function SettingsPage() {
   return (
     <div className="animate-fade-in pb-24 space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Settings</h2>
+        <h2 className="text-xl font-bold text-white">{t('seller.settings.title')}</h2>
         <button
           onClick={handleSave}
           className="text-xs font-bold text-emerald-400 hover:text-emerald-300"
         >
-          Save Changes
+          {t('seller.settings.saveChanges')}
         </button>
       </div>
 
@@ -218,11 +220,11 @@ export default function SettingsPage() {
       <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-4">
         <div className="flex items-center gap-3 mb-2">
           <UserCircle size={20} className="text-zinc-400" />
-          <h3 className="font-bold text-sm text-white">Account Details</h3>
+          <h3 className="font-bold text-sm text-white">{t('seller.settings.accountDetails')}</h3>
         </div>
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">Shop Name</label>
+            <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">{t('seller.profile.shopName')}</label>
             <input
               type="text"
               value={sellerName}
@@ -232,7 +234,7 @@ export default function SettingsPage() {
           </div>
           <div className="space-y-1">
             <label className="text-[10px] text-zinc-500 font-bold uppercase ml-1">
-              Phone Number
+              {t('auth.phoneNumber')}
             </label>
             <input
               type="tel"
@@ -246,7 +248,7 @@ export default function SettingsPage() {
 
       {/* Connections Group */}
       <div className="space-y-4">
-        <h3 className="text-xs font-bold text-zinc-500 uppercase px-1">Connections</h3>
+        <h3 className="text-xs font-bold text-zinc-500 uppercase px-1">{t('seller.settings.connections')}</h3>
 
         {/* WhatsApp Business */}
         <div className="bg-[#25D366]/10 border border-[#25D366]/20 rounded-2xl p-4 space-y-4 relative overflow-hidden">
@@ -256,8 +258,8 @@ export default function SettingsPage() {
                 <Phone size={20} className="text-white" />
               </div>
               <div>
-                <h3 className="font-bold text-sm text-white">WhatsApp Business</h3>
-                <p className="text-[10px] text-[#25D366] font-medium">Cloud API Integration</p>
+                <h3 className="font-bold text-sm text-white">{t('seller.settings.whatsapp.title')}</h3>
+                <p className="text-[10px] text-[#25D366] font-medium">{t('seller.settings.whatsapp.cloudApi')}</p>
               </div>
             </div>
             <div
@@ -268,10 +270,10 @@ export default function SettingsPage() {
           </div>
           <div className="flex justify-between items-center bg-zinc-900/50 p-2 rounded-lg border border-[#25D366]/20">
             <span className="text-[10px] text-zinc-400 px-2">
-              {config.whatsapp.enabled ? 'Connected' : 'Not Connected'}
+              {config.whatsapp.enabled ? t('seller.settings.connected') : t('seller.settings.notConnected')}
             </span>
             <button className="text-[10px] font-bold text-[#25D366] hover:underline px-2">
-              Manage Keys
+              {t('seller.settings.manageKeys')}
             </button>
           </div>
         </div>
@@ -284,8 +286,8 @@ export default function SettingsPage() {
                 <Instagram size={20} className="text-white" />
               </div>
               <div>
-                <h3 className="font-bold text-sm text-white">Instagram Integration</h3>
-                <p className="text-[10px] text-zinc-500">Sync products & reviews</p>
+                <h3 className="font-bold text-sm text-white">{t('seller.settings.instagram.title')}</h3>
+                <p className="text-[10px] text-zinc-500">{t('seller.settings.instagram.syncProducts')}</p>
               </div>
             </div>
             <div
@@ -299,7 +301,7 @@ export default function SettingsPage() {
             <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="@username"
+                placeholder={t('seller.inventory.usernamePlaceholder')}
                 className="flex-1 bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none"
                 value={instagramHandle}
                 onChange={(e) => setInstagramHandle(e.target.value)}
@@ -309,7 +311,7 @@ export default function SettingsPage() {
                 disabled={!instagramHandle || isConnecting}
                 className="bg-white text-black text-xs font-bold px-4 rounded-lg hover:bg-zinc-200 disabled:opacity-50"
               >
-                {isConnecting ? <Loader2 size={14} className="animate-spin" /> : 'Connect'}
+                {isConnecting ? <Loader2 size={14} className="animate-spin" /> : t('seller.settings.instagram.connect')}
               </button>
             </div>
           ) : (
@@ -324,7 +326,7 @@ export default function SettingsPage() {
                 }
                 className="text-[10px] text-red-400 hover:text-red-300"
               >
-                Disconnect
+                {t('seller.settings.instagram.disconnect')}
               </button>
             </div>
           )}
@@ -338,8 +340,8 @@ export default function SettingsPage() {
                 <MapPin size={20} className="text-[#4285F4]" />
               </div>
               <div>
-                <h3 className="font-bold text-sm text-white">Google Maps</h3>
-                <p className="text-[10px] text-zinc-500">Show location & rating card</p>
+                <h3 className="font-bold text-sm text-white">{t('seller.settings.googleMaps.title')}</h3>
+                <p className="text-[10px] text-zinc-500">{t('seller.settings.googleMaps.description')}</p>
               </div>
             </div>
             <button
@@ -365,7 +367,7 @@ export default function SettingsPage() {
             <div className="space-y-3">
               <input
                 type="text"
-                placeholder="Place ID / Search"
+                placeholder={t('seller.settings.googleMaps.placeId')}
                 className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none"
                 value={config.googleMaps.placeName}
                 onChange={(e) =>
@@ -384,7 +386,7 @@ export default function SettingsPage() {
                 ) : (
                   <RefreshCw size={14} />
                 )}
-                Sync Metadata
+                {t('seller.settings.googleMaps.syncMetadata')}
               </button>
             </div>
           )}
@@ -395,12 +397,12 @@ export default function SettingsPage() {
       <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-4">
         <div className="flex items-center gap-3 mb-2">
           <Truck size={20} className="text-zinc-400" />
-          <h3 className="font-bold text-sm text-white">Shipping Rates</h3>
+          <h3 className="font-bold text-sm text-white">{t('seller.settings.shipping.title')}</h3>
         </div>
 
         <div className="space-y-3">
           <div className="flex items-center justify-between bg-black p-3 rounded-lg border border-zinc-800">
-            <span className="text-xs text-zinc-400">Default Rate (Everywhere else)</span>
+            <span className="text-xs text-zinc-400">{t('seller.settings.shipping.defaultRateEverywhere')}</span>
             <div className="flex items-center gap-1">
               <input
                 type="number"
@@ -422,10 +424,10 @@ export default function SettingsPage() {
 
           <div className="space-y-2">
             <div className="flex justify-between items-center mb-2">
-              <p className="text-[10px] text-zinc-500 font-bold uppercase ml-1">City Rules</p>
+              <p className="text-[10px] text-zinc-500 font-bold uppercase ml-1">{t('seller.settings.shipping.cityRules')}</p>
               <label className="flex items-center gap-1 text-[10px] text-emerald-400 cursor-pointer hover:text-emerald-300">
                 <FileSpreadsheet size={12} />
-                <span>Import CSV</span>
+                <span>{t('seller.settings.shipping.importCsv')}</span>
                 <input
                   type="file"
                   accept=".csv"
@@ -456,14 +458,14 @@ export default function SettingsPage() {
             <div className="flex gap-2 pt-2">
               <input
                 type="text"
-                placeholder="City (e.g. Rabat)"
+                placeholder={t('seller.settings.shipping.cityPlaceholder')}
                 value={newCity}
                 onChange={(e) => setNewCity(e.target.value)}
                 className="flex-1 bg-black border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none"
               />
               <input
                 type="number"
-                placeholder="Price"
+                placeholder={t('seller.settings.shipping.rate')}
                 value={newRate}
                 onChange={(e) => setNewRate(e.target.value)}
                 className="w-20 bg-black border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none"
@@ -489,13 +491,13 @@ export default function SettingsPage() {
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <h4 className="font-bold text-sm text-white">Shipping Aggregator</h4>
+                <h4 className="font-bold text-sm text-white">{t('shipping.aggregatorSection')}</h4>
                 <span className="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-[9px] font-bold rounded-full">
-                  Coming Soon
+                  {t('shipping.comingSoon')}
                 </span>
               </div>
               <p className="text-[10px] text-zinc-500">
-                Compare rates & print labels from multiple providers
+                {t('shipping.description')}
               </p>
             </div>
           </div>
@@ -506,7 +508,7 @@ export default function SettingsPage() {
       <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-4">
         <div className="flex items-center gap-3 mb-2">
           <Globe size={20} className="text-zinc-400" />
-          <h3 className="font-bold text-sm text-white">Language</h3>
+          <h3 className="font-bold text-sm text-white">{t('seller.settings.language')}</h3>
         </div>
         <div className="grid grid-cols-2 gap-2">
           {(['English', 'French', 'Arabic', 'Darija'] as const).map((lang) => (
@@ -528,7 +530,7 @@ export default function SettingsPage() {
       <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-4">
         <div className="flex items-center gap-3 mb-2">
           <Share2 size={20} className="text-zinc-400" />
-          <h3 className="font-bold text-sm text-white">Public Profile Link</h3>
+          <h3 className="font-bold text-sm text-white">{t('seller.settings.publicProfileLink')}</h3>
         </div>
         <div className="flex gap-2">
           <input
@@ -550,15 +552,15 @@ export default function SettingsPage() {
       <div className="space-y-2 pt-4">
         <button className="w-full flex items-center gap-3 p-3 text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-xl transition-colors">
           <FileText size={18} />
-          <span className="text-sm font-medium">Terms of Service</span>
+          <span className="text-sm font-medium">{t('seller.settings.termsOfService')}</span>
         </button>
         <button className="w-full flex items-center gap-3 p-3 text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-xl transition-colors">
           <Shield size={18} />
-          <span className="text-sm font-medium">Privacy Policy</span>
+          <span className="text-sm font-medium">{t('seller.settings.privacyPolicy')}</span>
         </button>
         <button className="w-full flex items-center gap-3 p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-colors">
           <LogOut size={18} />
-          <span className="text-sm font-bold">Log Out</span>
+          <span className="text-sm font-bold">{t('auth.logout')}</span>
         </button>
       </div>
 

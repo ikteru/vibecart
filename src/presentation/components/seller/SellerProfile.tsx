@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import type { Product } from '@/domain/entities/Product';
 import {
   ArrowLeft,
@@ -79,6 +80,8 @@ export function SellerProfile({
   onBack,
   onSelectProduct,
 }: SellerProfileProps) {
+  const t = useTranslations();
+
   // Algorithmically mix content based on shopConfig
   const mixedContent: GridItemType[] = useMemo(() => {
     // Start with products
@@ -206,11 +209,11 @@ export function SellerProfile({
           <div className="flex gap-4 text-sm">
             <div>
               <span className="font-bold text-white">24.5k</span>{' '}
-              <span className="text-zinc-500">Followers</span>
+              <span className="text-zinc-500">{t('seller.profile.followers')}</span>
             </div>
             <div>
               <span className="font-bold text-white">{shopConfig.googleMaps.rating}</span>{' '}
-              <span className="text-zinc-500">Rating</span>
+              <span className="text-zinc-500">{t('seller.profile.rating')}</span>
             </div>
           </div>
         </div>
@@ -218,7 +221,7 @@ export function SellerProfile({
 
       {/* Categories / Chips */}
       <div className="px-5 pb-4 flex gap-2 overflow-x-auto no-scrollbar mask-linear-fade">
-        {['All', 'New Drops', 'Best Sellers', 'Vintage', 'Sale'].map((cat, i) => (
+        {(['all', 'newDrops', 'bestSellers', 'vintage', 'sale'] as const).map((cat, i) => (
           <button
             key={cat}
             className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold transition-all ${
@@ -227,7 +230,7 @@ export function SellerProfile({
                 : 'bg-zinc-900 text-zinc-400 border border-zinc-800'
             }`}
           >
-            {cat}
+            {t(`seller.profile.categories.${cat}`)}
           </button>
         ))}
       </div>
@@ -260,7 +263,7 @@ export function SellerProfile({
 
                     {product.stock <= 3 && (
                       <div className="absolute top-2 left-2 bg-red-500/90 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-sm">
-                        Low Stock
+                        {t('product.lowStock', { count: product.stock })}
                       </div>
                     )}
 
@@ -298,7 +301,7 @@ export function SellerProfile({
                         <Star size={10} className="fill-yellow-400 text-yellow-400" />
                       </div>
                       <span className="text-[9px] text-zinc-500 font-bold">
-                        {item.reviews} Reviews
+                        {item.reviews} {t('seller.profile.reviews')}
                       </span>
                     </div>
                   </div>
@@ -307,7 +310,7 @@ export function SellerProfile({
                       &quot;{item.address}&quot;
                     </p>
                     <button className="w-full py-1.5 bg-[#4285F4] text-white text-[10px] font-bold rounded-lg flex items-center justify-center gap-1 hover:bg-blue-600 transition-colors">
-                      Find Us
+                      {t('seller.profile.findUs')}
                     </button>
                   </div>
                 </div>
@@ -363,7 +366,7 @@ export function SellerProfile({
                   </div>
                   <div>
                     <span className="inline-block px-1.5 py-0.5 bg-white/20 backdrop-blur-sm rounded text-[8px] font-bold text-white mb-2 uppercase tracking-widest">
-                      Limited
+                      {t('seller.profile.limited')}
                     </span>
                     <h3 className="text-xl font-black text-white leading-none uppercase">
                       {item.title}
@@ -371,7 +374,7 @@ export function SellerProfile({
                     <p className="text-white/90 text-xs font-medium mt-1">{item.subtitle}</p>
                   </div>
                   <button className="mt-4 bg-white text-black text-[10px] font-bold py-2 rounded-full w-full">
-                    Shop Now
+                    {t('seller.profile.shopNow')}
                   </button>
                 </div>
               );
