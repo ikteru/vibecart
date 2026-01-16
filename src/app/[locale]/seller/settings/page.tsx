@@ -442,7 +442,7 @@ export default function SettingsPage() {
                 key={rule.city}
                 className="flex items-center justify-between bg-black p-2 rounded-lg border border-zinc-800"
               >
-                <span className="text-xs text-white font-bold px-2">{rule.city}</span>
+                <span className="text-xs text-white font-bold px-2">{t(`cities.${rule.city}`, { defaultValue: rule.city })}</span>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-emerald-400 font-bold">{rule.rate} MAD</span>
                   <button

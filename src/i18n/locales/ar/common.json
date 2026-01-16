@@ -198,6 +198,7 @@
       "filterConfirmed": "مؤكد",
       "filterShipped": "شُحن",
       "filterDelivered": "تم التوصيل",
+      "filterCancelled": "ملغي",
       "viewDetails": "عرض التفاصيل",
       "confirmOrder": "تأكيد الطلب",
       "markShipped": "تعيين كمشحون",
@@ -404,5 +405,17 @@
     "supportedProviders": "شركات التوصيل المدعومة:",
     "notifyPlaceholder": "أدخل بريدك الإلكتروني للإشعار",
     "notifyButton": "أعلمني"
+  },
+  "cities": {
+    "Casablanca": "الدار البيضاء",
+    "Rabat": "الرباط",
+    "Marrakech": "مراكش",
+    "Fes": "فاس",
+    "Tangier": "طنجة",
+    "Agadir": "أكادير",
+    "Meknes": "مكناس",
+    "Oujda": "وجدة",
+    "Kenitra": "القنيطرة",
+    "Tetouan": "تطوان"
   }
 }

@@ -198,6 +198,7 @@
       "filterConfirmed": "مأكد",
       "filterShipped": "مصيفط",
       "filterDelivered": "موصل",
+      "filterCancelled": "ملغي",
       "viewDetails": "شوف التفاصيل",
       "confirmOrder": "أكد الطلب",
       "markShipped": "صيفط",
@@ -404,5 +405,17 @@
     "supportedProviders": "شركات التوصيل المدعومة:",
     "notifyPlaceholder": "دخل الإيميل ديالك باش نعلموك",
     "notifyButton": "عرفني"
+  },
+  "cities": {
+    "Casablanca": "الدار البيضاء",
+    "Rabat": "الرباط",
+    "Marrakech": "مراكش",
+    "Fes": "فاس",
+    "Tangier": "طنجة",
+    "Agadir": "أكادير",
+    "Meknes": "مكناس",
+    "Oujda": "وجدة",
+    "Kenitra": "القنيطرة",
+    "Tetouan": "تطوان"
   }
 }

@@ -113,7 +113,14 @@ export default function OrdersPage() {
   };
 
   const getStatusLabel = (status: OrderStatus) => {
-    return status === 'pending' ? t('seller.orders.awaitingConfirm') : status;
+    const statusLabels: Record<OrderStatus, string> = {
+      pending: t('seller.orders.awaitingConfirm'),
+      confirmed: t('seller.orders.filterConfirmed'),
+      shipped: t('seller.orders.filterShipped'),
+      delivered: t('seller.orders.filterDelivered'),
+      cancelled: t('seller.orders.filterCancelled'),
+    };
+    return statusLabels[status] || status;
   };
 
   return (

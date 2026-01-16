@@ -19,6 +19,7 @@ export async function generateMetadata({ params: { locale } }: ShippingPageProps
 export default async function ShippingPage({ params: { locale } }: ShippingPageProps) {
   setRequestLocale(locale);
   const t = await getTranslations('shipping');
+  const tCities = await getTranslations('cities');
 
   return (
     <div className="min-h-screen bg-zinc-950">
@@ -101,15 +102,15 @@ export default async function ShippingPage({ params: { locale } }: ShippingPageP
               {/* Rules List */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-800/50">
-                  <span className="text-white text-sm">Casablanca</span>
+                  <span className="text-white text-sm">{tCities('Casablanca')}</span>
                   <span className="text-zinc-400 text-sm">25 MAD</span>
                 </div>
                 <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-800/50">
-                  <span className="text-white text-sm">Rabat</span>
+                  <span className="text-white text-sm">{tCities('Rabat')}</span>
                   <span className="text-zinc-400 text-sm">30 MAD</span>
                 </div>
                 <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-800/50">
-                  <span className="text-white text-sm">Marrakech</span>
+                  <span className="text-white text-sm">{tCities('Marrakech')}</span>
                   <span className="text-zinc-400 text-sm">40 MAD</span>
                 </div>
               </div>

@@ -198,6 +198,7 @@
       "filterConfirmed": "Confirmées",
       "filterShipped": "Expédiées",
       "filterDelivered": "Livrées",
+      "filterCancelled": "Annulées",
       "viewDetails": "Voir les détails",
       "confirmOrder": "Confirmer la commande",
       "markShipped": "Marquer comme expédiée",
@@ -404,5 +405,17 @@
     "supportedProviders": "Prestataires supportés :",
     "notifyPlaceholder": "Entrez votre e-mail pour être notifié",
     "notifyButton": "Me notifier"
+  },
+  "cities": {
+    "Casablanca": "Casablanca",
+    "Rabat": "Rabat",
+    "Marrakech": "Marrakech",
+    "Fes": "Fès",
+    "Tangier": "Tanger",
+    "Agadir": "Agadir",
+    "Meknes": "Meknès",
+    "Oujda": "Oujda",
+    "Kenitra": "Kénitra",
+    "Tetouan": "Tétouan"
   }
 }

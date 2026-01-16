@@ -531,7 +531,7 @@ export function CheckoutDrawer({
                                 handleCitySelect(city);
                               }}
                             >
-                              {city}
+                              {t(`cities.${city}`, { defaultValue: city })}
                             </button>
                           ))}
                         </div>
@@ -611,7 +611,7 @@ export function CheckoutDrawer({
                 <div className="flex justify-between text-xs text-zinc-400">
                   <span className="flex items-center gap-1">
                     <Truck size={12} /> {t('checkout.shipping')}{' '}
-                    {order.city ? t('checkout.shippingTo', { city: order.city }) : ''}
+                    {order.city ? t('checkout.shippingTo', { city: t(`cities.${order.city}`, { defaultValue: order.city }) }) : ''}
                   </span>
                   <span
                     className={
