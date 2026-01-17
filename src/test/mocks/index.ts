@@ -6,3 +6,4 @@
 
 export { MockProductRepository } from './MockProductRepository';
 export { MockSellerRepository } from './MockSellerRepository';
+export { MockOrderRepository } from './MockOrderRepository';

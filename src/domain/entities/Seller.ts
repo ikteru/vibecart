@@ -6,6 +6,57 @@
 
 import { PhoneNumber } from '../value-objects/PhoneNumber';
 
+export interface ShippingRule {
+  city: string;
+  rate: number;
+}
+
+export interface ShippingConfig {
+  defaultRate: number;
+  freeShippingThreshold?: number;
+  rules?: ShippingRule[];
+}
+
+export interface SpotlightConfig {
+  enabled: boolean;
+  title: string;
+  subtitle: string;
+  color: string;
+}
+
+export interface MakerBioConfig {
+  enabled: boolean;
+  name: string;
+  role: string;
+  bio: string;
+  imageUrl?: string;
+}
+
+export interface PinnedReview {
+  id: string;
+  username: string;
+  image: string;
+  note: string;
+}
+
+export interface VibeConfig {
+  spotlight?: SpotlightConfig;
+  makerBio?: MakerBioConfig;
+  pinnedReviews?: PinnedReview[];
+}
+
+export interface GoogleMapsConfig {
+  enabled: boolean;
+  placeName?: string;
+  rating?: number;
+  reviews?: number;
+}
+
+export interface InstagramConfig {
+  isConnected: boolean;
+  handle?: string;
+}
+
 export interface ShopConfig {
   heroText?: string;
   accentColor?: string;
@@ -13,6 +64,10 @@ export interface ShopConfig {
   instagramHandle?: string;
   logoUrl?: string;
   bannerUrl?: string;
+  shipping?: ShippingConfig;
+  vibe?: VibeConfig;
+  googleMaps?: GoogleMapsConfig;
+  instagram?: InstagramConfig;
 }
 
 export interface SellerProps {

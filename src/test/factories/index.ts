@@ -6,3 +6,4 @@
 
 export { ProductFactory } from './ProductFactory';
 export { SellerFactory } from './SellerFactory';
+export { OrderFactory } from './OrderFactory';

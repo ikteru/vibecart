@@ -1,608 +1,69 @@
-'use client';
+import { redirect } from 'next/navigation';
+import { getCurrentSeller } from '@/lib/auth/getCurrentSeller';
+import { getCurrentUser, createClient } from '@/infrastructure/auth/supabase-server';
+import { createRepositories } from '@/infrastructure/persistence/supabase';
+import { UpdateSellerProfile } from '@/application/use-cases/sellers/UpdateSellerProfile';
+import { SettingsForm } from '@/presentation/components/seller/SettingsForm';
+import type { UpdateSellerDTO } from '@/application/dtos/SellerDTO';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useParams, useRouter, usePathname } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import {
-  UserCircle,
-  Phone,
-  Instagram,
-  MapPin,
-  Truck,
-  Globe,
-  Share2,
-  Copy,
-  FileText,
-  Shield,
-  LogOut,
-  Loader2,
-  RefreshCw,
-  Plus,
-  X,
-  FileSpreadsheet,
-  Rocket,
-} from 'lucide-react';
-import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
-
-/**
- * Shipping rule interface
- */
-interface ShippingRule {
-  city: string;
-  rate: number;
+interface SettingsPageProps {
+  params: Promise<{
+    locale: string;
+  }>;
 }
-
-/**
- * Settings configuration
- */
-interface SettingsConfig {
-  whatsapp: {
-    enabled: boolean;
-    businessNumber: string;
-  };
-  instagram: {
-    isConnected: boolean;
-    handle: string;
-  };
-  googleMaps: {
-    enabled: boolean;
-    placeName: string;
-    rating: number;
-    reviews: number;
-  };
-  shipping: {
-    defaultRate: number;
-    rules: ShippingRule[];
-  };
-}
-
-const LANGUAGES = [
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'ar', name: 'العربية', flag: '🇸🇦' },
-  { code: 'ar-MA', name: 'الدارجة', flag: '🇲🇦' },
-];
 
 /**
  * Seller Settings Page
  *
- * Manage account, connections, shipping, and app settings.
+ * Server component that fetches seller data and passes to client form.
  */
-export default function SettingsPage() {
-  const params = useParams();
-  const locale = params.locale as string;
-  const router = useRouter();
-  const pathname = usePathname();
-  const t = useTranslations();
-  const sellerName = 'Ayyuur Home';
-  const [instagramHandle, setInstagramHandle] = useState('');
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [isSyncingMaps, setIsSyncingMaps] = useState(false);
-  const [newCity, setNewCity] = useState('');
-  const [newRate, setNewRate] = useState('');
-  const [showComingSoon, setShowComingSoon] = useState(false);
-  const [comingSoonFeature, setComingSoonFeature] = useState('');
+export default async function SettingsPage({ params }: SettingsPageProps) {
+  const { locale } = await params;
 
-  const [config, setConfig] = useState<SettingsConfig>({
-    whatsapp: {
-      enabled: true,
-      businessNumber: '+212 600 000 000',
-    },
-    instagram: {
-      isConnected: false,
-      handle: '',
-    },
-    googleMaps: {
-      enabled: true,
-      placeName: 'Ayyuur Home, Marrakech',
-      rating: 4.8,
-      reviews: 342,
-    },
-    shipping: {
-      defaultRate: 35,
-      rules: [
-        { city: 'Casablanca', rate: 25 },
-        { city: 'Marrakech', rate: 20 },
-        { city: 'Rabat', rate: 30 },
-      ],
-    },
-  });
+  // Get authenticated seller
+  const seller = await getCurrentSeller(locale);
+  const user = await getCurrentUser();
 
-  const handleConnectInstagram = () => {
-    if (!instagramHandle) return;
-    setIsConnecting(true);
-    setTimeout(() => {
-      setConfig((prev) => ({
-        ...prev,
-        instagram: { isConnected: true, handle: instagramHandle },
-      }));
-      setIsConnecting(false);
-    }, 2000);
-  };
+  if (!user) {
+    redirect(`/${locale}/auth/login`);
+  }
 
-  const handleSyncGoogleMaps = () => {
-    setIsSyncingMaps(true);
-    setTimeout(() => {
-      setConfig((prev) => ({
-        ...prev,
-        googleMaps: { ...prev.googleMaps, rating: 4.9, reviews: 356 },
-      }));
-      setIsSyncingMaps(false);
-    }, 1500);
-  };
+  // Server action for updating seller profile
+  async function updateSettings(data: UpdateSellerDTO) {
+    'use server';
 
-  const handleAddShippingRule = () => {
-    if (!newCity || !newRate) return;
-    setConfig((prev) => ({
-      ...prev,
-      shipping: {
-        ...prev.shipping,
-        rules: [...prev.shipping.rules, { city: newCity, rate: parseFloat(newRate) }],
-      },
-    }));
-    setNewCity('');
-    setNewRate('');
-  };
+    const supabaseServer = await createClient();
+    const repos = createRepositories(supabaseServer);
+    const currentUser = await getCurrentUser();
 
-  const handleRemoveShippingRule = (cityToRemove: string) => {
-    setConfig((prev) => ({
-      ...prev,
-      shipping: {
-        ...prev.shipping,
-        rules: prev.shipping.rules.filter((r) => r.city !== cityToRemove),
-      },
-    }));
-  };
+    if (!currentUser) {
+      return { success: false, error: 'Not authenticated' };
+    }
 
-  const handleCsvUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const updateUseCase = new UpdateSellerProfile(repos.sellerRepository);
+    const result = await updateUseCase.execute({
+      userId: currentUser.id,
+      updates: data,
+      locale,
+    });
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const text = event.target?.result as string;
-      if (!text) return;
+    return result;
+  }
 
-      const lines = text.split(/\r\n|\n/);
-      const newRules: ShippingRule[] = [];
+  // Server action for logout
+  async function logout() {
+    'use server';
 
-      lines.forEach((line) => {
-        const parts = line.split(',');
-        if (parts.length >= 2) {
-          const city = parts[0].trim();
-          const rateString = parts[1].trim().replace(/[^0-9.]/g, '');
-          const rate = parseFloat(rateString);
-
-          if (city && !isNaN(rate)) {
-            newRules.push({ city, rate });
-          }
-        }
-      });
-
-      if (newRules.length > 0) {
-        setConfig((prev) => {
-          const existingRulesMap = new Map(
-            prev.shipping.rules.map((r) => [r.city.toLowerCase(), r])
-          );
-          newRules.forEach((r) => {
-            existingRulesMap.set(r.city.toLowerCase(), r);
-          });
-          return {
-            ...prev,
-            shipping: {
-              ...prev.shipping,
-              rules: Array.from(existingRulesMap.values()),
-            },
-          };
-        });
-      }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
-  };
-
-  const handleSave = () => {
-    setComingSoonFeature(t('seller.settings.saveChanges'));
-    setShowComingSoon(true);
-  };
-
-  const showFeatureComingSoon = (feature: string) => {
-    setComingSoonFeature(feature);
-    setShowComingSoon(true);
-  };
-
-  const switchLanguage = (newLocale: string) => {
-    // Replace the current locale in the pathname with the new one
-    const newPathname = pathname.replace(`/${locale}`, `/${newLocale}`);
-    router.push(newPathname);
-  };
-
-  const copyProfileLink = () => {
-    const link = `vibecart.app/${sellerName.replace(/\s+/g, '').toLowerCase()}`;
-    navigator.clipboard.writeText(link);
-  };
+    const supabaseServer = await createClient();
+    await supabaseServer.auth.signOut();
+  }
 
   return (
-    <div className="animate-fade-in pb-24 space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">{t('seller.settings.title')}</h2>
-        <button
-          onClick={handleSave}
-          className="text-xs font-bold text-emerald-400 hover:text-emerald-300"
-        >
-          {t('seller.settings.saveChanges')}
-        </button>
-      </div>
-
-      {/* Account Details */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-4">
-        <div className="flex items-center gap-3 mb-2">
-          <UserCircle size={20} className="text-zinc-400" />
-          <h3 className="font-bold text-sm text-white">{t('seller.settings.accountDetails')}</h3>
-        </div>
-        <div className="space-y-3">
-          <div className="space-y-1">
-            <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">{t('seller.profile.shopName')}</label>
-            <input
-              type="text"
-              value={sellerName}
-              readOnly
-              className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-400 cursor-not-allowed"
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
-              {t('auth.phoneNumber')}
-            </label>
-            <input
-              type="tel"
-              value="+212 600 000 000"
-              readOnly
-              className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-400 cursor-not-allowed"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Connections Group */}
-      <div className="space-y-4">
-        <h3 className="text-xs font-bold text-zinc-500 uppercase px-1">{t('seller.settings.connections')}</h3>
-
-        {/* WhatsApp Business */}
-        <div className="bg-[#25D366]/10 border border-[#25D366]/20 rounded-2xl p-4 space-y-4 relative overflow-hidden">
-          <div className="flex items-center justify-between z-10 relative">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#25D366] rounded-lg flex items-center justify-center shadow-lg shadow-[#25D366]/20">
-                <Phone size={20} className="text-white" />
-              </div>
-              <div>
-                <h3 className="font-bold text-sm text-white">{t('seller.settings.whatsapp.title')}</h3>
-                <p className="text-[10px] text-[#25D366] font-medium">{t('seller.settings.whatsapp.cloudApi')}</p>
-              </div>
-            </div>
-            <div
-              className={`w-2 h-2 rounded-full ${
-                config.whatsapp.enabled ? 'bg-emerald-500' : 'bg-red-500'
-              }`}
-            />
-          </div>
-          <div className="flex justify-between items-center bg-zinc-900/50 p-2 rounded-lg border border-[#25D366]/20">
-            <span className="text-[10px] text-zinc-400 px-2">
-              {config.whatsapp.enabled ? t('seller.settings.connected') : t('seller.settings.notConnected')}
-            </span>
-            <button
-              onClick={() => showFeatureComingSoon(t('seller.settings.manageKeys'))}
-              className="text-[10px] font-bold text-[#25D366] hover:underline px-2"
-            >
-              {t('seller.settings.manageKeys')}
-            </button>
-          </div>
-        </div>
-
-        {/* Instagram Integration */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <Instagram size={20} className="text-white" />
-              </div>
-              <div>
-                <h3 className="font-bold text-sm text-white">{t('seller.settings.instagram.title')}</h3>
-                <p className="text-[10px] text-zinc-500">{t('seller.settings.instagram.syncProducts')}</p>
-              </div>
-            </div>
-            <div
-              className={`w-2 h-2 rounded-full ${
-                config.instagram.isConnected ? 'bg-emerald-500' : 'bg-red-500'
-              }`}
-            />
-          </div>
-
-          {!config.instagram.isConnected ? (
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder={t('seller.inventory.usernamePlaceholder')}
-                className="flex-1 bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none"
-                value={instagramHandle}
-                onChange={(e) => setInstagramHandle(e.target.value)}
-              />
-              <button
-                onClick={handleConnectInstagram}
-                disabled={!instagramHandle || isConnecting}
-                className="bg-white text-black text-xs font-bold px-4 rounded-lg hover:bg-zinc-200 disabled:opacity-50"
-              >
-                {isConnecting ? <Loader2 size={14} className="animate-spin" /> : t('seller.settings.instagram.connect')}
-              </button>
-            </div>
-          ) : (
-            <div className="bg-black/40 rounded-lg p-3 flex items-center justify-between border border-white/5">
-              <span className="text-sm font-medium text-white">@{config.instagram.handle}</span>
-              <button
-                onClick={() =>
-                  setConfig((prev) => ({
-                    ...prev,
-                    instagram: { ...prev.instagram, isConnected: false },
-                  }))
-                }
-                className="text-[10px] text-red-400 hover:text-red-300"
-              >
-                {t('seller.settings.instagram.disconnect')}
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Google Maps Integration */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#4285F4]/10 rounded-lg flex items-center justify-center border border-[#4285F4]/20">
-                <MapPin size={20} className="text-[#4285F4]" />
-              </div>
-              <div>
-                <h3 className="font-bold text-sm text-white">{t('seller.settings.googleMaps.title')}</h3>
-                <p className="text-[10px] text-zinc-500">{t('seller.settings.googleMaps.description')}</p>
-              </div>
-            </div>
-            <button
-              onClick={() =>
-                setConfig((prev) => ({
-                  ...prev,
-                  googleMaps: { ...prev.googleMaps, enabled: !prev.googleMaps.enabled },
-                }))
-              }
-              className={`w-10 h-6 rounded-full transition-colors relative ${
-                config.googleMaps.enabled ? 'bg-emerald-500' : 'bg-zinc-700'
-              }`}
-            >
-              <div
-                className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-                  config.googleMaps.enabled ? 'start-5' : 'start-1'
-                }`}
-              />
-            </button>
-          </div>
-
-          {config.googleMaps.enabled && (
-            <div className="space-y-3">
-              <input
-                type="text"
-                placeholder={t('seller.settings.googleMaps.placeId')}
-                className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none"
-                value={config.googleMaps.placeName}
-                onChange={(e) =>
-                  setConfig((prev) => ({
-                    ...prev,
-                    googleMaps: { ...prev.googleMaps, placeName: e.target.value },
-                  }))
-                }
-              />
-              <button
-                onClick={handleSyncGoogleMaps}
-                className="w-full flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 py-2 rounded-lg text-xs font-bold transition-colors"
-              >
-                {isSyncingMaps ? (
-                  <Loader2 size={14} className="animate-spin" />
-                ) : (
-                  <RefreshCw size={14} />
-                )}
-                {t('seller.settings.googleMaps.syncMetadata')}
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Shipping Rates */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-4">
-        <div className="flex items-center gap-3 mb-2">
-          <Truck size={20} className="text-zinc-400" />
-          <h3 className="font-bold text-sm text-white">{t('seller.settings.shipping.title')}</h3>
-        </div>
-
-        <div className="space-y-3">
-          <div className="flex items-center justify-between bg-black p-3 rounded-lg border border-zinc-800">
-            <span className="text-xs text-zinc-400">{t('seller.settings.shipping.defaultRateEverywhere')}</span>
-            <div className="flex items-center gap-1">
-              <input
-                type="number"
-                value={config.shipping.defaultRate}
-                onChange={(e) =>
-                  setConfig((prev) => ({
-                    ...prev,
-                    shipping: {
-                      ...prev.shipping,
-                      defaultRate: parseFloat(e.target.value) || 0,
-                    },
-                  }))
-                }
-                className="w-16 bg-zinc-900 text-center text-sm text-white font-bold rounded-md py-1 focus:outline-none"
-              />
-              <span className="text-xs text-zinc-500">{t('currency.MAD_symbol')}</span>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex justify-between items-center mb-2">
-              <p className="text-[10px] text-zinc-500 font-bold uppercase ms-1">{t('seller.settings.shipping.cityRules')}</p>
-              <label className="flex items-center gap-1 text-[10px] text-emerald-400 cursor-pointer hover:text-emerald-300">
-                <FileSpreadsheet size={12} />
-                <span>{t('seller.settings.shipping.importCsv')}</span>
-                <input
-                  type="file"
-                  accept=".csv"
-                  className="hidden"
-                  onChange={handleCsvUpload}
-                />
-              </label>
-            </div>
-
-            {config.shipping.rules.map((rule) => (
-              <div
-                key={rule.city}
-                className="flex items-center justify-between bg-black p-2 rounded-lg border border-zinc-800"
-              >
-                <span className="text-xs text-white font-bold px-2">{t(`cities.${rule.city}`, { defaultValue: rule.city })}</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-emerald-400 font-bold">{rule.rate} {t('currency.MAD_symbol')}</span>
-                  <button
-                    onClick={() => handleRemoveShippingRule(rule.city)}
-                    className="p-1 text-zinc-600 hover:text-red-400"
-                  >
-                    <X size={14} />
-                  </button>
-                </div>
-              </div>
-            ))}
-
-            <div className="flex gap-2 pt-2">
-              <input
-                type="text"
-                placeholder={t('seller.settings.shipping.cityPlaceholder')}
-                value={newCity}
-                onChange={(e) => setNewCity(e.target.value)}
-                className="flex-1 bg-black border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none"
-              />
-              <input
-                type="number"
-                placeholder={t('seller.settings.shipping.rate')}
-                value={newRate}
-                onChange={(e) => setNewRate(e.target.value)}
-                className="w-20 bg-black border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none"
-              />
-              <button
-                onClick={handleAddShippingRule}
-                className="bg-emerald-600 hover:bg-emerald-500 text-white p-2 rounded-lg"
-              >
-                <Plus size={16} />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Shipping Aggregator Coming Soon */}
-        <Link
-          href={`/${locale}/seller/settings/shipping`}
-          className="block mt-4 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-xl p-4 hover:border-purple-500/40 transition-colors"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-              <Rocket size={20} className="text-purple-400" />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <h4 className="font-bold text-sm text-white">{t('shipping.aggregatorSection')}</h4>
-                <span className="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-[9px] font-bold rounded-full">
-                  {t('shipping.comingSoon')}
-                </span>
-              </div>
-              <p className="text-[10px] text-zinc-500">
-                {t('shipping.description')}
-              </p>
-            </div>
-          </div>
-        </Link>
-      </div>
-
-      {/* App Settings */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-4">
-        <div className="flex items-center gap-3 mb-2">
-          <Globe size={20} className="text-zinc-400" />
-          <h3 className="font-bold text-sm text-white">{t('seller.settings.language')}</h3>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          {LANGUAGES.map((lang) => (
-            <button
-              key={lang.code}
-              onClick={() => switchLanguage(lang.code)}
-              className={`px-3 py-2 rounded-lg text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
-                locale === lang.code
-                  ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50'
-                  : 'bg-black border-zinc-800 text-zinc-500 hover:border-zinc-700'
-              }`}
-            >
-              <span>{lang.flag}</span>
-              <span>{lang.name}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-4">
-        <div className="flex items-center gap-3 mb-2">
-          <Share2 size={20} className="text-zinc-400" />
-          <h3 className="font-bold text-sm text-white">{t('seller.settings.publicProfileLink')}</h3>
-        </div>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={`vibecart.app/${sellerName.replace(/\s+/g, '').toLowerCase()}`}
-            readOnly
-            className="flex-1 bg-black border border-zinc-800 rounded-lg px-3 py-2 text-xs text-zinc-400 focus:outline-none"
-          />
-          <button
-            onClick={copyProfileLink}
-            className="bg-white text-black px-3 rounded-lg flex items-center justify-center"
-          >
-            <Copy size={14} />
-          </button>
-        </div>
-      </div>
-
-      {/* System Links */}
-      <div className="space-y-2 pt-4">
-        <button
-          onClick={() => showFeatureComingSoon(t('seller.settings.termsOfService'))}
-          className="w-full flex items-center gap-3 p-3 text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-xl transition-colors"
-        >
-          <FileText size={18} />
-          <span className="text-sm font-medium">{t('seller.settings.termsOfService')}</span>
-        </button>
-        <button
-          onClick={() => showFeatureComingSoon(t('seller.settings.privacyPolicy'))}
-          className="w-full flex items-center gap-3 p-3 text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-xl transition-colors"
-        >
-          <Shield size={18} />
-          <span className="text-sm font-medium">{t('seller.settings.privacyPolicy')}</span>
-        </button>
-        <button
-          onClick={() => showFeatureComingSoon(t('auth.logout'))}
-          className="w-full flex items-center gap-3 p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-colors"
-        >
-          <LogOut size={18} />
-          <span className="text-sm font-bold">{t('auth.logout')}</span>
-        </button>
-      </div>
-
-      <div className="text-center text-[10px] text-zinc-600 pb-4">VibeCart Seller Pro v1.2.4</div>
-
-      <ComingSoonModal
-        isOpen={showComingSoon}
-        onClose={() => setShowComingSoon(false)}
-        featureName={comingSoonFeature}
-      />
-    </div>
+    <SettingsForm
+      seller={seller}
+      locale={locale}
+      updateAction={updateSettings}
+      logoutAction={logout}
+    />
   );
 }

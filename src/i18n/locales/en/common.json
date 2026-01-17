@@ -186,6 +186,9 @@
       "pendingOrders": "Pending Orders",
       "revenueChange": "+{percent}% vs last week",
       "needsAttention": "Needs attention",
+      "allCaughtUp": "All caught up!",
+      "ordersToday": "{count} orders today",
+      "noRecentOrders": "No recent orders yet",
       "quickActions": "Quick Actions",
       "newDrop": "New Drop",
       "recentActivity": "Recent Activity"
@@ -235,7 +238,10 @@
       "magicWrite": "Magic Write",
       "descriptionPlaceholder": "Product description...",
       "keyFeatures": "Key features for AI (e.g. Organic, Handmade)",
-      "publishDrop": "Publish Drop"
+      "publishDrop": "Publish Drop",
+      "noProducts": "No products yet",
+      "addFirstProduct": "Add your first product",
+      "noVideo": "No video"
     },
     "vibe": {
       "title": "Shop Vibe",

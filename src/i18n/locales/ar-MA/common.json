@@ -186,6 +186,9 @@
       "pendingOrders": "الطلبات المعلقة",
       "revenueChange": "+{percent}% مقارنة بالسيمانة اللي فاتت",
       "needsAttention": "خاصو انتباه",
+      "allCaughtUp": "كلشي تمام!",
+      "ordersToday": "{count} طلب اليوم",
+      "noRecentOrders": "ما كاين حتى نشاط جديد",
       "quickActions": "الإجراءات السريعة",
       "newDrop": "دروب جديد",
       "recentActivity": "النشاط الأخير"
@@ -235,7 +238,10 @@
       "magicWrite": "كتابة سحرية",
       "descriptionPlaceholder": "وصف المنتوج...",
       "keyFeatures": "المميزات للذكاء الاصطناعي (مثلا: عضوي، صنع يدوي)",
-      "publishDrop": "نشر الدروب"
+      "publishDrop": "نشر الدروب",
+      "noProducts": "لا توجد منتجات بعد",
+      "addFirstProduct": "أضف أول منتج لك",
+      "noVideo": "لا يوجد فيديو"
     },
     "vibe": {
       "title": "ڤايب الحانوت",

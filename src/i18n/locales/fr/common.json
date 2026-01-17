@@ -186,6 +186,9 @@
       "pendingOrders": "Commandes en attente",
       "revenueChange": "+{percent}% vs semaine dernière",
       "needsAttention": "Nécessite attention",
+      "allCaughtUp": "Tout est à jour !",
+      "ordersToday": "{count} commandes aujourd'hui",
+      "noRecentOrders": "Pas d'activité récente",
       "quickActions": "Actions rapides",
       "newDrop": "Nouveau drop",
       "recentActivity": "Activité récente"
@@ -235,7 +238,10 @@
       "magicWrite": "Écriture magique",
       "descriptionPlaceholder": "Description du produit...",
       "keyFeatures": "Caractéristiques pour l'IA (ex. Bio, Fait main)",
-      "publishDrop": "Publier le drop"
+      "publishDrop": "Publier le drop",
+      "noProducts": "Aucun produit pour le moment",
+      "addFirstProduct": "Ajouter votre premier produit",
+      "noVideo": "Pas de vidéo"
     },
     "vibe": {
       "title": "Ambiance de la boutique",

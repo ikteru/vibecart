@@ -130,6 +130,7 @@ export function ShopPageClient({ seller, products: productDTOs }: ShopPageClient
     <div className="h-screen">
       <VideoFeed
         products={products}
+        sellerId={seller.id}
         initialVideoId={selectedProductId || undefined}
         onBack={handleBackFromFeed}
         shopConfig={{

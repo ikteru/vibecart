@@ -18,6 +18,7 @@ interface ShopConfig {
 
 interface VideoFeedProps {
   products: Product[];
+  sellerId: string;
   initialVideoId?: string;
   onBack: () => void;
   shopConfig: ShopConfig;
@@ -31,6 +32,7 @@ interface VideoFeedProps {
  */
 export function VideoFeed({
   products,
+  sellerId,
   initialVideoId,
   onBack,
   shopConfig,
@@ -112,6 +114,7 @@ export function VideoFeed({
       {checkoutProduct && (
         <CheckoutDrawer
           product={checkoutProduct}
+          sellerId={sellerId}
           isOpen={!!checkoutProduct}
           onClose={() => setCheckoutProduct(null)}
           shopConfig={shopConfig}

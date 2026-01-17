@@ -186,6 +186,9 @@
       "pendingOrders": "الطلبات المعلقة",
       "revenueChange": "+{percent}% مقارنة بالأسبوع الماضي",
       "needsAttention": "يحتاج اهتمام",
+      "allCaughtUp": "لا توجد طلبات معلقة!",
+      "ordersToday": "{count} طلب اليوم",
+      "noRecentOrders": "لا يوجد نشاط حديث",
       "quickActions": "إجراءات سريعة",
       "newDrop": "إصدار جديد",
       "recentActivity": "النشاط الأخير"
@@ -235,7 +238,10 @@
       "magicWrite": "كتابة سحرية",
       "descriptionPlaceholder": "وصف المنتج...",
       "keyFeatures": "الميزات للذكاء الاصطناعي (مثل: عضوي، صناعة يدوية)",
-      "publishDrop": "نشر الإصدار"
+      "publishDrop": "نشر الإصدار",
+      "noProducts": "لا توجد منتجات بعد",
+      "addFirstProduct": "أضف أول منتج لك",
+      "noVideo": "لا يوجد فيديو"
     },
     "vibe": {
       "title": "أجواء المتجر",

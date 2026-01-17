@@ -116,10 +116,45 @@ export default function NewProductPage() {
     }));
   };
 
-  const handlePublish = () => {
-    // TODO: Save to API
-    console.log('Publishing product:', { ...formData, videoUrl: selectedMedia?.url });
-    router.push(`/${locale}/seller/inventory`);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [publishError, setPublishError] = useState<string | null>(null);
+
+  const handlePublish = async () => {
+    if (!formData.title || !formData.price) return;
+
+    setIsPublishing(true);
+    setPublishError(null);
+
+    try {
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: formData.title,
+          description: formData.description || `Product: ${formData.title}`,
+          price: parseFloat(formData.price),
+          discountPrice: formData.discountPrice ? parseFloat(formData.discountPrice) : undefined,
+          promotionLabel: formData.promotionLabel || undefined,
+          stock: parseInt(formData.stock, 10) || 1,
+          videoUrl: selectedMedia?.url || undefined,
+          instagramMediaId: selectedMedia?.id || undefined,
+          category: formData.category,
+          variants: formData.selectedVariants.length > 0 ? formData.selectedVariants : undefined,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create product');
+      }
+
+      router.push(`/${locale}/seller/inventory`);
+    } catch (error) {
+      setPublishError(error instanceof Error ? error.message : 'Failed to create product');
+      setIsPublishing(false);
+    }
   };
 
   const goBack = () => {
@@ -339,13 +374,25 @@ export default function NewProductPage() {
               </div>
             </div>
 
+            {/* Error Message */}
+            {publishError && (
+              <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+                {publishError}
+              </div>
+            )}
+
             <div className="pt-6">
               <button
                 onClick={handlePublish}
-                disabled={!formData.title || !formData.price}
+                disabled={!formData.title || !formData.price || isPublishing}
                 className="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-zinc-200 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
               >
-                <Plus size={20} /> {t('seller.inventory.publishDrop')}
+                {isPublishing ? (
+                  <Loader2 size={20} className="animate-spin" />
+                ) : (
+                  <Plus size={20} />
+                )}{' '}
+                {isPublishing ? t('common.saving') : t('seller.inventory.publishDrop')}
               </button>
             </div>
           </div>

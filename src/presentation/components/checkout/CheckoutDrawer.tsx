@@ -42,6 +42,7 @@ interface OrderDetails {
 
 interface CheckoutDrawerProps {
   product: Product;
+  sellerId: string;
   isOpen: boolean;
   onClose: () => void;
   shopConfig: ShopConfig;
@@ -54,12 +55,15 @@ interface CheckoutDrawerProps {
  */
 export function CheckoutDrawer({
   product,
+  sellerId,
   isOpen,
   onClose,
   shopConfig,
 }: CheckoutDrawerProps) {
   const t = useTranslations();
-  const [step, setStep] = useState<'form' | 'success'>('form');
+  const [step, setStep] = useState<'form' | 'success' | 'error'>('form');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderError, setOrderError] = useState<string | null>(null);
 
   // Map Picker State
   const [isMapOpen, setIsMapOpen] = useState(false);
@@ -245,10 +249,62 @@ export function CheckoutDrawer({
     }
   };
 
-  const handleConfirmOrder = () => {
-    setTimeout(() => {
-      setStep('success');
-    }, 600);
+  const handleConfirmOrder = async () => {
+    setIsSubmitting(true);
+    setOrderError(null);
+
+    try {
+      // Parse location from URL if available
+      let location: { lat: number; lng: number } | undefined;
+      if (order.locationUrl) {
+        const match = order.locationUrl.match(/q=(-?\d+\.?\d*),(-?\d+\.?\d*)/);
+        if (match) {
+          location = { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
+        }
+      }
+
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sellerId,
+          customerName: order.fullName,
+          customerPhone: order.phone,
+          shippingAddress: {
+            city: order.city,
+            neighborhood: neighborhood || undefined,
+            street: order.address,
+            location,
+            locationUrl: order.locationUrl,
+          },
+          items: [
+            {
+              productId: product.id,
+              title: product.title,
+              price: product.price.amount,
+              quantity: order.quantity,
+              selectedVariant: order.selectedVariant,
+            },
+          ],
+          shippingCost: order.shippingCost,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setStep('success');
+      } else {
+        setOrderError(result.error || 'Failed to create order');
+        setStep('error');
+      }
+    } catch (error) {
+      console.error('Order creation error:', error);
+      setOrderError('Network error. Please try again.');
+      setStep('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isFormValid = () => {
