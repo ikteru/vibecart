@@ -24,6 +24,7 @@
     "email": "البريد الإلكتروني",
     "password": "كلمة المرور",
     "forgotPassword": "نسيت كلمة المرور؟",
+    "backToLogin": "العودة لتسجيل الدخول",
     "orContinueWith": "أو تابع بـ",
     "continueWithPhone": "تابع بالواتساب",
     "continueWithEmail": "تابع بالبريد الإلكتروني",
@@ -41,7 +42,45 @@
     "createAccount": "إنشاء حساب",
     "alreadyHaveAccount": "لديك حساب؟ سجل الدخول",
     "dontHaveAccount": "ليس لديك حساب؟ أنشئ واحداً",
-    "checkEmail": "تحقق من بريدك الإلكتروني لرابط التأكيد"
+    "checkEmail": "تحقق من بريدك الإلكتروني لرابط التأكيد",
+    "forgotPasswordPage": {
+      "title": "نسيت كلمة المرور؟",
+      "subtitle": "أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة التعيين",
+      "sendLink": "إرسال الرابط",
+      "emailSent": "تم الإرسال!",
+      "emailSentDescription": "تحقق من صندوق الوارد في"
+    },
+    "resetPassword": {
+      "title": "كلمة مرور جديدة",
+      "subtitle": "أدخل كلمة المرور الجديدة",
+      "newPassword": "كلمة المرور الجديدة",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "updatePassword": "تحديث كلمة المرور",
+      "success": "تم تحديث كلمة المرور!",
+      "redirecting": "جاري التحويل إلى لوحة التحكم...",
+      "errors": {
+        "mismatch": "كلمات المرور غير متطابقة",
+        "tooShort": "كلمة المرور قصيرة جداً (6 أحرف على الأقل)"
+      }
+    },
+    "onboarding": {
+      "title": "أنشئ متجرك",
+      "subtitle": "أدخل معلوماتك للبدء بالبيع",
+      "shopName": "اسم المتجر",
+      "shopNamePlaceholder": "مثال: حرف أيور",
+      "handle": "معرف المتجر",
+      "handlePlaceholder": "hiraf-ayyuur",
+      "handleHint": "أحرف صغيرة وأرقام فقط، 3-30 حرف",
+      "whatsappNumber": "رقم الواتساب",
+      "createShop": "إنشاء المتجر",
+      "errors": {
+        "shopNameTooShort": "اسم المتجر قصير جداً (3 أحرف على الأقل)",
+        "handleInvalid": "المعرف يجب أن يكون بين 3 و 30 حرف",
+        "handleTaken": "هذا المعرف مستخدم، جرب آخر",
+        "alreadySeller": "لديك متجر بالفعل",
+        "generic": "حدث خطأ، يرجى المحاولة مرة أخرى"
+      }
+    }
   },
   "landing": {
     "hero": {

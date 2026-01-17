@@ -24,6 +24,7 @@
     "email": "Email",
     "password": "Password",
     "forgotPassword": "Forgot password?",
+    "backToLogin": "Back to login",
     "orContinueWith": "Or continue with",
     "continueWithPhone": "Continue with WhatsApp",
     "continueWithEmail": "Continue with Email",
@@ -41,7 +42,45 @@
     "createAccount": "Create Account",
     "alreadyHaveAccount": "Already have an account? Sign in",
     "dontHaveAccount": "Don't have an account? Create one",
-    "checkEmail": "Check your email for a confirmation link"
+    "checkEmail": "Check your email for a confirmation link",
+    "forgotPasswordPage": {
+      "title": "Forgot your password?",
+      "subtitle": "Enter your email and we'll send you a reset link",
+      "sendLink": "Send reset link",
+      "emailSent": "Email sent!",
+      "emailSentDescription": "Check your inbox at"
+    },
+    "resetPassword": {
+      "title": "Set new password",
+      "subtitle": "Enter your new password below",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "updatePassword": "Update password",
+      "success": "Password updated!",
+      "redirecting": "Redirecting to dashboard...",
+      "errors": {
+        "mismatch": "Passwords do not match",
+        "tooShort": "Password must be at least 6 characters"
+      }
+    },
+    "onboarding": {
+      "title": "Create your shop",
+      "subtitle": "Fill in your details to start selling",
+      "shopName": "Shop name",
+      "shopNamePlaceholder": "e.g. Ayyuur's Crafts",
+      "handle": "Shop handle",
+      "handlePlaceholder": "ayyuurs-crafts",
+      "handleHint": "Lowercase letters and numbers only, 3-30 characters",
+      "whatsappNumber": "WhatsApp number",
+      "createShop": "Create shop",
+      "errors": {
+        "shopNameTooShort": "Shop name must be at least 3 characters",
+        "handleInvalid": "Handle must be between 3 and 30 characters",
+        "handleTaken": "This handle is already taken, try another",
+        "alreadySeller": "You already have a shop",
+        "generic": "Something went wrong, please try again"
+      }
+    }
   },
   "landing": {
     "hero": {

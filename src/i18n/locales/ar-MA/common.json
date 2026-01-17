@@ -24,6 +24,7 @@
     "email": "الإيميل",
     "password": "كلمة السر",
     "forgotPassword": "نسيتي كلمة السر؟",
+    "backToLogin": "رجع للدخول",
     "orContinueWith": "ولا كمل بـ",
     "continueWithPhone": "كمل بالواتساب",
     "continueWithEmail": "كمل بالإيميل",
@@ -41,7 +42,45 @@
     "createAccount": "إنشاء حساب",
     "alreadyHaveAccount": "عندك حساب؟ دخل",
     "dontHaveAccount": "ماعندكش حساب؟ كري واحد",
-    "checkEmail": "شوف الإيميل ديالك باش تأكد الحساب"
+    "checkEmail": "شوف الإيميل ديالك باش تأكد الحساب",
+    "forgotPasswordPage": {
+      "title": "نسيتي كلمة السر؟",
+      "subtitle": "دخل الإيميل ديالك وغادي نصيفطو ليك لينك",
+      "sendLink": "صيفط لينك التغيير",
+      "emailSent": "تصيفطات الرسالة!",
+      "emailSentDescription": "شوف الإيميل ديالك"
+    },
+    "resetPassword": {
+      "title": "كلمة سر جديدة",
+      "subtitle": "دخل كلمة السر الجديدة",
+      "newPassword": "كلمة السر الجديدة",
+      "confirmPassword": "أكد كلمة السر",
+      "updatePassword": "بدل كلمة السر",
+      "success": "تبدلات كلمة السر!",
+      "redirecting": "كنرجعوك للحانوت...",
+      "errors": {
+        "mismatch": "كلمات السر ماشي بحال بحال",
+        "tooShort": "كلمة السر قصيرة بزاف (6 حروف على الأقل)"
+      }
+    },
+    "onboarding": {
+      "title": "كري الحانوت ديالك",
+      "subtitle": "عمر المعلومات باش تبدا البيع",
+      "shopName": "اسم الحانوت",
+      "shopNamePlaceholder": "مثلا: دار أيور",
+      "handle": "معرف الحانوت",
+      "handlePlaceholder": "dar-ayyuur",
+      "handleHint": "حروف صغار وأرقام فقط، 3-30 حرف",
+      "whatsappNumber": "رقم الواتساب",
+      "createShop": "كري الحانوت",
+      "errors": {
+        "shopNameTooShort": "اسم الحانوت قصير بزاف (3 حروف على الأقل)",
+        "handleInvalid": "المعرف خاص يكون بين 3 و 30 حرف",
+        "handleTaken": "هاد المعرف مستعمل، جرب واحد آخر",
+        "alreadySeller": "عندك حانوت من قبل",
+        "generic": "كاين مشكل، عاود مرة أخرى"
+      }
+    }
   },
   "landing": {
     "hero": {

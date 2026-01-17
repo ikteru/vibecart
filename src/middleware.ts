@@ -42,16 +42,43 @@ export async function middleware(request: NextRequest) {
       },
     });
 
+    // Use internal Docker URL for server-side API calls
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    // Use public URL for cookie name matching (browser sets cookies with public URL hostname)
+    const publicUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+
+    // Extract hostnames to handle cookie name remapping between environments
+    const serverHost = new URL(supabaseUrl).hostname;
+    const publicHost = new URL(publicUrl).hostname;
+    const needsCookieRemap = serverHost !== publicHost;
+
     const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      supabaseUrl,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
           getAll() {
-            return request.cookies.getAll();
+            const cookies = request.cookies.getAll();
+            // Remap cookie names from public hostname to server hostname
+            // e.g., sb-localhost-auth-token -> sb-kong-auth-token
+            if (needsCookieRemap) {
+              return cookies.map(cookie => ({
+                ...cookie,
+                name: cookie.name.replace(`sb-${publicHost}`, `sb-${serverHost}`),
+              }));
+            }
+            return cookies;
           },
           setAll(cookiesToSet: { name: string; value: string; options?: any }[]) {
-            cookiesToSet.forEach(({ name, value }) =>
+            // Remap cookie names back to public hostname for browser
+            const remappedCookies = needsCookieRemap
+              ? cookiesToSet.map(c => ({
+                  ...c,
+                  name: c.name.replace(`sb-${serverHost}`, `sb-${publicHost}`),
+                }))
+              : cookiesToSet;
+
+            remappedCookies.forEach(({ name, value }) =>
               request.cookies.set(name, value)
             );
             response = NextResponse.next({
@@ -59,7 +86,7 @@ export async function middleware(request: NextRequest) {
                 headers: request.headers,
               },
             });
-            cookiesToSet.forEach(({ name, value, options }) =>
+            remappedCookies.forEach(({ name, value, options }) =>
               response.cookies.set(name, value, options)
             );
           },
@@ -67,9 +94,17 @@ export async function middleware(request: NextRequest) {
       }
     );
 
+    // Debug: Log cookies received
+    const allCookies = request.cookies.getAll();
+    console.log('[Middleware] Cookies received:', allCookies.map(c => c.name).join(', '));
+    console.log('[Middleware] Supabase URL:', supabaseUrl);
+
     const {
       data: { user },
+      error: authError,
     } = await supabase.auth.getUser();
+
+    console.log('[Middleware] User:', user?.email || 'null', 'Error:', authError?.message || 'none');
 
     if (!user) {
       // Extract locale from pathname

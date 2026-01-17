@@ -24,6 +24,7 @@
     "email": "E-mail",
     "password": "Mot de passe",
     "forgotPassword": "Mot de passe oublié ?",
+    "backToLogin": "Retour à la connexion",
     "orContinueWith": "Ou continuer avec",
     "continueWithPhone": "Continuer avec WhatsApp",
     "continueWithEmail": "Continuer avec E-mail",
@@ -41,7 +42,45 @@
     "createAccount": "Créer un compte",
     "alreadyHaveAccount": "Vous avez déjà un compte ? Connectez-vous",
     "dontHaveAccount": "Pas de compte ? Créez-en un",
-    "checkEmail": "Vérifiez votre e-mail pour le lien de confirmation"
+    "checkEmail": "Vérifiez votre e-mail pour le lien de confirmation",
+    "forgotPasswordPage": {
+      "title": "Mot de passe oublié ?",
+      "subtitle": "Entrez votre e-mail et nous vous enverrons un lien de réinitialisation",
+      "sendLink": "Envoyer le lien",
+      "emailSent": "E-mail envoyé !",
+      "emailSentDescription": "Vérifiez votre boîte de réception à"
+    },
+    "resetPassword": {
+      "title": "Nouveau mot de passe",
+      "subtitle": "Entrez votre nouveau mot de passe",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "updatePassword": "Mettre à jour",
+      "success": "Mot de passe mis à jour !",
+      "redirecting": "Redirection vers le tableau de bord...",
+      "errors": {
+        "mismatch": "Les mots de passe ne correspondent pas",
+        "tooShort": "Le mot de passe doit contenir au moins 6 caractères"
+      }
+    },
+    "onboarding": {
+      "title": "Créez votre boutique",
+      "subtitle": "Remplissez vos informations pour commencer à vendre",
+      "shopName": "Nom de la boutique",
+      "shopNamePlaceholder": "ex. Artisanat Ayyour",
+      "handle": "Identifiant de boutique",
+      "handlePlaceholder": "artisanat-ayyour",
+      "handleHint": "Lettres minuscules et chiffres uniquement, 3-30 caractères",
+      "whatsappNumber": "Numéro WhatsApp",
+      "createShop": "Créer la boutique",
+      "errors": {
+        "shopNameTooShort": "Le nom doit contenir au moins 3 caractères",
+        "handleInvalid": "L'identifiant doit contenir entre 3 et 30 caractères",
+        "handleTaken": "Cet identifiant est déjà pris, essayez-en un autre",
+        "alreadySeller": "Vous avez déjà une boutique",
+        "generic": "Une erreur s'est produite, veuillez réessayer"
+      }
+    }
   },
   "landing": {
     "hero": {

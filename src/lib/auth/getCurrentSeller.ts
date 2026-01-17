@@ -30,8 +30,7 @@ export async function getCurrentSeller(locale: string): Promise<SellerResponseDT
 
   if (!result.seller) {
     // No seller profile - redirect to onboarding
-    // TODO: Create onboarding page
-    redirect(`/${locale}/auth/login?message=no_seller_profile`);
+    redirect(`/${locale}/auth/onboarding`);
   }
 
   return result.seller;

@@ -12,17 +12,42 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     const cookieStore = await cookies();
+
+    // Use internal Docker URL for server-side API calls
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    // Use public URL for cookie name matching
+    const publicUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+
+    // Extract hostnames to handle cookie name remapping between environments
+    const serverHost = new URL(supabaseUrl).hostname;
+    const publicHost = new URL(publicUrl).hostname;
+    const needsCookieRemap = serverHost !== publicHost;
+
     const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      supabaseUrl,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
           getAll() {
-            return cookieStore.getAll();
+            const allCookies = cookieStore.getAll();
+            if (needsCookieRemap) {
+              return allCookies.map(cookie => ({
+                ...cookie,
+                name: cookie.name.replace(`sb-${publicHost}`, `sb-${serverHost}`),
+              }));
+            }
+            return allCookies;
           },
           setAll(cookiesToSet: { name: string; value: string; options?: any }[]) {
             try {
-              cookiesToSet.forEach(({ name, value, options }) =>
+              const remappedCookies = needsCookieRemap
+                ? cookiesToSet.map(c => ({
+                    ...c,
+                    name: c.name.replace(`sb-${serverHost}`, `sb-${publicHost}`),
+                  }))
+                : cookiesToSet;
+
+              remappedCookies.forEach(({ name, value, options }) =>
                 cookieStore.set(name, value, options)
               );
             } catch {

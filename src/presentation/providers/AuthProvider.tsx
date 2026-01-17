@@ -8,7 +8,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signInWithEmail: (email: string, password: string) => Promise<{ error: AuthError | null }>;
+  signInWithEmail: (email: string, password: string) => Promise<{ data: { session: Session | null } | null; error: AuthError | null }>;
   signInWithPhone: (phone: string) => Promise<{ error: AuthError | null }>;
   verifyOTP: (phone: string, token: string) => Promise<{ error: AuthError | null }>;
   signInWithGoogle: () => Promise<{ error: AuthError | null }>;
@@ -53,11 +53,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [supabase.auth]);
 
   const signInWithEmail = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    return { error };
+    return { data, error };
   };
 
   const signInWithPhone = async (phone: string) => {
@@ -80,21 +80,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signInWithGoogle = async () => {
+    const locale = window.location.pathname.split('/')[1] || 'ar-MA';
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/${locale}/auth/callback`,
       },
     });
     return { error };
   };
 
   const signUp = async (email: string, password: string) => {
+    const locale = window.location.pathname.split('/')[1] || 'ar-MA';
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${window.location.origin}/${locale}/auth/callback`,
       },
     });
     return { error };

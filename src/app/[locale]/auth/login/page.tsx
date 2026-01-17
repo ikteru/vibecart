@@ -1,7 +1,8 @@
 'use client';
 
 import { Suspense, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams, useParams } from 'next/navigation';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/presentation/providers/AuthProvider';
 import { Phone, Mail, Chrome, ArrowLeft, Loader2 } from 'lucide-react';
@@ -11,15 +12,18 @@ type AuthMethod = 'select' | 'phone' | 'email' | 'otp';
 
 function LoginContent() {
   const t = useTranslations();
-  const router = useRouter();
+  const params = useParams();
+  const locale = params.locale as string;
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get('redirectTo') || '/ar-MA/seller/dashboard';
+  const redirectTo = searchParams.get('redirectTo') || `/${locale}/seller/dashboard`;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { signInWithEmail, signInWithPhone, verifyOTP, signInWithGoogle, signUp } = useAuth();
 
   const [authMethod, setAuthMethod] = useState<AuthMethod>('select');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showComingSoon, setShowComingSoon] = useState(false);
 
   // Phone auth state
   const [phone, setPhone] = useState('');
@@ -61,7 +65,8 @@ function LoginContent() {
       setError(error.message);
       setIsLoading(false);
     } else {
-      router.push(redirectTo);
+      // Use full page navigation to ensure cookies are sent
+      window.location.href = redirectTo;
     }
   };
 
@@ -70,34 +75,32 @@ function LoginContent() {
     setIsLoading(true);
     setError(null);
 
-    const { error } = isSignUp
-      ? await signUp(email, password)
-      : await signInWithEmail(email, password);
-
-    if (error) {
-      setError(error.message);
+    if (isSignUp) {
+      const { error } = await signUp(email, password);
+      if (error) {
+        setError(error.message);
+      } else {
+        setError(t('auth.checkEmail'));
+      }
       setIsLoading(false);
     } else {
-      if (isSignUp) {
-        setError(t('auth.checkEmail'));
+      const { data, error } = await signInWithEmail(email, password);
+      if (error) {
+        setError(error.message);
         setIsLoading(false);
+      } else if (data?.session) {
+        // Session established - use full page navigation to ensure cookies are sent
+        window.location.href = redirectTo;
       } else {
-        router.push(redirectTo);
+        setError(t('errors.serverError'));
+        setIsLoading(false);
       }
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    setIsLoading(true);
-    setError(null);
-
-    const { error } = await signInWithGoogle();
-
-    if (error) {
-      setError(error.message);
-      setIsLoading(false);
-    }
-    // Redirect handled by OAuth flow
+  const handleComingSoonClick = () => {
+    setShowComingSoon(true);
+    setTimeout(() => setShowComingSoon(false), 3000);
   };
 
   const goBack = () => {
@@ -122,13 +125,14 @@ function LoginContent() {
         {/* Auth Options */}
         {authMethod === 'select' && (
           <div className="space-y-4">
-            {/* Phone OTP */}
+            {/* Phone OTP - Coming Soon */}
             <button
-              onClick={() => setAuthMethod('phone')}
-              className="flex w-full items-center gap-4 rounded-xl bg-green-600 px-6 py-4 text-lg font-semibold text-white transition-all hover:bg-green-700 active:scale-[0.98]"
+              onClick={handleComingSoonClick}
+              className="flex w-full items-center gap-4 rounded-xl bg-green-600/50 px-6 py-4 text-lg font-semibold text-white transition-all cursor-not-allowed"
             >
               <Phone className="h-6 w-6" />
               {t('auth.continueWithPhone')}
+              <span className="ml-auto text-xs text-green-200">{t('common.comingSoon')}</span>
             </button>
 
             {/* Email/Password */}
@@ -140,18 +144,14 @@ function LoginContent() {
               {t('auth.continueWithEmail')}
             </button>
 
-            {/* Google OAuth */}
+            {/* Google OAuth - Coming Soon */}
             <button
-              onClick={handleGoogleSignIn}
-              disabled={isLoading}
-              className="flex w-full items-center gap-4 rounded-xl bg-white px-6 py-4 text-lg font-semibold text-zinc-900 transition-all hover:bg-zinc-100 active:scale-[0.98] disabled:opacity-50"
+              onClick={handleComingSoonClick}
+              className="flex w-full items-center gap-4 rounded-xl bg-white/60 px-6 py-4 text-lg font-semibold text-zinc-900 transition-all cursor-not-allowed"
             >
-              {isLoading ? (
-                <Loader2 className="h-6 w-6 animate-spin" />
-              ) : (
-                <Chrome className="h-6 w-6" />
-              )}
+              <Chrome className="h-6 w-6" />
               {t('auth.continueWithGoogle')}
+              <span className="ml-auto text-xs text-zinc-500">{t('common.comingSoon')}</span>
             </button>
 
             {error && (
@@ -310,6 +310,16 @@ function LoginContent() {
                 className="mt-1 block w-full rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-white placeholder-zinc-500 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                 required
               />
+              {!isSignUp && (
+                <div className="mt-2 text-end">
+                  <Link
+                    href={`/${locale}/auth/forgot-password`}
+                    className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+                  >
+                    {t('auth.forgotPassword')}
+                  </Link>
+                </div>
+              )}
             </div>
 
             {error && (
@@ -348,6 +358,13 @@ function LoginContent() {
           </form>
         )}
       </div>
+
+      {/* Coming Soon Toast */}
+      {showComingSoon && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-zinc-800 text-white px-4 py-3 rounded-lg shadow-lg z-50 animate-in fade-in slide-in-from-bottom-4">
+          {t('common.featureComingSoon', { feature: t('auth.continueWithGoogle').split(' ').slice(-1)[0] })}
+        </div>
+      )}
     </div>
   );
 }
