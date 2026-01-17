@@ -55,6 +55,8 @@ export interface GoogleMapsConfig {
 export interface InstagramConfig {
   isConnected: boolean;
   handle?: string;
+  userId?: string;           // Instagram user ID for API calls
+  tokenExpiresAt?: string;   // ISO date string for UI warning about expiring token
 }
 
 export interface ShopConfig {

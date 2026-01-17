@@ -1,42 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { ArrowLeft, Instagram, Upload, Loader2, Plus, Check, Sparkles } from 'lucide-react';
+import { ArrowLeft, Instagram, Upload, Loader2, Plus, Sparkles, AlertCircle, RefreshCw } from 'lucide-react';
 import { DirectionalIcon } from '@/presentation/components/ui/DirectionalIcon';
 import type { ProductCategoryType } from '@/lib/constants';
 import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
+import type { InstagramMediaDTO } from '@/application/dtos/InstagramDTO';
 
-/**
- * Mock Instagram media for demo
- */
-const MOCK_IG_MEDIA = [
-  {
-    id: 'ig1',
-    url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
-    thumbnail: 'https://images.unsplash.com/photo-1574634534894-89d7576c8259?w=300&q=80',
-    caption: 'New Rugs in stock!',
-  },
-  {
-    id: 'ig2',
-    url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-    thumbnail: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=300&q=80',
-    caption: 'Handmade ceramics',
-  },
-  {
-    id: 'ig3',
-    url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-    thumbnail: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=300&q=80',
-    caption: 'Argan oil magic',
-  },
-  {
-    id: 'ig4',
-    url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
-    thumbnail: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&q=80',
-    caption: 'Leather bags',
-  },
-];
+interface InstagramMedia {
+  id: string;
+  url: string;
+  thumbnail?: string;
+  caption?: string;
+  permalink: string;
+}
 
 const PRESET_VARIANTS: Record<ProductCategoryType, string[]> = {
   clothing: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
@@ -61,9 +40,13 @@ export default function NewProductPage() {
   const t = useTranslations();
 
   const [step, setStep] = useState<Step>('connect');
-  const [instagramHandle, setInstagramHandle] = useState('');
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [selectedMedia, setSelectedMedia] = useState<(typeof MOCK_IG_MEDIA)[0] | null>(null);
+  const [isCheckingConnection, setIsCheckingConnection] = useState(true);
+  const [isConnected, setIsConnected] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const [instagramMedia, setInstagramMedia] = useState<InstagramMedia[]>([]);
+  const [mediaError, setMediaError] = useState<string | null>(null);
+  const [needsReconnect, setNeedsReconnect] = useState(false);
+  const [selectedMedia, setSelectedMedia] = useState<InstagramMedia | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showComingSoon, setShowComingSoon] = useState(false);
 
@@ -79,19 +62,84 @@ export default function NewProductPage() {
     selectedVariants: [] as string[],
   });
 
-  const handleConnectInstagram = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!instagramHandle) return;
-    setIsConnecting(true);
-    setTimeout(() => {
-      setIsConnecting(false);
-      setStep('select');
-    }, 2000);
+  // Check if Instagram is connected on mount
+  useEffect(() => {
+    checkInstagramConnection();
+  }, []);
+
+  const checkInstagramConnection = async () => {
+    setIsCheckingConnection(true);
+    try {
+      // Try to fetch media - if it works, we're connected
+      const response = await fetch('/api/instagram/media?limit=1');
+      if (response.ok) {
+        setIsConnected(true);
+        setStep('connect'); // Will show "Fetch My Reels" button
+      } else {
+        const data = await response.json();
+        if (data.needsReconnect) {
+          setNeedsReconnect(true);
+        }
+        setIsConnected(false);
+      }
+    } catch {
+      setIsConnected(false);
+    } finally {
+      setIsCheckingConnection(false);
+    }
   };
 
-  const handleSelectMedia = (media: (typeof MOCK_IG_MEDIA)[0]) => {
+  const handleConnectInstagram = () => {
+    // Redirect to OAuth flow
+    window.location.href = '/api/auth/instagram';
+  };
+
+  const handleFetchMedia = async () => {
+    setIsFetching(true);
+    setMediaError(null);
+
+    try {
+      const response = await fetch('/api/instagram/media?limit=20');
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.needsReconnect) {
+          setNeedsReconnect(true);
+          setMediaError(t('seller.inventory.instagramReconnectRequired'));
+        } else {
+          setMediaError(data.error || t('seller.inventory.fetchMediaFailed'));
+        }
+        return;
+      }
+
+      // Filter for videos only and transform to our format
+      const videos: InstagramMedia[] = (data.media as InstagramMediaDTO[])
+        .filter((m) => m.mediaType === 'VIDEO')
+        .map((m) => ({
+          id: m.id,
+          url: m.mediaUrl || '',
+          thumbnail: m.thumbnailUrl,
+          caption: m.caption,
+          permalink: m.permalink,
+        }));
+
+      if (videos.length === 0) {
+        setMediaError(t('seller.inventory.noVideosFound'));
+        return;
+      }
+
+      setInstagramMedia(videos);
+      setStep('select');
+    } catch {
+      setMediaError(t('seller.inventory.fetchMediaFailed'));
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const handleSelectMedia = (media: InstagramMedia) => {
     setSelectedMedia(media);
-    setFormData((prev) => ({ ...prev, description: media.caption }));
+    setFormData((prev) => ({ ...prev, description: media.caption || '' }));
     setStep('create');
   };
 
@@ -178,49 +226,104 @@ export default function NewProductPage() {
       </div>
 
       <div className="max-w-lg mx-auto p-6 pb-20">
-        {/* Step 1: Connect */}
+        {/* Step 1: Connect / Fetch */}
         {step === 'connect' && (
           <div className="space-y-6 animate-fade-in">
-            <div className="text-center space-y-2">
-              <div className="w-16 h-16 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-purple-500/20">
-                <Instagram size={32} className="text-white" />
+            {isCheckingConnection ? (
+              <div className="flex flex-col items-center justify-center py-12 gap-4">
+                <Loader2 size={32} className="animate-spin text-zinc-400" />
+                <p className="text-zinc-500 text-sm">{t('common.loading')}</p>
               </div>
-              <h2 className="text-xl font-bold text-white">{t('seller.inventory.importFromInstagram')}</h2>
-              <p className="text-zinc-400 text-sm">{t('seller.inventory.enterHandle')}</p>
-            </div>
+            ) : isConnected ? (
+              /* Instagram is connected - show fetch button */
+              <>
+                <div className="text-center space-y-2">
+                  <div className="w-16 h-16 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-purple-500/20">
+                    <Instagram size={32} className="text-white" />
+                  </div>
+                  <h2 className="text-xl font-bold text-white">{t('seller.inventory.importFromInstagram')}</h2>
+                  <p className="text-zinc-400 text-sm">{t('seller.inventory.selectFromReels')}</p>
+                </div>
 
-            <form onSubmit={handleConnectInstagram} className="space-y-4">
-              <input
-                type="text"
-                placeholder={t('seller.inventory.usernamePlaceholder')}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
-                value={instagramHandle}
-                onChange={(e) => setInstagramHandle(e.target.value)}
-              />
-              <button
-                type="submit"
-                disabled={!instagramHandle || isConnecting}
-                className="w-full bg-white text-black font-bold py-3 rounded-xl hover:bg-zinc-200 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
-              >
-                {isConnecting ? <Loader2 size={18} className="animate-spin" /> : t('seller.inventory.fetchMedia')}
-              </button>
-            </form>
+                {/* Error Message */}
+                {mediaError && (
+                  <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+                    <AlertCircle size={16} />
+                    <span>{mediaError}</span>
+                  </div>
+                )}
 
-            <div className="relative py-4">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-zinc-800"></div>
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-zinc-950 px-2 text-zinc-600 font-bold">{t('common.or')}</span>
-              </div>
-            </div>
+                <button
+                  onClick={handleFetchMedia}
+                  disabled={isFetching}
+                  className="w-full bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 text-white font-bold py-3 rounded-xl hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center justify-center gap-2"
+                >
+                  {isFetching ? (
+                    <Loader2 size={18} className="animate-spin" />
+                  ) : (
+                    <RefreshCw size={18} />
+                  )}
+                  {t('seller.inventory.fetchMyReels')}
+                </button>
 
-            <button
-              onClick={() => setShowComingSoon(true)}
-              className="w-full bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold py-3 rounded-xl hover:text-white transition-colors flex items-center justify-center gap-2"
-            >
-              <Upload size={18} /> {t('seller.inventory.uploadVideo')}
-            </button>
+                <div className="relative py-4">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-zinc-800"></div>
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-zinc-950 px-2 text-zinc-600 font-bold">{t('common.or')}</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setShowComingSoon(true)}
+                  className="w-full bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold py-3 rounded-xl hover:text-white transition-colors flex items-center justify-center gap-2"
+                >
+                  <Upload size={18} /> {t('seller.inventory.uploadVideo')}
+                </button>
+              </>
+            ) : (
+              /* Instagram not connected - show connect button */
+              <>
+                <div className="text-center space-y-2">
+                  <div className="w-16 h-16 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-purple-500/20">
+                    <Instagram size={32} className="text-white" />
+                  </div>
+                  <h2 className="text-xl font-bold text-white">{t('seller.inventory.importFromInstagram')}</h2>
+                  <p className="text-zinc-400 text-sm">
+                    {needsReconnect
+                      ? t('seller.inventory.instagramReconnectRequired')
+                      : t('seller.inventory.connectInstagramFirst')}
+                  </p>
+                </div>
+
+                <button
+                  onClick={handleConnectInstagram}
+                  className="w-full bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 text-white font-bold py-3 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                >
+                  <Instagram size={18} />
+                  {needsReconnect
+                    ? t('seller.settings.instagram.reconnect')
+                    : t('seller.settings.instagram.connectWithInstagram')}
+                </button>
+
+                <div className="relative py-4">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-zinc-800"></div>
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-zinc-950 px-2 text-zinc-600 font-bold">{t('common.or')}</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setShowComingSoon(true)}
+                  className="w-full bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold py-3 rounded-xl hover:text-white transition-colors flex items-center justify-center gap-2"
+                >
+                  <Upload size={18} /> {t('seller.inventory.uploadVideo')}
+                </button>
+              </>
+            )}
           </div>
         )}
 
@@ -228,29 +331,48 @@ export default function NewProductPage() {
         {step === 'select' && (
           <div className="space-y-4 animate-fade-in">
             <p className="text-sm text-zinc-400">{t('seller.inventory.selectVideoHint')}</p>
-            <div className="grid grid-cols-2 gap-3">
-              {MOCK_IG_MEDIA.map((media) => (
-                <div
-                  key={media.id}
-                  onClick={() => handleSelectMedia(media)}
-                  className="relative aspect-[9/16] bg-zinc-900 rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-emerald-500 group"
+            {instagramMedia.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-zinc-500">{t('seller.inventory.noVideosFound')}</p>
+                <button
+                  onClick={() => setStep('connect')}
+                  className="mt-4 text-emerald-400 text-sm hover:underline"
                 >
-                  <video
-                    src={media.url}
-                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                    muted
-                    loop
-                    playsInline
-                  />
-                  <div className="absolute bottom-0 inset-x-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
-                    <p className="text-[10px] text-white line-clamp-2">{media.caption}</p>
+                  {t('common.goBack')}
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3">
+                {instagramMedia.map((media) => (
+                  <div
+                    key={media.id}
+                    onClick={() => handleSelectMedia(media)}
+                    className="relative aspect-[9/16] bg-zinc-900 rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-emerald-500 group"
+                  >
+                    {media.thumbnail ? (
+                      <img
+                        src={media.thumbnail}
+                        alt={media.caption || 'Instagram video'}
+                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                      />
+                    ) : (
+                      <video
+                        src={media.url}
+                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                        muted
+                        playsInline
+                      />
+                    )}
+                    <div className="absolute bottom-0 inset-x-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+                      <p className="text-[10px] text-white line-clamp-2">{media.caption || t('seller.inventory.noCaption')}</p>
+                    </div>
+                    <div className="absolute top-2 end-2 w-6 h-6 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Plus size={14} className="text-white" />
+                    </div>
                   </div>
-                  <div className="absolute top-2 end-2 w-6 h-6 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Plus size={14} className="text-white" />
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

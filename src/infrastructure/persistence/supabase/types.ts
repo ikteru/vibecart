@@ -105,3 +105,16 @@ export interface ActivityLogRow {
   metadata: Record<string, unknown>;
   created_at: string;
 }
+
+export interface InstagramTokenRow {
+  id: string;
+  seller_id: string;
+  instagram_user_id: string;
+  instagram_username: string;
+  access_token_encrypted: string;
+  token_type: string;
+  expires_at: string;
+  scopes: string[];
+  created_at: string;
+  updated_at: string;
+}

@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   UserCircle,
@@ -22,6 +22,8 @@ import {
   X,
   FileSpreadsheet,
   Rocket,
+  CheckCircle,
+  AlertCircle,
 } from 'lucide-react';
 import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
 import type { SellerResponseDTO, UpdateSellerDTO } from '@/application/dtos/SellerDTO';
@@ -49,16 +51,42 @@ interface SettingsFormProps {
 export function SettingsForm({ seller, locale, updateAction, logoutAction }: SettingsFormProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const t = useTranslations();
 
-  const [instagramHandle, setInstagramHandle] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
   const [isSyncingMaps, setIsSyncingMaps] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [newCity, setNewCity] = useState('');
   const [newRate, setNewRate] = useState('');
   const [showComingSoon, setShowComingSoon] = useState(false);
   const [comingSoonFeature, setComingSoonFeature] = useState('');
+  const [instagramMessage, setInstagramMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // Handle Instagram OAuth callback messages
+  useEffect(() => {
+    const instagramSuccess = searchParams.get('instagram_success');
+    const instagramError = searchParams.get('instagram_error');
+    const instagramUsername = searchParams.get('instagram_username');
+
+    if (instagramSuccess === 'true') {
+      setInstagramMessage({
+        type: 'success',
+        text: instagramUsername
+          ? t('seller.settings.instagram.connectedAs', { username: instagramUsername })
+          : t('seller.settings.instagram.connectedSuccess'),
+      });
+      // Clear URL params after showing message
+      router.replace(pathname, { scroll: false });
+    } else if (instagramError) {
+      setInstagramMessage({
+        type: 'error',
+        text: instagramError,
+      });
+      router.replace(pathname, { scroll: false });
+    }
+  }, [searchParams, pathname, router, t]);
 
   // Initialize config from seller data
   const [config, setConfig] = useState({
@@ -83,15 +111,42 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
   });
 
   const handleConnectInstagram = () => {
-    if (!instagramHandle) return;
     setIsConnecting(true);
-    setTimeout(() => {
-      setConfig((prev) => ({
-        ...prev,
-        instagram: { isConnected: true, handle: instagramHandle },
-      }));
-      setIsConnecting(false);
-    }, 2000);
+    // Redirect to Instagram OAuth flow
+    window.location.href = '/api/auth/instagram';
+  };
+
+  const handleDisconnectInstagram = async () => {
+    setIsDisconnecting(true);
+    try {
+      const response = await fetch('/api/instagram/disconnect', {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        setConfig((prev) => ({
+          ...prev,
+          instagram: { isConnected: false, handle: '' },
+        }));
+        setInstagramMessage({
+          type: 'success',
+          text: t('seller.settings.instagram.disconnectedSuccess'),
+        });
+      } else {
+        const data = await response.json();
+        setInstagramMessage({
+          type: 'error',
+          text: data.error || t('seller.settings.instagram.disconnectFailed'),
+        });
+      }
+    } catch {
+      setInstagramMessage({
+        type: 'error',
+        text: t('seller.settings.instagram.disconnectFailed'),
+      });
+    } finally {
+      setIsDisconnecting(false);
+    }
   };
 
   const handleSyncGoogleMaps = () => {
@@ -314,35 +369,55 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
             />
           </div>
 
-          {!config.instagram.isConnected ? (
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder={t('seller.inventory.usernamePlaceholder')}
-                className="flex-1 bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none"
-                value={instagramHandle}
-                onChange={(e) => setInstagramHandle(e.target.value)}
-              />
+          {/* Success/Error Message */}
+          {instagramMessage && (
+            <div
+              className={`flex items-center gap-2 p-3 rounded-lg text-xs ${
+                instagramMessage.type === 'success'
+                  ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
+                  : 'bg-red-500/10 border border-red-500/20 text-red-400'
+              }`}
+            >
+              {instagramMessage.type === 'success' ? (
+                <CheckCircle size={14} />
+              ) : (
+                <AlertCircle size={14} />
+              )}
+              <span>{instagramMessage.text}</span>
               <button
-                onClick={handleConnectInstagram}
-                disabled={!instagramHandle || isConnecting}
-                className="bg-white text-black text-xs font-bold px-4 rounded-lg hover:bg-zinc-200 disabled:opacity-50"
+                onClick={() => setInstagramMessage(null)}
+                className="ms-auto hover:opacity-70"
               >
-                {isConnecting ? <Loader2 size={14} className="animate-spin" /> : t('seller.settings.instagram.connect')}
+                <X size={14} />
               </button>
             </div>
+          )}
+
+          {!config.instagram.isConnected ? (
+            <button
+              onClick={handleConnectInstagram}
+              disabled={isConnecting}
+              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 text-white text-xs font-bold py-3 rounded-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
+            >
+              {isConnecting ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Instagram size={14} />
+              )}
+              {t('seller.settings.instagram.connectWithInstagram')}
+            </button>
           ) : (
             <div className="bg-black/40 rounded-lg p-3 flex items-center justify-between border border-white/5">
-              <span className="text-sm font-medium text-white">@{config.instagram.handle}</span>
+              <div className="flex items-center gap-2">
+                <CheckCircle size={14} className="text-emerald-400" />
+                <span className="text-sm font-medium text-white">@{config.instagram.handle}</span>
+              </div>
               <button
-                onClick={() =>
-                  setConfig((prev) => ({
-                    ...prev,
-                    instagram: { ...prev.instagram, isConnected: false },
-                  }))
-                }
-                className="text-[10px] text-red-400 hover:text-red-300"
+                onClick={handleDisconnectInstagram}
+                disabled={isDisconnecting}
+                className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-1 disabled:opacity-50"
               >
+                {isDisconnecting && <Loader2 size={10} className="animate-spin" />}
                 {t('seller.settings.instagram.disconnect')}
               </button>
             </div>
