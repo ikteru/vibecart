@@ -1,7 +1,34 @@
-# VibeCart Local Supabase Development Environment
-# Based on Supabase self-hosted setup
+# VibeCart Local Development Environment
+# Includes Next.js app and Supabase infrastructure
 
 services:
+  # Next.js Application
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      target: dev
+    container_name: vibecart-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Client-side URL (browser accesses via host's localhost)
+      NEXT_PUBLIC_SUPABASE_URL: http://localhost:8000
+      # Server-side URL (container accesses via Docker network)
+      SUPABASE_URL: http://kong:8000
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
+      SUPABASE_SERVICE_ROLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_DEFAULT_LOCALE: ar-MA
+    volumes:
+      - ../src:/app/src
+      - ../public:/app/public
+      - ../messages:/app/messages
+    depends_on:
+      kong:
+        condition: service_healthy
+
   # PostgreSQL Database
   db:
     image: supabase/postgres:15.1.1.78
@@ -106,11 +133,13 @@ services:
       ENABLE_TAILSCALE: "false"
       DNS_NODES: "''"
 
-  # Supabase Storage
+  # Supabase Storage (optional - has migration issues, not needed for core functionality)
   storage:
     image: supabase/storage-api:v0.43.11
     container_name: vibecart-storage
     restart: unless-stopped
+    profiles:
+      - storage
     depends_on:
       db:
         condition: service_healthy

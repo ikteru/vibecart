@@ -4,12 +4,18 @@ import { cookies } from 'next/headers';
 /**
  * Create a Supabase client for use in Server Components
  * Used in Server Components, Route Handlers, and Server Actions
+ *
+ * Note: When running in Docker, SUPABASE_URL points to internal Docker network (kong:8000)
+ * while NEXT_PUBLIC_SUPABASE_URL points to localhost for browser access.
  */
 export async function createClient() {
   const cookieStore = await cookies();
 
+  // Use internal Docker URL for server-side, fallback to public URL
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
+
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    supabaseUrl,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
