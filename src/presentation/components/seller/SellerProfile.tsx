@@ -200,7 +200,7 @@ export function SellerProfile({
           onClick={onBack}
           className="absolute left-3 p-2.5 rounded-full hover:bg-zinc-800 transition-colors"
         >
-          <DirectionalIcon icon={ArrowLeft} size={20} flipInRTL={false} />
+          <DirectionalIcon icon={ArrowLeft} size={20} />
         </button>
         <div className="absolute right-3 flex gap-2">
           <button

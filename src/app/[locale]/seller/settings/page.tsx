@@ -440,7 +440,7 @@ export default function SettingsPage() {
                 }
                 className="w-16 bg-zinc-900 text-center text-sm text-white font-bold rounded-md py-1 focus:outline-none"
               />
-              <span className="text-xs text-zinc-500">MAD</span>
+              <span className="text-xs text-zinc-500">{t('currency.MAD_symbol')}</span>
             </div>
           </div>
 
@@ -466,7 +466,7 @@ export default function SettingsPage() {
               >
                 <span className="text-xs text-white font-bold px-2">{t(`cities.${rule.city}`, { defaultValue: rule.city })}</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-emerald-400 font-bold">{rule.rate} MAD</span>
+                  <span className="text-xs text-emerald-400 font-bold">{rule.rate} {t('currency.MAD_symbol')}</span>
                   <button
                     onClick={() => handleRemoveShippingRule(rule.city)}
                     className="p-1 text-zinc-600 hover:text-red-400"

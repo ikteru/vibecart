@@ -65,10 +65,11 @@
 
   /* Utility class for flipping directional icons in RTL */
   .rtl-flip {
-    transform: scaleX(-1);
+    /* No transform in LTR - arrow points left (back) */
   }
 
   [dir="rtl"] .rtl-flip {
+    /* Flip in RTL - arrow points right (back) */
     transform: scaleX(-1);
   }
 

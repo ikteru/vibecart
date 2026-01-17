@@ -5,7 +5,80 @@
  * Immutable - all operations return new instances.
  */
 
-export type Currency = 'MAD' | 'USD' | 'EUR';
+export type Currency = 'MAD' | 'USD' | 'EUR' | 'SAR' | 'AED';
+
+/**
+ * Currency configuration for supported currencies
+ */
+export interface CurrencyConfig {
+  code: Currency;
+  symbol: string;
+  nameKey: string; // i18n translation key
+  subunitNameKey: string; // i18n translation key for subunit (centimes, cents, etc.)
+  subunitRatio: number; // How many subunits in 1 unit (usually 100)
+  decimalPlaces: number;
+}
+
+/**
+ * Currency configurations - used for display and formatting
+ * Translation keys reference messages/[locale]/common.json
+ */
+export const CURRENCY_CONFIG: Record<Currency, CurrencyConfig> = {
+  MAD: {
+    code: 'MAD',
+    symbol: 'د.م.',
+    nameKey: 'currency.MAD',
+    subunitNameKey: 'currency.centimes',
+    subunitRatio: 100,
+    decimalPlaces: 2,
+  },
+  USD: {
+    code: 'USD',
+    symbol: '$',
+    nameKey: 'currency.USD',
+    subunitNameKey: 'currency.cents',
+    subunitRatio: 100,
+    decimalPlaces: 2,
+  },
+  EUR: {
+    code: 'EUR',
+    symbol: '€',
+    nameKey: 'currency.EUR',
+    subunitNameKey: 'currency.cents',
+    subunitRatio: 100,
+    decimalPlaces: 2,
+  },
+  SAR: {
+    code: 'SAR',
+    symbol: 'ر.س',
+    nameKey: 'currency.SAR',
+    subunitNameKey: 'currency.halalas',
+    subunitRatio: 100,
+    decimalPlaces: 2,
+  },
+  AED: {
+    code: 'AED',
+    symbol: 'د.إ',
+    nameKey: 'currency.AED',
+    subunitNameKey: 'currency.fils',
+    subunitRatio: 100,
+    decimalPlaces: 2,
+  },
+};
+
+/**
+ * Get currency configuration
+ */
+export function getCurrencyConfig(currency: Currency): CurrencyConfig {
+  return CURRENCY_CONFIG[currency];
+}
+
+/**
+ * Check if a string is a valid currency code
+ */
+export function isValidCurrency(code: string): code is Currency {
+  return code in CURRENCY_CONFIG;
+}
 
 export class Money {
   private constructor(

@@ -470,5 +470,28 @@
       "order3": "3x Leather Pouf",
       "order4": "1x Tagine Set"
     }
+  },
+  "currency": {
+    "MAD": "Moroccan Dirham",
+    "MAD_short": "Dirham",
+    "MAD_symbol": "MAD",
+    "USD": "US Dollar",
+    "USD_short": "Dollar",
+    "USD_symbol": "$",
+    "EUR": "Euro",
+    "EUR_short": "Euro",
+    "EUR_symbol": "€",
+    "SAR": "Saudi Riyal",
+    "SAR_short": "Riyal",
+    "SAR_symbol": "SAR",
+    "AED": "UAE Dirham",
+    "AED_short": "Dirham",
+    "AED_symbol": "AED",
+    "centimes": "centimes",
+    "cents": "cents",
+    "halalas": "halalas",
+    "fils": "fils",
+    "priceFormat": "{currency} {amount}",
+    "selectCurrency": "Select currency"
   }
 }

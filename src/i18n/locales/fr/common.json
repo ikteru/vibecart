@@ -453,5 +453,28 @@
       "order3": "3× Pouf en cuir",
       "order4": "1× Ensemble tajine"
     }
+  },
+  "currency": {
+    "MAD": "Dirham marocain",
+    "MAD_short": "Dirham",
+    "MAD_symbol": "MAD",
+    "USD": "Dollar américain",
+    "USD_short": "Dollar",
+    "USD_symbol": "$",
+    "EUR": "Euro",
+    "EUR_short": "Euro",
+    "EUR_symbol": "€",
+    "SAR": "Riyal saoudien",
+    "SAR_short": "Riyal",
+    "SAR_symbol": "SAR",
+    "AED": "Dirham émirati",
+    "AED_short": "Dirham",
+    "AED_symbol": "AED",
+    "centimes": "centimes",
+    "cents": "cents",
+    "halalas": "halalas",
+    "fils": "fils",
+    "priceFormat": "{amount} {currency}",
+    "selectCurrency": "Sélectionner la devise"
   }
 }

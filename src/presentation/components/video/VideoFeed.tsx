@@ -85,7 +85,7 @@ export function VideoFeed({
           onClick={onBack}
           className="p-2 bg-black/40 backdrop-blur-md rounded-full text-white border border-white/10 hover:bg-black/60 transition-colors"
         >
-          <DirectionalIcon icon={ArrowLeft} size={24} flipInRTL={false} />
+          <DirectionalIcon icon={ArrowLeft} size={24} />
         </button>
       </div>
       <div className="fixed top-4 right-4 z-30">

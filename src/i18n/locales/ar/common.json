@@ -453,5 +453,28 @@
       "order3": "3× مقعد جلدي",
       "order4": "1× طقم طاجين"
     }
+  },
+  "currency": {
+    "MAD": "درهم مغربي",
+    "MAD_short": "درهم",
+    "MAD_symbol": "د.م.",
+    "USD": "دولار أمريكي",
+    "USD_short": "دولار",
+    "USD_symbol": "$",
+    "EUR": "يورو",
+    "EUR_short": "يورو",
+    "EUR_symbol": "€",
+    "SAR": "ريال سعودي",
+    "SAR_short": "ريال",
+    "SAR_symbol": "ر.س",
+    "AED": "درهم إماراتي",
+    "AED_short": "درهم",
+    "AED_symbol": "د.إ",
+    "centimes": "سنتيم",
+    "cents": "سنت",
+    "halalas": "هللة",
+    "fils": "فلس",
+    "priceFormat": "{amount} {currency}",
+    "selectCurrency": "اختر العملة"
   }
 }

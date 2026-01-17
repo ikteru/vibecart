@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { SellerProfile } from '@/presentation/components/seller/SellerProfile';
 import { VideoFeed } from '@/presentation/components/video/VideoFeed';
 import { Product } from '@/domain/entities/Product';
-import { Money } from '@/domain/value-objects/Money';
+import { Money, type Currency } from '@/domain/value-objects/Money';
 import { ProductCategory } from '@/domain/value-objects/ProductCategory';
 import type { ProductResponseDTO } from '@/application/dtos/ProductDTO';
 import type { PublicSellerDTO } from '@/application/dtos/SellerDTO';
@@ -25,9 +25,9 @@ function dtoToProduct(dto: ProductResponseDTO): Product {
     sellerId: dto.sellerId,
     title: dto.title,
     description: dto.description,
-    price: Money.create(dto.price.amount, dto.price.currency as 'MAD' | 'USD' | 'EUR'),
+    price: Money.create(dto.price.amount, dto.price.currency as Currency),
     discountPrice: dto.discountPrice
-      ? Money.create(dto.discountPrice.amount, dto.discountPrice.currency as 'MAD' | 'USD' | 'EUR')
+      ? Money.create(dto.discountPrice.amount, dto.discountPrice.currency as Currency)
       : undefined,
     promotionLabel: dto.promotionLabel || undefined,
     stock: dto.stock,

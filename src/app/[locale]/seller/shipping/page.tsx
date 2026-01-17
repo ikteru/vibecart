@@ -20,6 +20,7 @@ export default async function ShippingPage({ params: { locale } }: ShippingPageP
   setRequestLocale(locale);
   const t = await getTranslations('shipping');
   const tCities = await getTranslations('cities');
+  const tCurrency = await getTranslations('currency');
 
   return (
     <div className="min-h-screen bg-zinc-950">
@@ -66,7 +67,7 @@ export default async function ShippingPage({ params: { locale } }: ShippingPageP
                     defaultValue="35"
                     className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50"
                   />
-                  <span className="text-zinc-400 text-sm">MAD</span>
+                  <span className="text-zinc-400 text-sm">{tCurrency('MAD_symbol')}</span>
                 </div>
               </div>
 
@@ -81,7 +82,7 @@ export default async function ShippingPage({ params: { locale } }: ShippingPageP
                     defaultValue="500"
                     className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50"
                   />
-                  <span className="text-zinc-400 text-sm">MAD</span>
+                  <span className="text-zinc-400 text-sm">{tCurrency('MAD_symbol')}</span>
                 </div>
               </div>
             </div>
@@ -101,15 +102,15 @@ export default async function ShippingPage({ params: { locale } }: ShippingPageP
               <div className="space-y-2">
                 <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-800/50">
                   <span className="text-white text-sm">{tCities('Casablanca')}</span>
-                  <span className="text-zinc-400 text-sm">25 MAD</span>
+                  <span className="text-zinc-400 text-sm">25 {tCurrency('MAD_symbol')}</span>
                 </div>
                 <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-800/50">
                   <span className="text-white text-sm">{tCities('Rabat')}</span>
-                  <span className="text-zinc-400 text-sm">30 MAD</span>
+                  <span className="text-zinc-400 text-sm">30 {tCurrency('MAD_symbol')}</span>
                 </div>
                 <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-800/50">
                   <span className="text-white text-sm">{tCities('Marrakech')}</span>
-                  <span className="text-zinc-400 text-sm">40 MAD</span>
+                  <span className="text-zinc-400 text-sm">40 {tCurrency('MAD_symbol')}</span>
                 </div>
               </div>
             </div>

@@ -24,24 +24,24 @@ export default function DashboardPage() {
   const recentOrders = [
     {
       id: '1',
-      customerName: 'Fatima Zahra',
-      items: '2x Handmade Rug',
+      customerNameKey: 'mockData.customers.customer1',
+      items: '2x',
+      itemKey: 'mockData.products.berberRug',
       total: 450,
-      currency: 'MAD',
     },
     {
       id: '2',
-      customerName: 'Mohammed Ali',
-      items: '1x Ceramic Vase',
+      customerNameKey: 'mockData.customers.customer2',
+      items: '1x',
+      itemKey: 'mockData.products.ceramicVase',
       total: 180,
-      currency: 'MAD',
     },
     {
       id: '3',
-      customerName: 'Amina Benali',
-      items: '3x Argan Oil',
+      customerNameKey: 'mockData.customers.customer3',
+      items: '3x',
+      itemKey: 'mockData.products.arganOilSet',
       total: 350,
-      currency: 'MAD',
     },
   ];
 
@@ -107,25 +107,29 @@ export default function DashboardPage() {
       {/* Recent Activity */}
       <h3 className="text-sm font-bold text-white mb-3">{t('seller.dashboard.recentActivity')}</h3>
       <div className="space-y-2">
-        {recentOrders.map((order) => (
-          <div
-            key={order.id}
-            className="bg-zinc-900 border border-zinc-800 p-3 rounded-xl flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-400 border border-zinc-700">
-                {order.customerName.charAt(0)}
+        {recentOrders.map((order) => {
+          const customerName = t(order.customerNameKey);
+          const itemName = t(order.itemKey);
+          return (
+            <div
+              key={order.id}
+              className="bg-zinc-900 border border-zinc-800 p-3 rounded-xl flex items-center justify-between"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-400 border border-zinc-700">
+                  {customerName.charAt(0)}
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-white">{customerName}</p>
+                  <p className="text-[10px] text-zinc-500">{order.items} {itemName}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs font-bold text-white">{order.customerName}</p>
-                <p className="text-[10px] text-zinc-500">{order.items}</p>
-              </div>
+              <span className="text-xs font-bold text-emerald-400">
+                +{order.total} {t('currency.MAD_symbol')}
+              </span>
             </div>
-            <span className="text-xs font-bold text-emerald-400">
-              +{order.total} {order.currency}
-            </span>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
