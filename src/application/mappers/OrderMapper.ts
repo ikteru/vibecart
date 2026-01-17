@@ -57,8 +57,10 @@ export const OrderMapper = {
 
   /**
    * Convert an Order entity to a summary DTO for lists
+   * @param order - The order entity
+   * @param unreadCount - Optional unread message count (defaults to 0)
    */
-  toSummaryDTO(order: Order): OrderSummaryDTO {
+  toSummaryDTO(order: Order, unreadCount = 0): OrderSummaryDTO {
     const items = order.items;
     const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -79,16 +81,23 @@ export const OrderMapper = {
         currency: order.total.currency,
       },
       status: order.status,
-      hasUnreadMessages: false, // TODO: Implement unread tracking
+      hasUnreadMessages: unreadCount > 0,
       createdAt: order.createdAt.toISOString(),
     };
   },
 
   /**
-   * Convert multiple Order entities to summary DTOs
+   * Convert multiple Order entities to summary DTOs with unread counts
+   * @param orders - The order entities
+   * @param unreadCounts - Map of order ID to unread message count
    */
-  toSummaryDTOList(orders: Order[]): OrderSummaryDTO[] {
-    return orders.map((order) => this.toSummaryDTO(order));
+  toSummaryDTOList(
+    orders: Order[],
+    unreadCounts?: Map<string, number>
+  ): OrderSummaryDTO[] {
+    return orders.map((order) =>
+      this.toSummaryDTO(order, unreadCounts?.get(order.id) || 0)
+    );
   },
 
   /**

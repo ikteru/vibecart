@@ -1,15 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
-  Filter,
   Search,
+  X,
   MessageCircle,
-  MoreHorizontal,
+  ChevronRight,
   Info,
 } from 'lucide-react';
-import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
 import type { OrderSummaryDTO } from '@/application/dtos/OrderDTO';
 import type { OrderStatus } from '@/domain/entities/Order';
 
@@ -20,27 +21,41 @@ interface OrdersListProps {
 /**
  * Orders List Client Component
  *
- * Displays orders with filtering by status.
+ * Displays orders with filtering by status and search.
  * Receives real order data from server component.
  */
 export function OrdersList({ orders }: OrdersListProps) {
   const t = useTranslations();
+  const params = useParams();
+  const locale = params.locale as string;
   const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [showComingSoon, setShowComingSoon] = useState(false);
-  const [comingSoonFeature, setComingSoonFeature] = useState('');
-
-  const showFeatureComingSoon = (feature: string) => {
-    setComingSoonFeature(feature);
-    setShowComingSoon(true);
-  };
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
 
   // Get currency symbol from translations
   const currencySymbol = t('common.currencySymbol');
 
-  const filteredOrders = orders.filter((order) => {
-    if (filterStatus === 'all') return true;
-    return order.status === filterStatus;
-  });
+  // Filter orders by status and search query
+  const filteredOrders = useMemo(() => {
+    let result = orders;
+
+    // Filter by status
+    if (filterStatus !== 'all') {
+      result = result.filter((order) => order.status === filterStatus);
+    }
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter((order) =>
+        order.orderNumber.toLowerCase().includes(query) ||
+        order.customerName.toLowerCase().includes(query) ||
+        order.customerPhone.includes(query)
+      );
+    }
+
+    return result;
+  }, [orders, filterStatus, searchQuery]);
 
   const filterOptions = [
     { key: 'all', label: t('seller.orders.filterAll') },
@@ -100,21 +115,40 @@ export function OrdersList({ orders }: OrdersListProps) {
     <div className="animate-fade-in pb-24">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-white">{t('seller.orders.title')}</h2>
-        <div className="flex gap-2">
-          <button
-            onClick={() => showFeatureComingSoon(t('common.search'))}
-            className="p-2 bg-zinc-900 rounded-lg text-zinc-400 hover:text-white"
-          >
-            <Filter size={16} />
-          </button>
-          <button
-            onClick={() => showFeatureComingSoon(t('common.search'))}
-            className="p-2 bg-zinc-900 rounded-lg text-zinc-400 hover:text-white"
-          >
-            <Search size={16} />
-          </button>
-        </div>
+        <button
+          onClick={() => setShowSearch(!showSearch)}
+          className={`p-2 rounded-lg transition-colors ${
+            showSearch || searchQuery
+              ? 'bg-blue-500/20 text-blue-400'
+              : 'bg-zinc-900 text-zinc-400 hover:text-white'
+          }`}
+        >
+          <Search size={16} />
+        </button>
       </div>
+
+      {/* Search Input */}
+      {showSearch && (
+        <div className="relative mb-4">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t('seller.orders.searchPlaceholder')}
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-10 pr-10 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600"
+            autoFocus
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
+      )}
 
       <div className="flex gap-2 mb-4 overflow-x-auto no-scrollbar">
         {filterOptions.map((option) => (
@@ -150,9 +184,10 @@ export function OrdersList({ orders }: OrdersListProps) {
           </div>
         ) : (
           filteredOrders.map((order) => (
-            <div
+            <Link
               key={order.id}
-              className="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl animate-fade-in"
+              href={`/${locale}/seller/orders/${order.id}`}
+              className="block bg-zinc-900 border border-zinc-800 p-4 rounded-2xl animate-fade-in hover:border-zinc-700 transition-colors"
             >
               <div className="flex justify-between items-start mb-3">
                 <div className="flex gap-3">
@@ -184,34 +219,23 @@ export function OrdersList({ orders }: OrdersListProps) {
               </div>
 
               <div className="flex gap-2">
-                <button
-                  onClick={() => showFeatureComingSoon(t('seller.orders.viewChat'))}
-                  className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-black hover:text-white transition-colors py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2"
-                >
-                  <MessageCircle size={14} /> {t('seller.orders.viewChat')}
+                <div className="flex-1 bg-zinc-800 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 text-zinc-300">
+                  <MessageCircle size={14} /> {t('seller.orders.viewDetails')}
                   {order.hasUnreadMessages && (
                     <span className="bg-red-500 text-white text-[9px] px-1.5 rounded-full">
                       {t('seller.orders.new')}
                     </span>
                   )}
-                </button>
-                <button
-                  onClick={() => showFeatureComingSoon(t('seller.orders.viewDetails'))}
-                  className="p-2 bg-zinc-800 text-zinc-400 hover:text-white rounded-xl"
-                >
-                  <MoreHorizontal size={16} />
-                </button>
+                </div>
+                <div className="p-2 bg-zinc-800 text-zinc-400 rounded-xl">
+                  <ChevronRight size={16} />
+                </div>
               </div>
-            </div>
+            </Link>
           ))
         )}
       </div>
 
-      <ComingSoonModal
-        isOpen={showComingSoon}
-        onClose={() => setShowComingSoon(false)}
-        featureName={comingSoonFeature}
-      />
     </div>
   );
 }

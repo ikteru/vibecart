@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { createClient, getCurrentUser } from '@/infrastructure/auth/supabase-server';
+import { createClient, createAdminClient, getCurrentUser } from '@/infrastructure/auth/supabase-server';
 import { createRepositories } from '@/infrastructure/persistence/supabase';
 import { GetProduct } from '@/application/use-cases/products';
 import { UpdateProduct } from '@/application/use-cases/products';
@@ -61,8 +61,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
     const body = await request.json();
 
+    // Use regular client to get seller (RLS allows reads)
     const supabase = await createClient();
-    const { productRepository, sellerRepository } = createRepositories(supabase);
+    const { sellerRepository } = createRepositories(supabase);
 
     // Get seller ID from authenticated user
     const seller = await sellerRepository.findByUserId(user.id);
@@ -72,6 +73,11 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         { status: 404 }
       );
     }
+
+    // Use admin client for write operations (bypasses RLS)
+    // Authorization verified at application layer (sellerId check in use case)
+    const adminClient = createAdminClient();
+    const { productRepository } = createRepositories(adminClient);
 
     const useCase = new UpdateProduct(productRepository);
     const result = await useCase.execute({
@@ -120,8 +126,9 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     const searchParams = request.nextUrl.searchParams;
     const hardDelete = searchParams.get('hardDelete') === 'true';
 
+    // Use regular client to get seller (RLS allows reads)
     const supabase = await createClient();
-    const { productRepository, sellerRepository } = createRepositories(supabase);
+    const { sellerRepository } = createRepositories(supabase);
 
     // Get seller ID from authenticated user
     const seller = await sellerRepository.findByUserId(user.id);
@@ -131,6 +138,11 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
         { status: 404 }
       );
     }
+
+    // Use admin client for write operations (bypasses RLS)
+    // Authorization verified at application layer (sellerId check in use case)
+    const adminClient = createAdminClient();
+    const { productRepository } = createRepositories(adminClient);
 
     const useCase = new DeleteProduct(productRepository);
     const result = await useCase.execute({

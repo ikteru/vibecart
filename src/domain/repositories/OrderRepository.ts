@@ -53,4 +53,14 @@ export interface OrderRepository {
    * Count orders by seller
    */
   countBySellerId(sellerId: string, status?: OrderStatus): Promise<number>;
+
+  /**
+   * Get unread message counts for multiple orders
+   */
+  getUnreadCountsForOrders(orderIds: string[]): Promise<Map<string, number>>;
+
+  /**
+   * Mark all buyer messages in an order as read
+   */
+  markMessagesAsRead(orderId: string): Promise<void>;
 }

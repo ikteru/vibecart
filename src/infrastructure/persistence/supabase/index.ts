@@ -8,10 +8,12 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { SupabaseProductRepository } from './SupabaseProductRepository';
 import { SupabaseSellerRepository } from './SupabaseSellerRepository';
 import { SupabaseOrderRepository } from './SupabaseOrderRepository';
+import { SupabaseActivityLogRepository } from './SupabaseActivityLogRepository';
 
 export { SupabaseProductRepository } from './SupabaseProductRepository';
 export { SupabaseSellerRepository } from './SupabaseSellerRepository';
 export { SupabaseOrderRepository } from './SupabaseOrderRepository';
+export { SupabaseActivityLogRepository } from './SupabaseActivityLogRepository';
 export type {
   ProductRow,
   SellerRow,
@@ -19,6 +21,7 @@ export type {
   OrderItemRow,
   OrderMessageRow,
   WhatsAppCommandRow,
+  ActivityLogRow,
 } from './types';
 
 /**
@@ -29,5 +32,6 @@ export function createRepositories(supabase: SupabaseClient) {
     productRepository: new SupabaseProductRepository(supabase),
     sellerRepository: new SupabaseSellerRepository(supabase),
     orderRepository: new SupabaseOrderRepository(supabase),
+    activityLogRepository: new SupabaseActivityLogRepository(supabase),
   };
 }

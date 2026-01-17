@@ -250,6 +250,7 @@ export class SupabaseOrderRepository implements OrderRepository {
           order_id: props.id,
           sender: msg.sender,
           content: msg.content,
+          read_at: null, // New messages start as unread
         })
       );
 
@@ -338,6 +339,51 @@ export class SupabaseOrderRepository implements OrderRepository {
       totalRevenue,
       ordersToday: todayResult.count || 0,
     };
+  }
+
+  /**
+   * Get unread message counts for multiple orders
+   */
+  async getUnreadCountsForOrders(orderIds: string[]): Promise<Map<string, number>> {
+    if (orderIds.length === 0) {
+      return new Map();
+    }
+
+    const { data, error } = await this.supabase
+      .from('order_messages')
+      .select('order_id')
+      .in('order_id', orderIds)
+      .eq('sender', 'buyer')
+      .is('read_at', null);
+
+    if (error || !data) {
+      return new Map();
+    }
+
+    // Count unread messages per order
+    const counts = new Map<string, number>();
+    data.forEach((row) => {
+      const current = counts.get(row.order_id) || 0;
+      counts.set(row.order_id, current + 1);
+    });
+
+    return counts;
+  }
+
+  /**
+   * Mark all buyer messages in an order as read
+   */
+  async markMessagesAsRead(orderId: string): Promise<void> {
+    const { error } = await this.supabase
+      .from('order_messages')
+      .update({ read_at: new Date().toISOString() })
+      .eq('order_id', orderId)
+      .eq('sender', 'buyer')
+      .is('read_at', null);
+
+    if (error) {
+      throw new Error(`Failed to mark messages as read: ${error.message}`);
+    }
   }
 
   /**

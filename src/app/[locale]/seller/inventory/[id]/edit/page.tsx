@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getCurrentSeller } from '@/lib/auth/getCurrentSeller';
-import { createClient } from '@/infrastructure/auth/supabase-server';
+import { createClient, createAdminClient } from '@/infrastructure/auth/supabase-server';
 import { createRepositories } from '@/infrastructure/persistence/supabase';
 import { GetProduct } from '@/application/use-cases/products/GetProduct';
 import { UpdateProduct } from '@/application/use-cases/products/UpdateProduct';
@@ -45,8 +45,18 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
   async function updateProduct(data: UpdateProductDTO) {
     'use server';
 
-    const supabaseServer = await createClient();
-    const repos = createRepositories(supabaseServer);
+    // Verify authentication using the session client
+    const supabaseAuth = await createClient();
+    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
+    if (authError || !user) {
+      console.error('[updateProduct] Auth error:', authError?.message || 'No user found');
+      return { success: false, error: 'Session expired. Please refresh the page and try again.' };
+    }
+
+    // Use admin client for database operations (bypasses RLS)
+    // Authorization is verified at application layer (sellerId check in use case)
+    const adminClient = createAdminClient();
+    const repos = createRepositories(adminClient);
 
     const updateUseCase = new UpdateProduct(repos.productRepository);
     const updateResult = await updateUseCase.execute({
@@ -66,8 +76,18 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
   async function deleteProduct() {
     'use server';
 
-    const supabaseServer = await createClient();
-    const repos = createRepositories(supabaseServer);
+    // Verify authentication using the session client
+    const supabaseAuth = await createClient();
+    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
+    if (authError || !user) {
+      console.error('[deleteProduct] Auth error:', authError?.message || 'No user found');
+      return { success: false, error: 'Session expired. Please refresh the page and try again.' };
+    }
+
+    // Use admin client for database operations (bypasses RLS)
+    // Authorization is verified at application layer (sellerId check in use case)
+    const adminClient = createAdminClient();
+    const repos = createRepositories(adminClient);
 
     const deleteUseCase = new DeleteProduct(repos.productRepository);
     const deleteResult = await deleteUseCase.execute({

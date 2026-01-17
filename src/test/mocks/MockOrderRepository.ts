@@ -131,6 +131,16 @@ export class MockOrderRepository implements OrderRepository {
     return orders.length;
   }
 
+  async getUnreadCountsForOrders(orderIds: string[]): Promise<Map<string, number>> {
+    // Mock implementation - always returns 0 unread for testing
+    // In a real test, you could track unread messages separately
+    return new Map();
+  }
+
+  async markMessagesAsRead(orderId: string): Promise<void> {
+    // Mock implementation - no-op for testing
+  }
+
   // Test helpers
 
   /**

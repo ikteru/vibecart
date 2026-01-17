@@ -22,10 +22,14 @@ export class GetSellerOrders {
       offset,
     });
 
+    // Fetch unread counts for all orders
+    const orderIds = orders.map((o) => o.id);
+    const unreadCounts = await this.orderRepository.getUnreadCountsForOrders(orderIds);
+
     const total = await this.orderRepository.countBySellerId(sellerId, status);
 
     return {
-      orders: OrderMapper.toSummaryDTOList(orders),
+      orders: OrderMapper.toSummaryDTOList(orders, unreadCounts),
       total,
       limit,
       offset,

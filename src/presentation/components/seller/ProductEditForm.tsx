@@ -36,6 +36,7 @@ export function ProductEditForm({ product, locale, updateAction, deleteAction }:
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     title: product.title,
     price: String(product.price.amount),
@@ -69,6 +70,7 @@ export function ProductEditForm({ product, locale, updateAction, deleteAction }:
   };
 
   const handleSave = async () => {
+    setError(null);
     setIsSaving(true);
     const updateData: UpdateProductDTO = {
       title: formData.title,
@@ -86,18 +88,23 @@ export function ProductEditForm({ product, locale, updateAction, deleteAction }:
 
     if (result.success) {
       router.push(`/${locale}/seller/inventory`);
+    } else {
+      setError(result.error || t('errors.serverError'));
     }
   };
 
   const handleDelete = async () => {
     if (!confirm(t('common.confirmDelete'))) return;
 
+    setError(null);
     setIsDeleting(true);
     const result = await deleteAction();
     setIsDeleting(false);
 
     if (result.success) {
       router.push(`/${locale}/seller/inventory`);
+    } else {
+      setError(result.error || t('errors.serverError'));
     }
   };
 
@@ -121,6 +128,13 @@ export function ProductEditForm({ product, locale, updateAction, deleteAction }:
           {isDeleting ? <Loader2 size={20} className="animate-spin" /> : <Trash2 size={20} />}
         </button>
       </div>
+
+      {/* Error Display */}
+      {error && (
+        <div className="mx-6 mb-4 rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-400">
+          {error}
+        </div>
+      )}
 
       <div className="max-w-lg mx-auto p-6 pb-20">
         <div className="space-y-6 animate-fade-in">

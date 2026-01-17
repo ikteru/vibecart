@@ -81,6 +81,7 @@ export interface OrderMessageRow {
   sender: string;
   content: string;
   created_at: string;
+  read_at: string | null;
 }
 
 export interface WhatsAppCommandRow {
@@ -91,5 +92,16 @@ export interface WhatsAppCommandRow {
   parsed_command: string | null;
   command_args: Record<string, unknown>;
   execution_result: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface ActivityLogRow {
+  id: string;
+  seller_id: string;
+  entity_type: string;
+  entity_id: string | null;
+  action: string;
+  changes: Record<string, { old?: unknown; new?: unknown }>;
+  metadata: Record<string, unknown>;
   created_at: string;
 }

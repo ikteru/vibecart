@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { createClient, getCurrentUser } from '@/infrastructure/auth/supabase-server';
+import { createClient, createAdminClient, getCurrentUser } from '@/infrastructure/auth/supabase-server';
 import { createRepositories } from '@/infrastructure/persistence/supabase';
 import { GetSellerProducts } from '@/application/use-cases/products';
 import { CreateProduct } from '@/application/use-cases/products';
@@ -71,9 +71,9 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
-    // Get seller ID from authenticated user
+    // Use regular client to get seller (RLS allows reads)
     const supabase = await createClient();
-    const { productRepository, sellerRepository } = createRepositories(supabase);
+    const { sellerRepository } = createRepositories(supabase);
 
     const seller = await sellerRepository.findByUserId(user.id);
     if (!seller) {
@@ -82,6 +82,11 @@ export async function POST(request: NextRequest) {
         { status: 404 }
       );
     }
+
+    // Use admin client for write operations (bypasses RLS)
+    // Authorization verified via user → seller ownership above
+    const adminClient = createAdminClient();
+    const { productRepository } = createRepositories(adminClient);
 
     const useCase = new CreateProduct(productRepository);
     const result = await useCase.execute({
