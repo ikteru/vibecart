@@ -94,17 +94,9 @@ export async function middleware(request: NextRequest) {
       }
     );
 
-    // Debug: Log cookies received
-    const allCookies = request.cookies.getAll();
-    console.log('[Middleware] Cookies received:', allCookies.map(c => c.name).join(', '));
-    console.log('[Middleware] Supabase URL:', supabaseUrl);
-
     const {
       data: { user },
-      error: authError,
     } = await supabase.auth.getUser();
-
-    console.log('[Middleware] User:', user?.email || 'null', 'Error:', authError?.message || 'none');
 
     if (!user) {
       // Extract locale from pathname
