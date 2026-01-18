@@ -469,7 +469,17 @@
     },
     "supportedProviders": "شركات التوصيل المدعومة:",
     "notifyPlaceholder": "دخل الإيميل ديالك باش نعلموك",
-    "notifyButton": "عرفني"
+    "notifyButton": "عرفني",
+    "form": {
+      "selectCity": "اختار المدينة...",
+      "rate": "الثمن",
+      "cancel": "إلغاء",
+      "add": "زيد",
+      "noRules": "ما كايناش قواعد خاصة بالمدن. غادي نستعملو الثمن الأساسي لجميع المدن.",
+      "cityExists": "هاد المدينة عندها قاعدة شحن من قبل",
+      "saveFailed": "ما قدرناش نحفظو إعدادات الشحن",
+      "savedSuccess": "تحفظات الإعدادات بنجاح"
+    }
   },
   "cities": {
     "Agadir": "أكادير",
@@ -550,5 +560,115 @@
     "fils": "فلس",
     "priceFormat": "{amount} {currency}",
     "selectCurrency": "اختار العملة"
+  },
+  "templates": {
+    "title": "قوالب الرسائل",
+    "description": "خلق وسير قوالب الواتساب",
+    "newTemplate": "قالب جديد",
+    "editTemplate": "بدل القالب",
+    "syncFromMeta": "سينكرونيزي من ميتا",
+    "eventBindings": "ربط الأحداث",
+    "quickStart": "بدا بسرعة مع قوالب جاهزة",
+    "quickStartDesc": "10 قوالب جاهزة ومحسنة باش ميتا توافق عليها",
+    "browse": "شوف ←",
+    "usePreset": "استعمل قالب جاهز",
+    "createFromScratch": "دير واحد جديد",
+    "or": "ولا",
+    "noTemplates": "ما كاينين قوالب بعدا",
+    "noFilterTemplates": "ما كاينين قوالب {filter}",
+    "preview": "شوف",
+    "saveDraft": "حفظ كمسودة",
+    "submitToMeta": "صيفط لميتا",
+    "deleteConfirm": "واش بصح بغيتي تمسح هاد القالب؟",
+    "rejectionReason": "علاش ترفضات",
+    "new": "جديد",
+    "form": {
+      "templateName": "سمية القالب",
+      "templateNamePlaceholder": "تأكيد_الطلب",
+      "templateNameHint": "غير حروف صغيرة وأرقام و_",
+      "category": "النوع",
+      "language": "اللغة",
+      "description": "الوصف",
+      "descriptionPlaceholder": "وصف قصير للرجوع ليه",
+      "header": "العنوان (اختياري)",
+      "headerPlaceholder": "تحديث الطلب",
+      "bodyText": "نص الرسالة",
+      "bodyPlaceholder": "مرحبا {{1}}! تأكد الطلب {{2}}. المجموع: {{3}}",
+      "required": "*"
+    },
+    "variables": {
+      "title": "المتغيرات المتاحة",
+      "customerName": "سمية الزبون",
+      "orderNumber": "رقم الطلب",
+      "totalAmount": "المبلغ الكلي",
+      "trackingNumber": "رقم التتبع",
+      "shopName": "سمية الحانوت",
+      "itemsCount": "عدد المنتوجات"
+    },
+    "buttons": {
+      "title": "أزرار الرد السريع",
+      "maxHint": "بحد أقصى 3 أزرار لكل قالب",
+      "addButton": "زيد زر",
+      "noButtons": "ما كايناش أزرار. الأزرار كتخلي الزبائن يردو بنقرة وحدة.",
+      "buttonText": "نص الزر",
+      "urlPlaceholder": "https://...",
+      "types": {
+        "quickReply": "رد سريع",
+        "url": "رابط",
+        "phone": "تيليفون"
+      }
+    },
+    "status": {
+      "draft": "مسودة",
+      "pending": "كيتسنا",
+      "approved": "موافق عليه",
+      "rejected": "مرفوض"
+    },
+    "categories": {
+      "utility": "خدماتي",
+      "utilityDesc": "تحديثات الطلبات والتأكيدات والتنبيهات",
+      "marketing": "تسويقي",
+      "marketingDesc": "العروض والترويجات",
+      "authentication": "تحقق",
+      "authenticationDesc": "رموز التحقق والباسوورد"
+    },
+    "languages": {
+      "arabic": "العربية",
+      "english": "الإنجليزية",
+      "french": "الفرنسية"
+    },
+    "stats": {
+      "total": "المجموع",
+      "draft": "مسودة",
+      "pending": "كيتسنا",
+      "approved": "موافق عليه"
+    },
+    "bindings": {
+      "title": "ربط الأحداث",
+      "description": "ربط القوالب بأحداث الطلبات",
+      "active": "فعال",
+      "disabled": "معطل",
+      "enable": "فعّل",
+      "disable": "عطّل",
+      "assign": "عيّن",
+      "change": "بدّل",
+      "cancel": "إلغاء",
+      "removeBinding": "حيّد الربط",
+      "removeConfirm": "بغيتي تحيّد هاد التعيين؟",
+      "selectTemplate": "اختار قالب",
+      "createTemplate": "دير قالب",
+      "noApprovedTemplates": "ما كايناش قوالب موافق عليها",
+      "noApprovedDesc": "خاصك على الأقل قالب واحد موافق عليه باش تربطو بالأحداث. دير قالب وصيفطو لميتا للموافقة."
+    },
+    "errors": {
+      "nameRequired": "خاص سمية القالب",
+      "bodyRequired": "خاص نص الرسالة",
+      "saveFailed": "ما قدرناش نحفظو القالب",
+      "submitFailed": "ما قدرناش نصيفطو القالب",
+      "deleteFailed": "ما قدرناش نمسحو القالب"
+    },
+    "preview": {
+      "enterBodyText": "دخل نص الرسالة..."
+    }
   }
 }

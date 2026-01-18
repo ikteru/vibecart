@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Plus, FileText, Clock, CheckCircle2, XCircle, RefreshCw, Settings2, Sparkles } from 'lucide-react';
 import type { WhatsAppTemplateSummaryDTO, TemplateStatsDTO } from '@/application/dtos/WhatsAppTemplateDTO';
 import type { TemplateStatus } from '@/domain/entities/WhatsAppMessageTemplate';
@@ -13,17 +14,11 @@ interface TemplateListProps {
   locale: string;
 }
 
-const STATUS_CONFIG: Record<TemplateStatus, { label: string; color: string; icon: React.ReactNode }> = {
-  DRAFT: { label: 'Draft', color: 'bg-zinc-600', icon: <FileText size={12} /> },
-  PENDING: { label: 'Pending', color: 'bg-yellow-600', icon: <Clock size={12} /> },
-  APPROVED: { label: 'Approved', color: 'bg-emerald-600', icon: <CheckCircle2 size={12} /> },
-  REJECTED: { label: 'Rejected', color: 'bg-red-600', icon: <XCircle size={12} /> },
-};
-
-const CATEGORY_LABELS: Record<string, string> = {
-  UTILITY: 'Utility',
-  MARKETING: 'Marketing',
-  AUTHENTICATION: 'Auth',
+const STATUS_STYLE: Record<TemplateStatus, { color: string; icon: React.ReactNode }> = {
+  DRAFT: { color: 'bg-zinc-600', icon: <FileText size={12} /> },
+  PENDING: { color: 'bg-yellow-600', icon: <Clock size={12} /> },
+  APPROVED: { color: 'bg-emerald-600', icon: <CheckCircle2 size={12} /> },
+  REJECTED: { color: 'bg-red-600', icon: <XCircle size={12} /> },
 };
 
 /**
@@ -33,13 +28,17 @@ const CATEGORY_LABELS: Record<string, string> = {
  */
 export function TemplateList({ initialTemplates, stats, locale }: TemplateListProps) {
   const router = useRouter();
+  const t = useTranslations('templates');
   const [templates] = useState(initialTemplates);
   const [filter, setFilter] = useState<TemplateStatus | 'ALL'>('ALL');
   const [syncing, setSyncing] = useState(false);
 
+  const getStatusLabel = (status: TemplateStatus) => t(`status.${status.toLowerCase()}`);
+  const getCategoryLabel = (category: string) => t(`categories.${category.toLowerCase()}`);
+
   const filteredTemplates = filter === 'ALL'
     ? templates
-    : templates.filter((t) => t.status === filter);
+    : templates.filter((tpl) => tpl.status === filter);
 
   const syncTemplates = async () => {
     setSyncing(true);
@@ -58,9 +57,9 @@ export function TemplateList({ initialTemplates, stats, locale }: TemplateListPr
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-xl font-bold text-white">Message Templates</h2>
+          <h2 className="text-xl font-bold text-white">{t('title')}</h2>
           <p className="text-xs text-zinc-500 mt-1">
-            Create and manage WhatsApp templates
+            {t('description')}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -68,14 +67,14 @@ export function TemplateList({ initialTemplates, stats, locale }: TemplateListPr
             onClick={syncTemplates}
             disabled={syncing}
             className="p-2 bg-zinc-800 rounded-lg text-zinc-400 hover:text-white disabled:opacity-50"
-            title="Sync from Meta"
+            title={t('syncFromMeta')}
           >
             <RefreshCw size={16} className={syncing ? 'animate-spin' : ''} />
           </button>
           <Link
             href={`/${locale}/seller/templates/bindings`}
             className="p-2 bg-zinc-800 rounded-lg text-zinc-400 hover:text-white"
-            title="Event Bindings"
+            title={t('eventBindings')}
           >
             <Settings2 size={16} />
           </Link>
@@ -83,7 +82,7 @@ export function TemplateList({ initialTemplates, stats, locale }: TemplateListPr
             href={`/${locale}/seller/templates/new`}
             className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1"
           >
-            <Plus size={14} /> New
+            <Plus size={14} /> {t('newTemplate')}
           </Link>
         </div>
       </div>
@@ -99,14 +98,14 @@ export function TemplateList({ initialTemplates, stats, locale }: TemplateListPr
           </div>
           <div className="flex-1">
             <div className="text-yellow-400 text-sm font-medium">
-              Quick Start with Preset Templates
+              {t('quickStart')}
             </div>
             <p className="text-yellow-300/60 text-xs">
-              10 ready-to-use templates optimized for Meta approval
+              {t('quickStartDesc')}
             </p>
           </div>
           <div className="text-yellow-500 text-xs font-medium">
-            Browse →
+            {t('browse')} →
           </div>
         </div>
       </Link>
@@ -121,7 +120,7 @@ export function TemplateList({ initialTemplates, stats, locale }: TemplateListPr
             }`}
           >
             <div className="text-lg font-bold text-white">{stats.total}</div>
-            <div className="text-[10px] text-zinc-500 uppercase">Total</div>
+            <div className="text-[10px] text-zinc-500 uppercase">{t('stats.total')}</div>
           </button>
           <button
             onClick={() => setFilter('DRAFT')}
@@ -130,7 +129,7 @@ export function TemplateList({ initialTemplates, stats, locale }: TemplateListPr
             }`}
           >
             <div className="text-lg font-bold text-zinc-400">{stats.draft}</div>
-            <div className="text-[10px] text-zinc-500 uppercase">Draft</div>
+            <div className="text-[10px] text-zinc-500 uppercase">{t('stats.draft')}</div>
           </button>
           <button
             onClick={() => setFilter('PENDING')}
@@ -139,7 +138,7 @@ export function TemplateList({ initialTemplates, stats, locale }: TemplateListPr
             }`}
           >
             <div className="text-lg font-bold text-yellow-500">{stats.pending}</div>
-            <div className="text-[10px] text-zinc-500 uppercase">Pending</div>
+            <div className="text-[10px] text-zinc-500 uppercase">{t('stats.pending')}</div>
           </button>
           <button
             onClick={() => setFilter('APPROVED')}
@@ -148,7 +147,7 @@ export function TemplateList({ initialTemplates, stats, locale }: TemplateListPr
             }`}
           >
             <div className="text-lg font-bold text-emerald-500">{stats.approved}</div>
-            <div className="text-[10px] text-zinc-500 uppercase">Approved</div>
+            <div className="text-[10px] text-zinc-500 uppercase">{t('stats.approved')}</div>
           </button>
         </div>
       )}
@@ -158,7 +157,7 @@ export function TemplateList({ initialTemplates, stats, locale }: TemplateListPr
         <div className="py-10 text-center">
           <FileText size={40} className="mx-auto text-zinc-700 mb-3" />
           <p className="text-zinc-500 text-sm">
-            {filter === 'ALL' ? 'No templates yet' : `No ${filter.toLowerCase()} templates`}
+            {filter === 'ALL' ? t('noTemplates') : t('noFilterTemplates', { filter: getStatusLabel(filter) })}
           </p>
           {filter === 'ALL' && (
             <div className="flex flex-col items-center gap-3 mt-4">
@@ -166,14 +165,14 @@ export function TemplateList({ initialTemplates, stats, locale }: TemplateListPr
                 href={`/${locale}/seller/templates/presets`}
                 className="inline-flex items-center gap-1 text-yellow-400 text-sm hover:underline"
               >
-                <Sparkles size={14} /> Use a preset template
+                <Sparkles size={14} /> {t('usePreset')}
               </Link>
-              <span className="text-zinc-600 text-xs">or</span>
+              <span className="text-zinc-600 text-xs">{t('or')}</span>
               <Link
                 href={`/${locale}/seller/templates/new`}
                 className="inline-flex items-center gap-1 text-zinc-400 text-sm hover:underline"
               >
-                <Plus size={14} /> Create from scratch
+                <Plus size={14} /> {t('createFromScratch')}
               </Link>
             </div>
           )}
@@ -181,7 +180,7 @@ export function TemplateList({ initialTemplates, stats, locale }: TemplateListPr
       ) : (
         <div className="space-y-3">
           {filteredTemplates.map((template) => {
-            const statusConfig = STATUS_CONFIG[template.status];
+            const statusStyle = STATUS_STYLE[template.status];
             return (
               <Link
                 key={template.id}
@@ -193,7 +192,7 @@ export function TemplateList({ initialTemplates, stats, locale }: TemplateListPr
                     <h3 className="font-bold text-sm text-white">{template.templateName}</h3>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-[10px] text-zinc-500 uppercase">
-                        {CATEGORY_LABELS[template.category] || template.category}
+                        {getCategoryLabel(template.category)}
                       </span>
                       <span className="text-zinc-700">•</span>
                       <span className="text-[10px] text-zinc-500 uppercase">
@@ -202,10 +201,10 @@ export function TemplateList({ initialTemplates, stats, locale }: TemplateListPr
                     </div>
                   </div>
                   <span
-                    className={`${statusConfig.color} px-2 py-0.5 rounded text-[10px] font-medium text-white flex items-center gap-1`}
+                    className={`${statusStyle.color} px-2 py-0.5 rounded text-[10px] font-medium text-white flex items-center gap-1`}
                   >
-                    {statusConfig.icon}
-                    {statusConfig.label}
+                    {statusStyle.icon}
+                    {getStatusLabel(template.status)}
                   </span>
                 </div>
                 {template.description && (

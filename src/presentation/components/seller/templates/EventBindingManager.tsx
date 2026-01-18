@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { ArrowLeft, Bell, BellOff, Link2, Unlink, CheckCircle2 } from 'lucide-react';
 import type {
@@ -34,6 +35,7 @@ export function EventBindingManager({
   locale,
 }: EventBindingManagerProps) {
   const router = useRouter();
+  const t = useTranslations('templates');
   const [updating, setUpdating] = useState<string | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<NotificationEventType | null>(null);
 
@@ -76,7 +78,7 @@ export function EventBindingManager({
   };
 
   const handleRemove = async (eventType: NotificationEventType) => {
-    if (!confirm('Remove this template assignment?')) return;
+    if (!confirm(t('bindings.removeConfirm'))) return;
 
     setUpdating(eventType);
     try {
@@ -105,9 +107,9 @@ export function EventBindingManager({
           <ArrowLeft size={16} />
         </Link>
         <div>
-          <h2 className="text-xl font-bold text-white">Event Bindings</h2>
+          <h2 className="text-xl font-bold text-white">{t('bindings.title')}</h2>
           <p className="text-xs text-zinc-500 mt-1">
-            Assign templates to order events
+            {t('bindings.description')}
           </p>
         </div>
       </div>
@@ -115,16 +117,15 @@ export function EventBindingManager({
       {/* No Approved Templates Warning */}
       {approvedTemplates.length === 0 && (
         <div className="mb-6 p-4 bg-yellow-900/20 border border-yellow-800 rounded-lg">
-          <div className="text-yellow-400 text-sm font-medium mb-1">No Approved Templates</div>
+          <div className="text-yellow-400 text-sm font-medium mb-1">{t('bindings.noApprovedTemplates')}</div>
           <p className="text-yellow-300/70 text-xs">
-            You need at least one approved template to assign to events.
-            Create a template and submit it to Meta for approval.
+            {t('bindings.noApprovedDesc')}
           </p>
           <Link
             href={`/${locale}/seller/templates/new`}
             className="inline-block mt-2 text-yellow-400 text-xs hover:underline"
           >
-            Create Template →
+            {t('bindings.createTemplate')} →
           </Link>
         </div>
       )}
@@ -161,7 +162,7 @@ export function EventBindingManager({
                           ? 'bg-emerald-900/30 text-emerald-400 hover:bg-emerald-900/50'
                           : 'bg-zinc-800 text-zinc-500 hover:bg-zinc-700'
                       }`}
-                      title={binding.isEnabled ? 'Disable' : 'Enable'}
+                      title={binding.isEnabled ? t('bindings.disable') : t('bindings.enable')}
                     >
                       {binding.isEnabled ? <Bell size={14} /> : <BellOff size={14} />}
                     </button>
@@ -169,7 +170,7 @@ export function EventBindingManager({
                       onClick={() => handleRemove(event.eventType)}
                       disabled={isUpdating}
                       className="p-2 bg-zinc-800 text-zinc-500 rounded-lg hover:text-red-400 hover:bg-red-900/30"
-                      title="Remove binding"
+                      title={t('bindings.removeBinding')}
                     >
                       <Unlink size={14} />
                     </button>
@@ -181,7 +182,7 @@ export function EventBindingManager({
                     className="px-3 py-1.5 bg-zinc-800 text-zinc-400 rounded-lg text-xs flex items-center gap-1 hover:bg-zinc-700 hover:text-white disabled:opacity-50"
                   >
                     <Link2 size={12} />
-                    Assign
+                    {t('bindings.assign')}
                   </button>
                 )}
               </div>
@@ -196,14 +197,14 @@ export function EventBindingManager({
                         {binding.templateName}
                       </div>
                       <div className="text-[10px] text-zinc-500">
-                        {binding.isEnabled ? 'Active' : 'Disabled'}
+                        {binding.isEnabled ? t('bindings.active') : t('bindings.disabled')}
                       </div>
                     </div>
                     <button
                       onClick={() => setSelectedEvent(event.eventType)}
                       className="text-[10px] text-zinc-500 hover:text-white"
                     >
-                      Change
+                      {t('bindings.change')}
                     </button>
                   </div>
                 </div>
@@ -213,7 +214,7 @@ export function EventBindingManager({
               {isSelecting && (
                 <div className="px-4 pb-4 border-t border-zinc-800 pt-3">
                   <div className="text-[10px] text-zinc-500 uppercase mb-2">
-                    Select Template
+                    {t('bindings.selectTemplate')}
                   </div>
                   <div className="space-y-2">
                     {approvedTemplates.map((template) => (
@@ -236,7 +237,7 @@ export function EventBindingManager({
                     onClick={() => setSelectedEvent(null)}
                     className="mt-2 text-[10px] text-zinc-500 hover:text-white"
                   >
-                    Cancel
+                    {t('bindings.cancel')}
                   </button>
                 </div>
               )}

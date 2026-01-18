@@ -283,7 +283,7 @@ export class SendOrderNotification {
           type: 'body',
           parameters: [
             { type: 'text', text: order.orderNumber },
-            { type: 'text', text: order.trackingNumber || 'غير متاح' },
+            { type: 'text', text: order.trackingNumber || 'N/A' },
           ],
         });
         break;

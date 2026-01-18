@@ -53,7 +53,7 @@ export function ShippingForm({ locale, initialShipping, updateAction }: Shipping
 
     // Check if city already has a rule
     if (rules.some((r) => r.city.toLowerCase() === newRuleCity.toLowerCase())) {
-      setError('This city already has a shipping rule');
+      setError(t('form.cityExists'));
       return;
     }
 
@@ -84,7 +84,7 @@ export function ShippingForm({ locale, initialShipping, updateAction }: Shipping
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 2000);
       } else {
-        setError(result.error || 'Failed to save shipping settings');
+        setError(result.error || t('form.saveFailed'));
       }
     });
   };
@@ -125,7 +125,7 @@ export function ShippingForm({ locale, initialShipping, updateAction }: Shipping
         {showSuccess && (
           <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm flex items-center gap-2">
             <Check className="w-4 h-4" />
-            Settings saved successfully
+            {t('form.savedSuccess')}
           </div>
         )}
 
@@ -187,7 +187,7 @@ export function ShippingForm({ locale, initialShipping, updateAction }: Shipping
                       onChange={(e) => setNewRuleCity(e.target.value)}
                       className="flex-1 px-3 py-2 rounded-lg bg-zinc-700 border border-zinc-600 text-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50"
                     >
-                      <option value="">Select city...</option>
+                      <option value="">{t('form.selectCity')}</option>
                       {COMMON_CITIES.filter((city) => !rules.some((r) => r.city === city)).map(
                         (city) => (
                           <option key={city} value={city}>
@@ -200,7 +200,7 @@ export function ShippingForm({ locale, initialShipping, updateAction }: Shipping
                       type="number"
                       value={newRuleRate}
                       onChange={(e) => setNewRuleRate(e.target.value)}
-                      placeholder="Rate"
+                      placeholder={t('form.rate')}
                       className="w-24 px-3 py-2 rounded-lg bg-zinc-700 border border-zinc-600 text-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50"
                     />
                     <span className="flex items-center text-zinc-400 text-sm">
@@ -212,14 +212,14 @@ export function ShippingForm({ locale, initialShipping, updateAction }: Shipping
                       onClick={() => setShowAddRule(false)}
                       className="px-3 py-1.5 rounded-lg text-zinc-400 text-sm hover:text-white transition-colors"
                     >
-                      Cancel
+                      {t('form.cancel')}
                     </button>
                     <button
                       onClick={handleAddRule}
                       disabled={!newRuleCity || !newRuleRate}
                       className="px-3 py-1.5 rounded-lg bg-violet-500 text-white text-sm hover:bg-violet-600 disabled:opacity-50 transition-colors"
                     >
-                      Add
+                      {t('form.add')}
                     </button>
                   </div>
                 </div>
@@ -229,7 +229,7 @@ export function ShippingForm({ locale, initialShipping, updateAction }: Shipping
               <div className="space-y-2">
                 {rules.length === 0 ? (
                   <p className="text-zinc-500 text-sm py-4 text-center">
-                    No city-specific rules. Default rate will be used for all cities.
+                    {t('form.noRules')}
                   </p>
                 ) : (
                   rules.map((rule) => (

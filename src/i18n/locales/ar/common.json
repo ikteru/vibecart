@@ -469,7 +469,17 @@
     },
     "supportedProviders": "شركات التوصيل المدعومة:",
     "notifyPlaceholder": "أدخل بريدك الإلكتروني للإشعار",
-    "notifyButton": "أعلمني"
+    "notifyButton": "أعلمني",
+    "form": {
+      "selectCity": "اختر المدينة...",
+      "rate": "السعر",
+      "cancel": "إلغاء",
+      "add": "إضافة",
+      "noRules": "لا توجد قواعد خاصة بالمدن. سيتم استخدام السعر الافتراضي لجميع المدن.",
+      "cityExists": "هذه المدينة لديها قاعدة شحن بالفعل",
+      "saveFailed": "فشل في حفظ إعدادات الشحن",
+      "savedSuccess": "تم حفظ الإعدادات بنجاح"
+    }
   },
   "cities": {
     "Casablanca": "الدار البيضاء",
@@ -533,5 +543,115 @@
     "fils": "فلس",
     "priceFormat": "{amount} {currency}",
     "selectCurrency": "اختر العملة"
+  },
+  "templates": {
+    "title": "قوالب الرسائل",
+    "description": "إنشاء وإدارة قوالب واتساب",
+    "newTemplate": "قالب جديد",
+    "editTemplate": "تعديل القالب",
+    "syncFromMeta": "مزامنة من ميتا",
+    "eventBindings": "ربط الأحداث",
+    "quickStart": "ابدأ سريعاً بقوالب جاهزة",
+    "quickStartDesc": "10 قوالب جاهزة ومحسّنة للموافقة من ميتا",
+    "browse": "تصفح ←",
+    "usePreset": "استخدم قالب جاهز",
+    "createFromScratch": "إنشاء من الصفر",
+    "or": "أو",
+    "noTemplates": "لا توجد قوالب بعد",
+    "noFilterTemplates": "لا توجد قوالب {filter}",
+    "preview": "معاينة",
+    "saveDraft": "حفظ كمسودة",
+    "submitToMeta": "إرسال إلى ميتا",
+    "deleteConfirm": "هل أنت متأكد من حذف هذا القالب؟",
+    "rejectionReason": "سبب الرفض",
+    "new": "جديد",
+    "form": {
+      "templateName": "اسم القالب",
+      "templateNamePlaceholder": "تأكيد_الطلب",
+      "templateNameHint": "أحرف صغيرة وأرقام وشرطات سفلية فقط",
+      "category": "الفئة",
+      "language": "اللغة",
+      "description": "الوصف",
+      "descriptionPlaceholder": "وصف مختصر للرجوع إليه",
+      "header": "العنوان (اختياري)",
+      "headerPlaceholder": "تحديث الطلب",
+      "bodyText": "نص الرسالة",
+      "bodyPlaceholder": "مرحباً {{1}}! تم تأكيد طلبك {{2}}. المجموع: {{3}}",
+      "required": "*"
+    },
+    "variables": {
+      "title": "المتغيرات المتاحة",
+      "customerName": "اسم العميل",
+      "orderNumber": "رقم الطلب",
+      "totalAmount": "المبلغ الإجمالي",
+      "trackingNumber": "رقم التتبع",
+      "shopName": "اسم المتجر",
+      "itemsCount": "عدد المنتجات"
+    },
+    "buttons": {
+      "title": "أزرار الرد السريع",
+      "maxHint": "بحد أقصى 3 أزرار لكل قالب",
+      "addButton": "إضافة زر",
+      "noButtons": "لا توجد أزرار. الأزرار تسمح للعملاء بالرد بنقرة واحدة.",
+      "buttonText": "نص الزر",
+      "urlPlaceholder": "https://...",
+      "types": {
+        "quickReply": "رد سريع",
+        "url": "رابط",
+        "phone": "هاتف"
+      }
+    },
+    "status": {
+      "draft": "مسودة",
+      "pending": "قيد الانتظار",
+      "approved": "موافق عليه",
+      "rejected": "مرفوض"
+    },
+    "categories": {
+      "utility": "خدمي",
+      "utilityDesc": "تحديثات الطلبات والتأكيدات والتنبيهات",
+      "marketing": "تسويقي",
+      "marketingDesc": "العروض والترويجات",
+      "authentication": "تحقق",
+      "authenticationDesc": "رموز التحقق وكلمات المرور"
+    },
+    "languages": {
+      "arabic": "العربية",
+      "english": "الإنجليزية",
+      "french": "الفرنسية"
+    },
+    "stats": {
+      "total": "الإجمالي",
+      "draft": "مسودة",
+      "pending": "قيد الانتظار",
+      "approved": "موافق عليه"
+    },
+    "bindings": {
+      "title": "ربط الأحداث",
+      "description": "ربط القوالب بأحداث الطلبات",
+      "active": "مفعّل",
+      "disabled": "معطّل",
+      "enable": "تفعيل",
+      "disable": "تعطيل",
+      "assign": "تعيين",
+      "change": "تغيير",
+      "cancel": "إلغاء",
+      "removeBinding": "إزالة الربط",
+      "removeConfirm": "هل تريد إزالة هذا التعيين؟",
+      "selectTemplate": "اختر قالب",
+      "createTemplate": "إنشاء قالب",
+      "noApprovedTemplates": "لا توجد قوالب موافق عليها",
+      "noApprovedDesc": "تحتاج إلى قالب واحد موافق عليه على الأقل لربطه بالأحداث. أنشئ قالباً وأرسله إلى ميتا للموافقة."
+    },
+    "errors": {
+      "nameRequired": "اسم القالب مطلوب",
+      "bodyRequired": "نص الرسالة مطلوب",
+      "saveFailed": "فشل في حفظ القالب",
+      "submitFailed": "فشل في إرسال القالب",
+      "deleteFailed": "فشل في حذف القالب"
+    },
+    "preview": {
+      "enterBodyText": "أدخل نص الرسالة..."
+    }
   }
 }

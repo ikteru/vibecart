@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import { CheckCheck } from 'lucide-react';
 import type { TemplateButton } from '@/domain/entities/WhatsAppMessageTemplate';
 
@@ -17,6 +18,8 @@ interface TemplatePreviewProps {
  * Renders template content as it would appear in WhatsApp.
  */
 export function TemplatePreview({ headerText, bodyText, footerText, buttons }: TemplatePreviewProps) {
+  const t = useTranslations('templates');
+
   // Replace variables with example values for preview
   const exampleValues: Record<string, string> = {
     '1': 'Ahmed',
@@ -64,7 +67,7 @@ export function TemplatePreview({ headerText, bodyText, footerText, buttons }: T
             {/* Body */}
             <div className="text-white text-sm whitespace-pre-wrap">
               {formattedBody || (
-                <span className="text-zinc-400 italic">Enter body text...</span>
+                <span className="text-zinc-400 italic">{t('preview.enterBodyText')}</span>
               )}
             </div>
 

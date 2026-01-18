@@ -469,7 +469,17 @@
     },
     "supportedProviders": "Prestataires supportés :",
     "notifyPlaceholder": "Entrez votre e-mail pour être notifié",
-    "notifyButton": "Me notifier"
+    "notifyButton": "Me notifier",
+    "form": {
+      "selectCity": "Sélectionner une ville...",
+      "rate": "Tarif",
+      "cancel": "Annuler",
+      "add": "Ajouter",
+      "noRules": "Aucune règle spécifique par ville. Le tarif par défaut sera utilisé pour toutes les villes.",
+      "cityExists": "Cette ville a déjà une règle de livraison",
+      "saveFailed": "Échec de l'enregistrement des paramètres de livraison",
+      "savedSuccess": "Paramètres enregistrés avec succès"
+    }
   },
   "cities": {
     "Casablanca": "Casablanca",
@@ -533,5 +543,115 @@
     "fils": "fils",
     "priceFormat": "{amount} {currency}",
     "selectCurrency": "Sélectionner la devise"
+  },
+  "templates": {
+    "title": "Modèles de messages",
+    "description": "Créer et gérer les modèles WhatsApp",
+    "newTemplate": "Nouveau modèle",
+    "editTemplate": "Modifier le modèle",
+    "syncFromMeta": "Synchroniser depuis Meta",
+    "eventBindings": "Liaisons d'événements",
+    "quickStart": "Démarrage rapide avec des modèles prédéfinis",
+    "quickStartDesc": "10 modèles prêts à l'emploi optimisés pour l'approbation Meta",
+    "browse": "Parcourir →",
+    "usePreset": "Utiliser un modèle prédéfini",
+    "createFromScratch": "Créer à partir de zéro",
+    "or": "ou",
+    "noTemplates": "Aucun modèle pour l'instant",
+    "noFilterTemplates": "Aucun modèle {filter}",
+    "preview": "Aperçu",
+    "saveDraft": "Enregistrer le brouillon",
+    "submitToMeta": "Soumettre à Meta",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce modèle ?",
+    "rejectionReason": "Motif du rejet",
+    "new": "Nouveau",
+    "form": {
+      "templateName": "Nom du modèle",
+      "templateNamePlaceholder": "confirmation_commande",
+      "templateNameHint": "Lettres minuscules, chiffres et tirets bas uniquement",
+      "category": "Catégorie",
+      "language": "Langue",
+      "description": "Description",
+      "descriptionPlaceholder": "Brève description pour votre référence",
+      "header": "En-tête (optionnel)",
+      "headerPlaceholder": "Mise à jour de commande",
+      "bodyText": "Corps du message",
+      "bodyPlaceholder": "Bonjour {{1}} ! Votre commande {{2}} est confirmée. Total : {{3}}",
+      "required": "*"
+    },
+    "variables": {
+      "title": "Variables disponibles",
+      "customerName": "Nom du client",
+      "orderNumber": "Numéro de commande",
+      "totalAmount": "Montant total",
+      "trackingNumber": "Numéro de suivi",
+      "shopName": "Nom de la boutique",
+      "itemsCount": "Nombre d'articles"
+    },
+    "buttons": {
+      "title": "Boutons de réponse rapide",
+      "maxHint": "3 boutons maximum par modèle",
+      "addButton": "Ajouter un bouton",
+      "noButtons": "Aucun bouton ajouté. Les boutons permettent aux clients de répondre en un clic.",
+      "buttonText": "Texte du bouton",
+      "urlPlaceholder": "https://...",
+      "types": {
+        "quickReply": "Réponse rapide",
+        "url": "URL",
+        "phone": "Téléphone"
+      }
+    },
+    "status": {
+      "draft": "Brouillon",
+      "pending": "En attente",
+      "approved": "Approuvé",
+      "rejected": "Rejeté"
+    },
+    "categories": {
+      "utility": "Utilitaire",
+      "utilityDesc": "Mises à jour de commandes, confirmations, alertes",
+      "marketing": "Marketing",
+      "marketingDesc": "Promotions et offres",
+      "authentication": "Authentification",
+      "authenticationDesc": "OTP et vérification"
+    },
+    "languages": {
+      "arabic": "Arabe",
+      "english": "Anglais",
+      "french": "Français"
+    },
+    "stats": {
+      "total": "Total",
+      "draft": "Brouillon",
+      "pending": "En attente",
+      "approved": "Approuvé"
+    },
+    "bindings": {
+      "title": "Liaisons d'événements",
+      "description": "Assigner des modèles aux événements de commande",
+      "active": "Actif",
+      "disabled": "Désactivé",
+      "enable": "Activer",
+      "disable": "Désactiver",
+      "assign": "Assigner",
+      "change": "Changer",
+      "cancel": "Annuler",
+      "removeBinding": "Supprimer la liaison",
+      "removeConfirm": "Supprimer cette assignation de modèle ?",
+      "selectTemplate": "Sélectionner un modèle",
+      "createTemplate": "Créer un modèle",
+      "noApprovedTemplates": "Aucun modèle approuvé",
+      "noApprovedDesc": "Vous devez avoir au moins un modèle approuvé pour l'assigner aux événements. Créez un modèle et soumettez-le à Meta pour approbation."
+    },
+    "errors": {
+      "nameRequired": "Le nom du modèle est requis",
+      "bodyRequired": "Le corps du message est requis",
+      "saveFailed": "Échec de l'enregistrement du modèle",
+      "submitFailed": "Échec de la soumission du modèle",
+      "deleteFailed": "Échec de la suppression du modèle"
+    },
+    "preview": {
+      "enterBodyText": "Entrez le corps du message..."
+    }
   }
 }
