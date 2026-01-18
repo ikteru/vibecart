@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import {
   X,
@@ -16,11 +16,16 @@ import {
   Search,
   Map,
   Bookmark,
+  AlertCircle,
 } from 'lucide-react';
 import { SwipeButton } from '../ui/SwipeButton';
 import { MapPicker } from '../map/MapPicker';
 import { MOROCCAN_CITIES, MOROCCAN_LOCATIONS } from '@/lib/constants';
 import type { Product } from '@/domain/entities/Product';
+import {
+  fieldValidators,
+  validateAndFormatPhone,
+} from '@/presentation/validation/checkoutSchema';
 
 interface ShopConfig {
   shipping?: {
@@ -93,6 +98,48 @@ export function CheckoutDrawer({
     quantity: 1,
     shippingCost: shopConfig.shipping?.defaultRate || 0,
   });
+
+  // Validation state
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  // Validate a single field
+  const validateField = useCallback((field: keyof typeof fieldValidators, value: string) => {
+    const validator = fieldValidators[field];
+    if (!validator) return;
+
+    const result = validator.safeParse(value);
+    if (!result.success) {
+      setErrors((prev) => ({ ...prev, [field]: result.error.errors[0].message }));
+    } else {
+      setErrors((prev) => {
+        const { [field]: _, ...rest } = prev;
+        return rest;
+      });
+    }
+  }, []);
+
+  // Handle field blur - mark as touched and validate
+  const handleFieldBlur = useCallback((field: keyof typeof fieldValidators, value: string) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    validateField(field, value);
+  }, [validateField]);
+
+  // Phone input handler with validation
+  const handlePhoneChange = useCallback((value: string) => {
+    setOrder((prev) => ({ ...prev, phone: value }));
+    if (touched.phone) {
+      const result = validateAndFormatPhone(value);
+      if (!result.valid) {
+        setErrors((prev) => ({ ...prev, phone: result.error! }));
+      } else {
+        setErrors((prev) => {
+          const { phone: _, ...rest } = prev;
+          return rest;
+        });
+      }
+    }
+  }, [touched.phone]);
 
   // Load saved address on mount
   useEffect(() => {
@@ -308,6 +355,7 @@ export function CheckoutDrawer({
   };
 
   const isFormValid = () => {
+    // Check required fields are present
     if (!order.fullName || !order.phone || !order.city || !order.address)
       return false;
     if (!order.locationUrl) return false;
@@ -317,6 +365,14 @@ export function CheckoutDrawer({
       !order.selectedVariant
     )
       return false;
+
+    // Check no validation errors
+    if (Object.keys(errors).length > 0) return false;
+
+    // Validate phone format (even if not touched yet)
+    const phoneValidation = validateAndFormatPhone(order.phone);
+    if (!phoneValidation.valid) return false;
+
     return true;
   };
 
@@ -441,12 +497,23 @@ export function CheckoutDrawer({
                       required
                       type="text"
                       placeholder={t('checkout.yourNamePlaceholder')}
-                      className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl px-4 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                      className={`w-full h-[52px] bg-zinc-900 border rounded-xl px-4 text-white placeholder-zinc-600 focus:outline-none transition-colors ${
+                        touched.fullName && errors.fullName
+                          ? 'border-red-500 focus:border-red-500'
+                          : 'border-zinc-800 focus:border-emerald-500/50'
+                      }`}
                       value={order.fullName}
                       onChange={(e) =>
                         setOrder((p) => ({ ...p, fullName: e.target.value }))
                       }
+                      onBlur={() => handleFieldBlur('fullName', order.fullName)}
                     />
+                    {touched.fullName && errors.fullName && (
+                      <p className="text-red-400 text-[10px] ms-1 flex items-center gap-1">
+                        <AlertCircle size={10} />
+                        {errors.fullName}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
@@ -456,12 +523,21 @@ export function CheckoutDrawer({
                       required
                       type="tel"
                       placeholder={t('checkout.phonePlaceholder')}
-                      className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl px-4 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                      className={`w-full h-[52px] bg-zinc-900 border rounded-xl px-4 text-white placeholder-zinc-600 focus:outline-none transition-colors ${
+                        touched.phone && errors.phone
+                          ? 'border-red-500 focus:border-red-500'
+                          : 'border-zinc-800 focus:border-emerald-500/50'
+                      }`}
                       value={order.phone}
-                      onChange={(e) =>
-                        setOrder((p) => ({ ...p, phone: e.target.value }))
-                      }
+                      onChange={(e) => handlePhoneChange(e.target.value)}
+                      onBlur={() => handleFieldBlur('phone', order.phone)}
                     />
+                    {touched.phone && errors.phone && (
+                      <p className="text-red-400 text-[10px] ms-1 flex items-center gap-1">
+                        <AlertCircle size={10} />
+                        {errors.phone}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -648,12 +724,23 @@ export function CheckoutDrawer({
                       required
                       type="text"
                       placeholder={t('checkout.streetAddressPlaceholder')}
-                      className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl px-4 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-all"
+                      className={`w-full h-[52px] bg-zinc-900 border rounded-xl px-4 text-white placeholder-zinc-600 focus:outline-none transition-all ${
+                        touched.address && errors.address
+                          ? 'border-red-500 focus:border-red-500'
+                          : 'border-zinc-800 focus:border-emerald-500/50'
+                      }`}
                       value={order.address}
                       onChange={(e) =>
                         setOrder((p) => ({ ...p, address: e.target.value }))
                       }
+                      onBlur={() => handleFieldBlur('address', order.address)}
                     />
+                    {touched.address && errors.address && (
+                      <p className="text-red-400 text-[10px] ms-1 flex items-center gap-1">
+                        <AlertCircle size={10} />
+                        {errors.address}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

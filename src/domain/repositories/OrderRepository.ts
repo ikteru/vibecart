@@ -50,6 +50,13 @@ export interface OrderRepository {
   save(order: Order): Promise<void>;
 
   /**
+   * Create an order with items atomically (transactional)
+   * Validates stock, creates order, creates items, and decreases stock in one transaction.
+   * @returns The created order or throws an error if stock is insufficient
+   */
+  createWithItems(order: Order, decreaseStock: boolean): Promise<Order>;
+
+  /**
    * Count orders by seller
    */
   countBySellerId(sellerId: string, status?: OrderStatus): Promise<number>;

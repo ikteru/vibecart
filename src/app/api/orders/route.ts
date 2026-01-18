@@ -14,78 +14,24 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Validate required fields
-    const {
-      sellerId,
-      customerName,
-      customerPhone,
-      shippingAddress,
-      items,
-      shippingCost,
-    } = body as CreateOrderDTO;
-
-    if (!sellerId) {
-      return NextResponse.json(
-        { success: false, error: 'Seller ID is required' },
-        { status: 400 }
-      );
-    }
-
-    if (!customerName || !customerPhone) {
-      return NextResponse.json(
-        { success: false, error: 'Customer name and phone are required' },
-        { status: 400 }
-      );
-    }
-
-    if (!shippingAddress || !shippingAddress.city || !shippingAddress.street) {
-      return NextResponse.json(
-        { success: false, error: 'Shipping address with city and street is required' },
-        { status: 400 }
-      );
-    }
-
-    if (!items || items.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'At least one item is required' },
-        { status: 400 }
-      );
-    }
-
-    // Log the incoming request for debugging
-    console.log('Creating order with:', {
-      sellerId,
-      customerName,
-      customerPhone,
-      shippingAddress,
-      itemsCount: items?.length,
-      items: items?.map((i: { title: string; price: number; quantity: number }) => ({
-        title: i.title,
-        price: i.price,
-        quantity: i.quantity,
-      })),
-    });
-
     // Create order using admin client to bypass RLS for public checkout
     // Public checkout is anonymous - no authenticated user session
     const adminClient = createAdminClient();
     const { orderRepository } = createRepositories(adminClient);
 
+    // Use case handles all validation internally (thin controller pattern)
     const createOrderUseCase = new CreateOrder(orderRepository);
-    const result = await createOrderUseCase.execute({
-      sellerId,
-      customerName,
-      customerPhone,
-      shippingAddress,
-      items,
-      shippingCost: shippingCost || 0,
-    });
+    const result = await createOrderUseCase.execute(body as CreateOrderDTO);
 
     if (!result.success) {
+      // Log error without PII
       console.error('CreateOrder failed:', result.error);
-      console.error('Input was:', { sellerId, customerName, customerPhone, shippingAddress, items: items?.length });
       return NextResponse.json(
-        { success: false, error: result.error },
+        {
+          success: false,
+          error: result.error,
+          validationErrors: result.validationErrors,
+        },
         { status: 400 }
       );
     }

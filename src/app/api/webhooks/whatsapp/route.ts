@@ -40,6 +40,17 @@ export interface WhatsAppWebhookResponse {
   error?: string;
 }
 
+/**
+ * Mask phone number for logging (hide middle digits)
+ * Example: 212612345678 -> 212***45678
+ */
+function maskPhoneNumber(phone: string): string {
+  if (!phone || phone.length < 6) return '***';
+  const prefix = phone.slice(0, 3);
+  const suffix = phone.slice(-5);
+  return `${prefix}***${suffix}`;
+}
+
 // POST - Receive incoming WhatsApp messages
 export async function POST(request: NextRequest) {
   try {
@@ -47,17 +58,39 @@ export async function POST(request: NextRequest) {
     const rawBody = await request.text();
     const signature = request.headers.get('x-hub-signature-256');
 
-    // Check if this is a WhatsApp Cloud API webhook (has signature)
+    // WhatsApp Cloud API webhooks MUST have signature - no fallback
     if (signature) {
       return handleCloudApiWebhook(rawBody, signature);
     }
 
-    // Otherwise, handle legacy custom payload format
+    // Legacy webhook requires API key for security
+    // This prevents unauthorized access when signature is not provided
+    const apiKey = request.headers.get('x-api-key');
+    const expectedApiKey = process.env.WEBHOOK_API_KEY;
+
+    if (!expectedApiKey) {
+      // If no API key configured, legacy webhooks are disabled
+      console.warn('Legacy webhook attempted but WEBHOOK_API_KEY not configured');
+      return NextResponse.json(
+        { success: false, error: 'Legacy webhooks disabled' },
+        { status: 403 }
+      );
+    }
+
+    if (apiKey !== expectedApiKey) {
+      console.warn('Legacy webhook rejected: invalid or missing API key');
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    // Parse and handle legacy payload
     const payload: WhatsAppWebhookPayload = JSON.parse(rawBody);
     return handleLegacyWebhook(payload);
 
   } catch (error) {
-    console.error('WhatsApp webhook error:', error);
+    console.error('WhatsApp webhook error:', error instanceof Error ? error.message : 'Unknown error');
     return NextResponse.json(
       {
         success: false,
@@ -124,9 +157,18 @@ async function handleCloudApiWebhook(
     return NextResponse.json({ success: true });
 
   } catch (error) {
-    console.error('WhatsApp Cloud API webhook error:', error);
-    // Still return 200 to prevent webhook retries
-    return NextResponse.json({ success: true });
+    // Log error without sensitive details
+    console.error('WhatsApp Cloud API webhook error:', error instanceof Error ? error.message : 'Unknown error');
+
+    // Return 500 to allow WhatsApp to retry on transient failures
+    // Only return 200 for permanent failures (like invalid payload structure)
+    if (error instanceof SyntaxError) {
+      // Invalid JSON - permanent failure, don't retry
+      return NextResponse.json({ success: false, error: 'Invalid payload' }, { status: 400 });
+    }
+
+    // Transient failure - return 500 so WhatsApp will retry
+    return NextResponse.json({ success: false, error: 'Processing failed' }, { status: 500 });
   }
 }
 
@@ -183,7 +225,7 @@ async function handleStatusUpdates(
         errorMessage: update.errors?.[0]?.message,
       });
 
-      console.log(`Updated WhatsApp message ${update.id} status to ${newStatus}`);
+      console.log(`Updated WhatsApp message status to ${newStatus}`);
     } catch (error) {
       console.error(`Failed to update status for message ${update.id}:`, error);
     }
@@ -224,11 +266,12 @@ async function handleIncomingMessages(
   const parser = new WhatsAppCommandParser();
 
   for (const message of messages) {
+    // Log without PII - mask phone number and don't log message content
     console.log('Incoming WhatsApp message:', {
-      from: message.from,
+      from: maskPhoneNumber(message.from),
       id: message.id,
       type: message.type,
-      text: message.text?.body,
+      hasText: !!message.text?.body,
       sellerId,
     });
 
@@ -244,11 +287,13 @@ async function handleIncomingMessages(
     const parsed = await parser.parse(messageText);
 
     if (!parsed.isCommand) {
-      console.log('Message is not a command:', messageText);
+      // Don't log message content - just note it's not a command
+      console.log('Received non-command message');
       continue;
     }
 
-    console.log('Parsed command:', parsed);
+    // Log command type only, not arguments which may contain order numbers
+    console.log('Parsed command:', parsed.command);
 
     // Handle confirm command
     if (parsed.command === 'confirm') {

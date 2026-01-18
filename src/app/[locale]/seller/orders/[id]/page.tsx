@@ -56,6 +56,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
     );
     const updateResult = await updateUseCase.execute({
       orderId,
+      sellerId,
       action,
     });
 

@@ -48,6 +48,14 @@ export class UpdateOrderStatus {
         };
       }
 
+      // Authorization check: verify the order belongs to the requesting seller
+      if (order.sellerId !== input.sellerId) {
+        return {
+          success: false,
+          error: 'Unauthorized: order does not belong to this seller',
+        };
+      }
+
       // Apply status transition
       let notificationType: NotificationType | null = null;
 

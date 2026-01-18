@@ -11,13 +11,22 @@ export interface CreateOrderOutput {
   success: boolean;
   order?: OrderResponseDTO;
   error?: string;
+  validationErrors?: string[];
+}
+
+/**
+ * Validation result
+ */
+interface ValidationResult {
+  isValid: boolean;
+  errors: string[];
 }
 
 /**
  * CreateOrder Use Case
  *
  * Creates a new order from checkout.
- * Optionally validates stock availability.
+ * Includes input validation and transactional stock management.
  */
 export class CreateOrder {
   constructor(
@@ -25,22 +34,73 @@ export class CreateOrder {
     private productRepository?: ProductRepository
   ) {}
 
-  async execute(input: CreateOrderDTO): Promise<CreateOrderOutput> {
-    try {
-      // Optionally validate stock for each item
-      if (this.productRepository) {
-        for (const item of input.items) {
-          const product = await this.productRepository.findById(item.productId);
-          if (product && product.stock < item.quantity) {
-            return {
-              success: false,
-              error: `Insufficient stock for "${item.title}". Available: ${product.stock}, requested: ${item.quantity}`,
-            };
-          }
-        }
-      }
+  /**
+   * Validate input data before processing
+   */
+  private validateInput(input: Partial<CreateOrderDTO>): ValidationResult {
+    const errors: string[] = [];
 
-      // Create domain entity (validation happens here)
+    // Required fields validation
+    if (!input.sellerId?.trim()) {
+      errors.push('Seller ID is required');
+    }
+
+    if (!input.customerName?.trim()) {
+      errors.push('Customer name is required');
+    }
+
+    if (!input.customerPhone?.trim()) {
+      errors.push('Customer phone is required');
+    }
+
+    // Shipping address validation
+    if (!input.shippingAddress) {
+      errors.push('Shipping address is required');
+    } else {
+      if (!input.shippingAddress.city?.trim()) {
+        errors.push('City is required in shipping address');
+      }
+      if (!input.shippingAddress.street?.trim()) {
+        errors.push('Street is required in shipping address');
+      }
+    }
+
+    // Items validation
+    if (!input.items || input.items.length === 0) {
+      errors.push('At least one item is required');
+    } else {
+      input.items.forEach((item, index) => {
+        if (!item.title?.trim()) {
+          errors.push(`Item ${index + 1}: title is required`);
+        }
+        if (typeof item.price !== 'number' || item.price <= 0) {
+          errors.push(`Item ${index + 1}: price must be a positive number`);
+        }
+        if (typeof item.quantity !== 'number' || item.quantity <= 0) {
+          errors.push(`Item ${index + 1}: quantity must be a positive number`);
+        }
+      });
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+    };
+  }
+
+  async execute(input: CreateOrderDTO): Promise<CreateOrderOutput> {
+    // Validate input first
+    const validation = this.validateInput(input);
+    if (!validation.isValid) {
+      return {
+        success: false,
+        error: validation.errors[0], // Primary error for backward compatibility
+        validationErrors: validation.errors,
+      };
+    }
+
+    try {
+      // Create domain entity (additional domain validation happens here)
       const order = Order.create({
         sellerId: input.sellerId,
         customerName: input.customerName,
@@ -50,23 +110,17 @@ export class CreateOrder {
         shippingCost: input.shippingCost,
       });
 
-      // Save to repository
-      await this.orderRepository.save(order);
-
-      // Optionally decrease stock
-      if (this.productRepository) {
-        for (const item of input.items) {
-          const product = await this.productRepository.findById(item.productId);
-          if (product) {
-            product.decreaseStock(item.quantity);
-            await this.productRepository.save(product);
-          }
-        }
-      }
+      // Use transactional creation with stock validation and decrease
+      // This ensures atomicity: if stock decrease fails, order is not created
+      const shouldDecreaseStock = this.productRepository !== undefined;
+      const createdOrder = await this.orderRepository.createWithItems(
+        order,
+        shouldDecreaseStock
+      );
 
       return {
         success: true,
-        order: OrderMapper.toDTO(order),
+        order: OrderMapper.toDTO(createdOrder),
       };
     } catch (error) {
       return {

@@ -119,6 +119,13 @@ export class MockOrderRepository implements OrderRepository {
     this.orders.set(order.id, order);
   }
 
+  async createWithItems(order: Order, _decreaseStock: boolean): Promise<Order> {
+    // Mock implementation - just save the order
+    // In tests, stock decrease behavior can be verified separately if needed
+    this.orders.set(order.id, order);
+    return order;
+  }
+
   async countBySellerId(sellerId: string, status?: OrderStatus): Promise<number> {
     let orders = Array.from(this.orders.values()).filter(
       (order) => order.sellerId === sellerId

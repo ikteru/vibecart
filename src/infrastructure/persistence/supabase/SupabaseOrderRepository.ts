@@ -166,6 +166,70 @@ export class SupabaseOrderRepository implements OrderRepository {
     return orders.filter((order): order is Order => order !== null);
   }
 
+  async createWithItems(order: Order, decreaseStock: boolean): Promise<Order> {
+    const props = order.toPersistence();
+
+    // Prepare order data for the RPC function
+    const orderData = {
+      id: props.id,
+      order_number: props.orderNumber,
+      seller_id: props.sellerId,
+      customer_name: props.customerName,
+      customer_phone: props.customerPhone.toWhatsAppFormat(),
+      address_city: props.shippingAddress.city,
+      address_neighborhood: props.shippingAddress.neighborhood || null,
+      address_street: props.shippingAddress.street,
+      address_building_name: props.shippingAddress.buildingName || null,
+      address_floor: props.shippingAddress.floor || null,
+      address_apartment_number: props.shippingAddress.apartmentNumber || null,
+      address_delivery_instructions: props.shippingAddress.deliveryInstructions || null,
+      location_lat: props.shippingAddress.location?.lat || null,
+      location_lng: props.shippingAddress.location?.lng || null,
+      location_url: props.shippingAddress.locationUrl || null,
+      subtotal: props.subtotal.toCents(),
+      shipping_cost: props.shippingCost.toCents(),
+      total: props.total.toCents(),
+      currency: props.total.currency,
+    };
+
+    // Prepare items for the RPC function
+    const items = props.items.map((item) => ({
+      id: item.id,
+      product_id: item.productId || null,
+      title: item.title,
+      price_amount: item.price.toCents(),
+      price_currency: item.price.currency,
+      quantity: item.quantity,
+      selected_variant: item.selectedVariant || null,
+    }));
+
+    // Call the transactional RPC function
+    const { data, error } = await this.supabase.rpc('create_order_with_items', {
+      input: {
+        order_data: orderData,
+        items,
+        decrease_stock: decreaseStock,
+      },
+    });
+
+    if (error) {
+      throw new Error(`Failed to create order: ${error.message}`);
+    }
+
+    // Check RPC result for application-level errors
+    if (data && !data.success) {
+      throw new Error(data.error || 'Failed to create order');
+    }
+
+    // Return the created order
+    const createdOrder = await this.findById(props.id);
+    if (!createdOrder) {
+      throw new Error('Order was created but could not be retrieved');
+    }
+
+    return createdOrder;
+  }
+
   async save(order: Order): Promise<void> {
     const props = order.toPersistence();
 

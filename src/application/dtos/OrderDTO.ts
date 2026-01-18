@@ -151,6 +151,7 @@ export interface CreateOrderDTO {
  */
 export interface UpdateOrderStatusDTO {
   orderId: string;
+  sellerId: string; // Required for authorization - must match order's seller
   action: 'confirm' | 'ship' | 'deliver' | 'cancel';
   trackingNumber?: string;
   cancelReason?: string;
