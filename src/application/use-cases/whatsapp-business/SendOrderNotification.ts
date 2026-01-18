@@ -2,6 +2,8 @@
  * Send Order Notification Use Case
  *
  * Sends WhatsApp template messages for order status updates.
+ * Uses seller-assigned custom templates when available,
+ * falling back to system default templates otherwise.
  */
 
 import { WhatsAppCloudApiService, TemplateComponent } from '@/infrastructure/external-services/WhatsAppCloudApiService';
@@ -10,13 +12,10 @@ import { decryptWhatsAppToken } from '@/infrastructure/utils/encryption';
 import type { WhatsAppTokenRepository } from '@/domain/repositories/WhatsAppTokenRepository';
 import type { WhatsAppMessageRepository } from '@/domain/repositories/WhatsAppMessageRepository';
 import type { OrderRepository } from '@/domain/repositories/OrderRepository';
+import type { TemplateEventBindingRepository } from '@/domain/repositories/TemplateEventBindingRepository';
+import type { NotificationEventType } from '@/domain/entities/TemplateEventBinding';
 
-export type NotificationType =
-  | 'ORDER_PENDING_CONFIRMATION'
-  | 'ORDER_CONFIRMED'
-  | 'ORDER_SHIPPED'
-  | 'ORDER_DELIVERED'
-  | 'ORDER_CANCELLED';
+export type NotificationType = NotificationEventType;
 
 interface SendOrderNotificationInput {
   orderId: string;
@@ -29,8 +28,8 @@ interface SendOrderNotificationOutput {
   error?: string;
 }
 
-// Template names matching what's registered in Meta Business Manager
-const TEMPLATE_NAMES: Record<NotificationType, string> = {
+// System default template names (used when seller has no custom template assigned)
+const SYSTEM_TEMPLATE_NAMES: Record<NotificationType, string> = {
   ORDER_PENDING_CONFIRMATION: 'order_pending_confirmation',
   ORDER_CONFIRMED: 'order_confirmation',
   ORDER_SHIPPED: 'order_shipped',
@@ -43,16 +42,19 @@ export class SendOrderNotification {
   private whatsAppTokenRepository: WhatsAppTokenRepository;
   private whatsAppMessageRepository: WhatsAppMessageRepository;
   private orderRepository: OrderRepository;
+  private templateEventBindingRepository?: TemplateEventBindingRepository;
 
   constructor(
     whatsAppTokenRepository: WhatsAppTokenRepository,
     whatsAppMessageRepository: WhatsAppMessageRepository,
-    orderRepository: OrderRepository
+    orderRepository: OrderRepository,
+    templateEventBindingRepository?: TemplateEventBindingRepository
   ) {
     this.whatsAppService = new WhatsAppCloudApiService();
     this.whatsAppTokenRepository = whatsAppTokenRepository;
     this.whatsAppMessageRepository = whatsAppMessageRepository;
     this.orderRepository = orderRepository;
+    this.templateEventBindingRepository = templateEventBindingRepository;
   }
 
   async execute(input: SendOrderNotificationInput): Promise<SendOrderNotificationOutput> {
@@ -89,9 +91,27 @@ export class SendOrderNotification {
       // 4. Get customer phone in WhatsApp format (212XXXXXXXXX)
       const customerPhone = order.customerPhone.toWhatsAppFormat();
 
-      // 5. Get template name and build components
-      const templateName = TEMPLATE_NAMES[input.notificationType];
-      const components = this.buildTemplateComponents(input.notificationType, order);
+      // 5. Get template - check for seller's custom template first, then fall back to system default
+      let templateName: string;
+      let languageCode: string;
+      let components: TemplateComponent[];
+
+      const customTemplate = await this.getSellerAssignedTemplate(
+        order.sellerId,
+        input.notificationType
+      );
+
+      if (customTemplate) {
+        // Use seller's custom template
+        templateName = customTemplate.templateName;
+        languageCode = customTemplate.templateLanguage;
+        components = this.buildCustomTemplateComponents(customTemplate.components, order);
+      } else {
+        // Fall back to system default template
+        templateName = SYSTEM_TEMPLATE_NAMES[input.notificationType];
+        languageCode = 'ar';
+        components = this.buildDefaultTemplateComponents(input.notificationType, order);
+      }
 
       // 6. Create message record before sending
       const message = WhatsAppMessage.create({
@@ -114,7 +134,7 @@ export class SendOrderNotification {
         accessToken,
         customerPhone,
         templateName,
-        'ar', // Arabic language code
+        languageCode,
         components
       );
 
@@ -144,7 +164,90 @@ export class SendOrderNotification {
     }
   }
 
-  private buildTemplateComponents(
+  /**
+   * Get seller's assigned template for a notification event.
+   * Returns null if no custom template is assigned or template is not approved.
+   */
+  private async getSellerAssignedTemplate(
+    sellerId: string,
+    eventType: NotificationType
+  ): Promise<{
+    templateName: string;
+    templateLanguage: string;
+    components: unknown[];
+  } | null> {
+    if (!this.templateEventBindingRepository) {
+      return null;
+    }
+
+    const result = await this.templateEventBindingRepository.getActiveBindingWithTemplate(
+      sellerId,
+      eventType
+    );
+
+    if (!result) {
+      return null;
+    }
+
+    return {
+      templateName: result.templateName,
+      templateLanguage: result.templateLanguage,
+      components: result.components,
+    };
+  }
+
+  /**
+   * Build template components from a custom template's component definition.
+   * Maps order data to the template's variable placeholders.
+   */
+  private buildCustomTemplateComponents(
+    templateComponents: unknown[],
+    order: { orderNumber: string; customerName: string; trackingNumber?: string | null; total?: { amount: number; currency: string } }
+  ): TemplateComponent[] {
+    const components: TemplateComponent[] = [];
+
+    // Build variable values map
+    // Standard variable mapping: {{1}} = customer_name, {{2}} = order_number, etc.
+    const variableValues: Record<string, string> = {
+      '1': order.customerName,
+      '2': order.orderNumber,
+      '3': order.total ? `${order.total.amount} ${order.total.currency}` : '0 MAD',
+      '4': order.trackingNumber || 'N/A',
+      '5': '', // shop_name would need to be passed in
+      '6': '1', // items_count would need to be calculated
+    };
+
+    for (const comp of templateComponents as Array<{ type: string; text?: string }>) {
+      if (comp.type === 'BODY' && comp.text) {
+        // Extract variables from the template text and build parameters
+        const pattern = /\{\{(\d+)\}\}/g;
+        const parameters: Array<{ type: 'text'; text: string }> = [];
+        let match;
+
+        while ((match = pattern.exec(comp.text)) !== null) {
+          const varNum = match[1];
+          parameters.push({
+            type: 'text',
+            text: variableValues[varNum] || '',
+          });
+        }
+
+        if (parameters.length > 0) {
+          components.push({
+            type: 'body',
+            parameters,
+          });
+        }
+      }
+    }
+
+    return components;
+  }
+
+  /**
+   * Build template components for system default templates.
+   */
+  private buildDefaultTemplateComponents(
     notificationType: NotificationType,
     order: { orderNumber: string; customerName: string; trackingNumber?: string | null; total?: { amount: number; currency: string } }
   ): TemplateComponent[] {

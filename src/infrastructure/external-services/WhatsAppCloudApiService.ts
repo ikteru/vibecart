@@ -503,4 +503,217 @@ export class WhatsAppCloudApiService {
 
     return { statusUpdates, incomingMessages, phoneNumberId };
   }
+
+  // ===========================================
+  // Message Template Management Methods
+  // ===========================================
+
+  /**
+   * Create a message template in Meta
+   *
+   * @param wabaId - WhatsApp Business Account ID
+   * @param accessToken - Access token
+   * @param template - Template data
+   * @returns Created template ID
+   */
+  async createMessageTemplate(
+    wabaId: string,
+    accessToken: string,
+    template: {
+      name: string;
+      language: string;
+      category: 'UTILITY' | 'MARKETING' | 'AUTHENTICATION';
+      components: Array<{
+        type: string;
+        format?: string;
+        text?: string;
+        buttons?: Array<{ type: string; text: string; url?: string; phone_number?: string }>;
+        example?: Record<string, unknown>;
+      }>;
+    }
+  ): Promise<{ id: string; status: string }> {
+    const response = await fetch(`${GRAPH_API_BASE}/${wabaId}/message_templates`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(template),
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(
+        `Failed to create message template: ${error.error?.message || response.statusText}`
+      );
+    }
+
+    return response.json();
+  }
+
+  /**
+   * List all message templates for a WhatsApp Business Account
+   *
+   * @param wabaId - WhatsApp Business Account ID
+   * @param accessToken - Access token
+   * @param options - Query options
+   * @returns List of templates
+   */
+  async getMessageTemplates(
+    wabaId: string,
+    accessToken: string,
+    options?: {
+      status?: 'APPROVED' | 'PENDING' | 'REJECTED';
+      limit?: number;
+    }
+  ): Promise<{
+    data: Array<{
+      id: string;
+      name: string;
+      status: string;
+      category: string;
+      language: string;
+      components: unknown[];
+      rejected_reason?: string;
+    }>;
+    paging?: {
+      cursors: { before: string; after: string };
+      next?: string;
+    };
+  }> {
+    const params = new URLSearchParams({
+      fields: 'id,name,status,category,language,components,rejected_reason',
+    });
+
+    if (options?.status) {
+      params.set('status', options.status);
+    }
+    if (options?.limit) {
+      params.set('limit', options.limit.toString());
+    }
+
+    const response = await fetch(
+      `${GRAPH_API_BASE}/${wabaId}/message_templates?${params.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(
+        `Failed to get message templates: ${error.error?.message || response.statusText}`
+      );
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Get a specific message template by ID
+   *
+   * @param templateId - Meta template ID
+   * @param accessToken - Access token
+   * @returns Template details
+   */
+  async getMessageTemplateById(
+    templateId: string,
+    accessToken: string
+  ): Promise<{
+    id: string;
+    name: string;
+    status: string;
+    category: string;
+    language: string;
+    components: unknown[];
+    rejected_reason?: string;
+  }> {
+    const response = await fetch(
+      `${GRAPH_API_BASE}/${templateId}?fields=id,name,status,category,language,components,rejected_reason`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(
+        `Failed to get message template: ${error.error?.message || response.statusText}`
+      );
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Delete a message template by name
+   *
+   * Note: This deletes ALL templates with the given name across all languages.
+   * To delete a specific language version, use deleteMessageTemplateByNameAndLanguage.
+   *
+   * @param wabaId - WhatsApp Business Account ID
+   * @param accessToken - Access token
+   * @param templateName - Template name
+   * @returns Success status
+   */
+  async deleteMessageTemplate(
+    wabaId: string,
+    accessToken: string,
+    templateName: string
+  ): Promise<{ success: boolean }> {
+    const params = new URLSearchParams({
+      name: templateName,
+    });
+
+    const response = await fetch(
+      `${GRAPH_API_BASE}/${wabaId}/message_templates?${params.toString()}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(
+        `Failed to delete message template: ${error.error?.message || response.statusText}`
+      );
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Delete a specific message template by ID
+   *
+   * @param templateId - Meta template ID
+   * @param accessToken - Access token
+   * @returns Success status
+   */
+  async deleteMessageTemplateById(
+    templateId: string,
+    accessToken: string
+  ): Promise<{ success: boolean }> {
+    const response = await fetch(`${GRAPH_API_BASE}/${templateId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(
+        `Failed to delete message template: ${error.error?.message || response.statusText}`
+      );
+    }
+
+    return response.json();
+  }
 }

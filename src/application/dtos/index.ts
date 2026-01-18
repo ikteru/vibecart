@@ -19,3 +19,20 @@ export type {
   UpdateSellerDTO,
   UpdateHandleDTO,
 } from './SellerDTO';
+
+export type {
+  WhatsAppTemplateDTO,
+  WhatsAppTemplateSummaryDTO,
+  CreateTemplateDTO,
+  UpdateTemplateDTO,
+  TemplateListResponseDTO,
+  TemplateStatsDTO,
+  TemplateEventBindingDTO,
+  AssignTemplateToEventDTO,
+  EventBindingListResponseDTO,
+  SubmitTemplateResultDTO,
+  SyncTemplatesResultDTO,
+  TemplateVariableInfo,
+} from './WhatsAppTemplateDTO';
+
+export { STANDARD_TEMPLATE_VARIABLES } from './WhatsAppTemplateDTO';

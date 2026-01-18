@@ -344,7 +344,9 @@
         "connectedSuccess": "WhatsApp Business connected successfully",
         "disconnect": "Disconnect",
         "disconnectedSuccess": "WhatsApp Business disconnected",
-        "disconnectFailed": "Failed to disconnect WhatsApp"
+        "disconnectFailed": "Failed to disconnect WhatsApp",
+        "messageTemplates": "Message Templates",
+        "customizeNotifications": "Customize order notifications"
       },
       "instagram": {
         "title": "Instagram",

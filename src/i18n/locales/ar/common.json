@@ -344,7 +344,9 @@
         "connectedSuccess": "تم ربط واتساب للأعمال بنجاح",
         "disconnect": "فصل",
         "disconnectedSuccess": "تم فصل واتساب للأعمال",
-        "disconnectFailed": "فشل فصل واتساب"
+        "disconnectFailed": "فشل فصل واتساب",
+        "messageTemplates": "قوالب الرسائل",
+        "customizeNotifications": "تخصيص إشعارات الطلبات"
       },
       "instagram": {
         "title": "إنستغرام",

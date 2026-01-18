@@ -136,11 +136,24 @@ export interface WhatsAppBusinessTokenRow {
 export interface WhatsAppMessageTemplateRow {
   id: string;
   seller_id: string;
+  meta_template_id: string | null;
   template_name: string;
   template_language: string;
   category: string;
   status: string;
+  rejection_reason: string | null;
+  description: string | null;
   components: Record<string, unknown>[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TemplateEventBindingRow {
+  id: string;
+  seller_id: string;
+  event_type: string;
+  template_id: string;
+  is_enabled: boolean;
   created_at: string;
   updated_at: string;
 }

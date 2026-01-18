@@ -12,6 +12,8 @@ import { SupabaseActivityLogRepository } from './SupabaseActivityLogRepository';
 import { SupabaseInstagramTokenRepository } from './SupabaseInstagramTokenRepository';
 import { SupabaseWhatsAppTokenRepository } from './SupabaseWhatsAppTokenRepository';
 import { SupabaseWhatsAppMessageRepository } from './SupabaseWhatsAppMessageRepository';
+import { SupabaseWhatsAppTemplateRepository } from './SupabaseWhatsAppTemplateRepository';
+import { SupabaseTemplateEventBindingRepository } from './SupabaseTemplateEventBindingRepository';
 
 export { SupabaseProductRepository } from './SupabaseProductRepository';
 export { SupabaseSellerRepository } from './SupabaseSellerRepository';
@@ -20,6 +22,8 @@ export { SupabaseActivityLogRepository } from './SupabaseActivityLogRepository';
 export { SupabaseInstagramTokenRepository } from './SupabaseInstagramTokenRepository';
 export { SupabaseWhatsAppTokenRepository } from './SupabaseWhatsAppTokenRepository';
 export { SupabaseWhatsAppMessageRepository } from './SupabaseWhatsAppMessageRepository';
+export { SupabaseWhatsAppTemplateRepository } from './SupabaseWhatsAppTemplateRepository';
+export { SupabaseTemplateEventBindingRepository } from './SupabaseTemplateEventBindingRepository';
 export type {
   ProductRow,
   SellerRow,
@@ -32,6 +36,7 @@ export type {
   WhatsAppBusinessTokenRow,
   WhatsAppMessageTemplateRow,
   WhatsAppMessageRow,
+  TemplateEventBindingRow,
 } from './types';
 
 /**
@@ -46,5 +51,7 @@ export function createRepositories(supabase: SupabaseClient) {
     instagramTokenRepository: new SupabaseInstagramTokenRepository(supabase),
     whatsAppTokenRepository: new SupabaseWhatsAppTokenRepository(supabase),
     whatsAppMessageRepository: new SupabaseWhatsAppMessageRepository(supabase),
+    whatsAppTemplateRepository: new SupabaseWhatsAppTemplateRepository(supabase),
+    templateEventBindingRepository: new SupabaseTemplateEventBindingRepository(supabase),
   };
 }

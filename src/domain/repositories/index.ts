@@ -8,3 +8,5 @@
 export type { OrderRepository } from './OrderRepository';
 export type { ProductRepository } from './ProductRepository';
 export type { SellerRepository } from './SellerRepository';
+export type { WhatsAppTemplateRepository } from './WhatsAppTemplateRepository';
+export type { TemplateEventBindingRepository } from './TemplateEventBindingRepository';

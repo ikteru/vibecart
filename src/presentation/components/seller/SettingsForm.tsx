@@ -24,6 +24,8 @@ import {
   Rocket,
   CheckCircle,
   AlertCircle,
+  MessageSquareText,
+  ChevronRight,
 } from 'lucide-react';
 import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
 import type { SellerResponseDTO, UpdateSellerDTO } from '@/application/dtos/SellerDTO';
@@ -455,23 +457,40 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
               {t('seller.settings.whatsappBusiness.connectWithWhatsApp')}
             </button>
           ) : (
-            <div className="bg-zinc-900/50 rounded-lg p-3 flex items-center justify-between border border-[#25D366]/20">
-              <div className="flex items-center gap-2">
-                <CheckCircle size={14} className="text-emerald-400" />
-                <span className="text-sm font-medium text-white">{config.whatsappBusiness.displayPhoneNumber}</span>
-                {config.whatsappBusiness.verifiedName && (
-                  <span className="text-[10px] text-zinc-500">({config.whatsappBusiness.verifiedName})</span>
-                )}
+            <>
+              <div className="bg-zinc-900/50 rounded-lg p-3 flex items-center justify-between border border-[#25D366]/20">
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={14} className="text-emerald-400" />
+                  <span className="text-sm font-medium text-white">{config.whatsappBusiness.displayPhoneNumber}</span>
+                  {config.whatsappBusiness.verifiedName && (
+                    <span className="text-[10px] text-zinc-500">({config.whatsappBusiness.verifiedName})</span>
+                  )}
+                </div>
+                <button
+                  onClick={handleDisconnectWhatsApp}
+                  disabled={isDisconnectingWhatsApp}
+                  className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-1 disabled:opacity-50"
+                >
+                  {isDisconnectingWhatsApp && <Loader2 size={10} className="animate-spin" />}
+                  {t('seller.settings.whatsappBusiness.disconnect')}
+                </button>
               </div>
-              <button
-                onClick={handleDisconnectWhatsApp}
-                disabled={isDisconnectingWhatsApp}
-                className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-1 disabled:opacity-50"
+
+              {/* Message Templates Link */}
+              <Link
+                href={`/${locale}/seller/templates`}
+                className="flex items-center justify-between p-3 bg-zinc-900/50 rounded-lg border border-[#25D366]/20 hover:bg-zinc-800/50 transition-colors"
               >
-                {isDisconnectingWhatsApp && <Loader2 size={10} className="animate-spin" />}
-                {t('seller.settings.whatsappBusiness.disconnect')}
-              </button>
-            </div>
+                <div className="flex items-center gap-3">
+                  <MessageSquareText size={16} className="text-[#25D366]" />
+                  <div>
+                    <div className="text-xs font-medium text-white">{t('seller.settings.whatsappBusiness.messageTemplates')}</div>
+                    <div className="text-[10px] text-zinc-500">{t('seller.settings.whatsappBusiness.customizeNotifications')}</div>
+                  </div>
+                </div>
+                <ChevronRight size={16} className="text-zinc-500" />
+              </Link>
+            </>
           )}
         </div>
 
