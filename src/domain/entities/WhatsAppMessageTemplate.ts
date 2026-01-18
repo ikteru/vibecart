@@ -328,6 +328,11 @@ export class WhatsAppMessageTemplate {
 
   /**
    * Convert to Meta API format for template creation
+   *
+   * Meta API requires:
+   * - Component types: HEADER, BODY, FOOTER, BUTTONS (uppercase)
+   * - Button types: QUICK_REPLY, URL, PHONE_NUMBER (uppercase)
+   * - Example values for any component containing variables
    */
   toMetaApiFormat(): {
     name: string;
@@ -341,6 +346,27 @@ export class WhatsAppMessageTemplate {
       example?: Record<string, unknown>;
     }>;
   } {
+    // Example values for template variables
+    const exampleValues: Record<string, string> = {
+      '1': 'Ahmed',
+      '2': 'ORD-12345',
+      '3': '450 MAD',
+      '4': 'MA123456789',
+      '5': 'My Shop',
+      '6': '3',
+    };
+
+    // Helper to extract variables and build example array
+    const buildExampleForText = (text: string): string[] => {
+      const variables: string[] = [];
+      const pattern = /\{\{(\d+)\}\}/g;
+      let match;
+      while ((match = pattern.exec(text)) !== null) {
+        variables.push(exampleValues[match[1]] || `Example ${match[1]}`);
+      }
+      return variables;
+    };
+
     return {
       name: this._templateName,
       language: this._templateLanguage,
@@ -362,6 +388,16 @@ export class WhatsAppMessageTemplate {
 
         if (component.text) {
           metaComponent.text = component.text;
+
+          // Add example values for components with variables
+          const exampleVars = buildExampleForText(component.text);
+          if (exampleVars.length > 0) {
+            if (component.type === 'BODY') {
+              metaComponent.example = { body_text: [exampleVars] };
+            } else if (component.type === 'HEADER') {
+              metaComponent.example = { header_text: exampleVars };
+            }
+          }
         }
 
         if (component.buttons) {
@@ -374,6 +410,7 @@ export class WhatsAppMessageTemplate {
         }
 
         if (component.example) {
+          // Override with explicit example if provided
           metaComponent.example = component.example;
         }
 

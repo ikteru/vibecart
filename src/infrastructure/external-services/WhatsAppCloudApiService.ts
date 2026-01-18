@@ -532,23 +532,39 @@ export class WhatsAppCloudApiService {
       }>;
     }
   ): Promise<{ id: string; status: string }> {
+    // Meta API requires allow_category_change for certain transitions
+    const payload = {
+      ...template,
+      allow_category_change: true,
+    };
+
+    console.log('[WhatsApp] Creating template:', JSON.stringify(payload, null, 2));
+
     const response = await fetch(`${GRAPH_API_BASE}/${wabaId}/message_templates`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(template),
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
-      throw new Error(
-        `Failed to create message template: ${error.error?.message || response.statusText}`
-      );
+      console.error('[WhatsApp] Template creation failed:', JSON.stringify(error, null, 2));
+
+      // Extract detailed error message
+      const errorMessage = error.error?.error_user_msg
+        || error.error?.message
+        || error.error?.error_data?.details
+        || response.statusText;
+
+      throw new Error(`Failed to create message template: ${errorMessage}`);
     }
 
-    return response.json();
+    const result = await response.json();
+    console.log('[WhatsApp] Template created:', result);
+    return result;
   }
 
   /**

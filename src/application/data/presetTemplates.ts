@@ -99,9 +99,9 @@ export const PRESET_TEMPLATES: PresetTemplate[] = [
       fr: 'Demande de confirmation amicale',
     },
     body: {
-      en: "{{1}}, your order {{2}} is waiting for you! Total: {{3}}. Just one tap and we'll start preparing everything.",
-      ar: '{{1}}، طلبك {{2}} كيتسناك! المجموع: {{3}}. غير ضغطة وحدة وغادي نبداو نجهزو ليك كلشي.',
-      fr: "{{1}}, ta commande {{2}} t'attend! Total: {{3}}. Un seul clic et on commence a tout preparer.",
+      en: "Hi {{1}}, your order {{2}} is waiting for you! Total: {{3}}. Just one tap and we'll start preparing everything.",
+      ar: 'اهلا {{1}}، طلبك {{2}} كيتسناك! المجموع: {{3}}. غير ضغطة وحدة وغادي نبداو نجهزو ليك كلشي.',
+      fr: "Salut {{1}}, ta commande {{2}} t'attend! Total: {{3}}. Un seul clic et on commence a tout preparer.",
     },
     buttons: [
       {
@@ -199,9 +199,9 @@ export const PRESET_TEMPLATES: PresetTemplate[] = [
       fr: "Notification d'expedition avec suivi",
     },
     body: {
-      en: "{{1}}, exciting news! Your order {{2}} just left our hands and is heading your way! Track it with: {{4}}. It's almost there!",
-      ar: '{{1}}، خبر زوين! الطلب {{2}} خرج من عندنا وجاي ليك! تتبعو بهاد الرقم: {{4}}. قرب يوصل!',
-      fr: "{{1}}, super nouvelle! Ta commande {{2}} vient de partir et arrive chez toi! Suis-la avec: {{4}}. C'est bientot la!",
+      en: "Hey {{1}}, exciting news! Your order {{2}} just left our hands and is heading your way! Track it with: {{4}}. It's almost there!",
+      ar: 'اهلا {{1}}، خبر زوين! الطلب {{2}} خرج من عندنا وجاي ليك! تتبعو بهاد الرقم: {{4}}. قرب يوصل!',
+      fr: "Salut {{1}}, super nouvelle! Ta commande {{2}} vient de partir et arrive chez toi! Suis-la avec: {{4}}. C'est bientot la!",
     },
     buttons: [
       {
@@ -261,9 +261,9 @@ export const PRESET_TEMPLATES: PresetTemplate[] = [
       fr: 'Confirmation de livraison joyeuse',
     },
     body: {
-      en: '{{1}}, your order {{2}} has arrived! We hope it brings a smile to your face. Thank you for choosing {{5}} - you made our day!',
-      ar: '{{1}}، وصل طلبك {{2}}! نتمناو يفرحك. شكرا على اختيارك {{5}} - فرحتينا!',
-      fr: "{{1}}, ta commande {{2}} est arrivee! On espere qu'elle te fait plaisir. Merci d'avoir choisi {{5}} - tu nous fais plaisir!",
+      en: 'Hi {{1}}, your order {{2}} has arrived! We hope it brings a smile to your face. Thank you for choosing {{5}} - you made our day!',
+      ar: 'اهلا {{1}}، وصل طلبك {{2}}! نتمناو يفرحك. شكرا على اختيارك {{5}} - فرحتينا!',
+      fr: "Salut {{1}}, ta commande {{2}} est arrivee! On espere qu'elle te fait plaisir. Merci d'avoir choisi {{5}} - tu nous fais plaisir!",
     },
     buttons: [
       {
@@ -333,9 +333,9 @@ export const PRESET_TEMPLATES: PresetTemplate[] = [
       fr: "Message d'annulation comprehensif",
     },
     body: {
-      en: "{{1}}, we understand - order {{2}} has been cancelled. No worries at all! We're here whenever you're ready at {{5}}.",
-      ar: '{{1}}، فاهمين - الطلب {{2}} تلغى. ماشي مشكل! حنا هنا فـ {{5}} ملي تكون جاهز.',
-      fr: "{{1}}, on comprend - commande {{2}} annulee. Pas de souci! On est la quand tu veux chez {{5}}.",
+      en: "Hi {{1}}, we understand - order {{2}} has been cancelled. No worries at all! We're here whenever you're ready at {{5}}.",
+      ar: 'اهلا {{1}}، فاهمين - الطلب {{2}} تلغى. ماشي مشكل! حنا هنا فـ {{5}} ملي تكون جاهز.',
+      fr: "Salut {{1}}, on comprend - commande {{2}} annulee. Pas de souci! On est la quand tu veux chez {{5}}.",
     },
     buttons: [
       {
@@ -362,9 +362,9 @@ export const PRESET_TEMPLATES: PresetTemplate[] = [
       fr: "Message d'annulation avec excuses",
     },
     body: {
-      en: "{{1}}, we're sorry your order {{2}} didn't work out this time. We'd love another chance to serve you at {{5}}. See you soon!",
-      ar: '{{1}}، كنتأسفو الطلب {{2}} ما مشاش هاد المرة. نتمناو نشوفوك قريب فـ {{5}}. مرحبا بيك ديما!',
-      fr: "{{1}}, desole que la commande {{2}} n'ait pas marche cette fois. On espere te revoir bientot chez {{5}}. A tres vite!",
+      en: "Hi {{1}}, we're sorry your order {{2}} didn't work out this time. We'd love another chance to serve you at {{5}}. See you soon!",
+      ar: 'اهلا {{1}}، كنتأسفو الطلب {{2}} ما مشاش هاد المرة. نتمناو نشوفوك قريب فـ {{5}}. مرحبا بيك ديما!',
+      fr: "Salut {{1}}, desole que la commande {{2}} n'ait pas marche cette fois. On espere te revoir bientot chez {{5}}. A tres vite!",
     },
     buttons: [
       {

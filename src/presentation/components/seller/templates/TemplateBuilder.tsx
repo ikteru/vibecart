@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, Send, Trash2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Save, Send, Trash2, AlertCircle, Plus, X } from 'lucide-react';
 import Link from 'next/link';
 import type { WhatsAppTemplateDTO, CreateTemplateDTO } from '@/application/dtos/WhatsAppTemplateDTO';
-import type { TemplateCategory, TemplateLanguage, TemplateComponent } from '@/domain/entities/WhatsAppMessageTemplate';
+import type { TemplateCategory, TemplateLanguage, TemplateComponent, TemplateButton, ButtonType } from '@/domain/entities/WhatsAppMessageTemplate';
 import { TemplatePreview } from './TemplatePreview';
 
 interface TemplateBuilderProps {
@@ -31,7 +31,23 @@ const VARIABLE_HELP = [
   { placeholder: '{{2}}', name: 'Order Number', example: 'ORD-A1B2' },
   { placeholder: '{{3}}', name: 'Total Amount', example: '450 MAD' },
   { placeholder: '{{4}}', name: 'Tracking Number', example: 'MA123456' },
+  { placeholder: '{{5}}', name: 'Shop Name', example: 'Zara Shop' },
+  { placeholder: '{{6}}', name: 'Items Count', example: '3' },
 ];
+
+const BUTTON_TYPES: { value: ButtonType; label: string }[] = [
+  { value: 'QUICK_REPLY', label: 'Quick Reply' },
+  { value: 'URL', label: 'URL' },
+  { value: 'PHONE_NUMBER', label: 'Phone' },
+];
+
+/**
+ * Extract buttons from template components
+ */
+function extractButtonsFromComponents(components: TemplateComponent[]): TemplateButton[] {
+  const buttonsComponent = components.find((c) => c.type === 'BUTTONS');
+  return buttonsComponent?.buttons || [];
+}
 
 /**
  * Template Builder Component
@@ -53,9 +69,27 @@ export function TemplateBuilder({ locale, mode, template }: TemplateBuilderProps
   const [headerText, setHeaderText] = useState(template?.headerText || '');
   const [bodyText, setBodyText] = useState(template?.bodyText || '');
   const [footerText, setFooterText] = useState('');
+  const [buttons, setButtons] = useState<TemplateButton[]>(
+    template?.components ? extractButtonsFromComponents(template.components) : []
+  );
 
   const canEdit = mode === 'create' || template?.canEdit;
   const canSubmit = template?.canSubmit;
+
+  const addButton = () => {
+    if (buttons.length >= 3) return; // Max 3 buttons per Meta rules
+    setButtons([...buttons, { type: 'QUICK_REPLY', text: '' }]);
+  };
+
+  const updateButton = (index: number, updates: Partial<TemplateButton>) => {
+    const newButtons = [...buttons];
+    newButtons[index] = { ...newButtons[index], ...updates };
+    setButtons(newButtons);
+  };
+
+  const removeButton = (index: number) => {
+    setButtons(buttons.filter((_, i) => i !== index));
+  };
 
   const buildComponents = (): TemplateComponent[] => {
     const components: TemplateComponent[] = [];
@@ -77,6 +111,15 @@ export function TemplateBuilder({ locale, mode, template }: TemplateBuilderProps
       components.push({
         type: 'FOOTER',
         text: footerText.trim(),
+      });
+    }
+
+    // Add buttons if any exist with valid text
+    const validButtons = buttons.filter((b) => b.text.trim());
+    if (validButtons.length > 0) {
+      components.push({
+        type: 'BUTTONS',
+        buttons: validButtons,
       });
     }
 
@@ -336,6 +379,78 @@ export function TemplateBuilder({ locale, mode, template }: TemplateBuilderProps
               ))}
             </div>
           </div>
+
+          {/* Buttons Section */}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-3">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <div className="text-xs text-zinc-400">Quick Reply Buttons</div>
+                <div className="text-[10px] text-zinc-600">Max 3 buttons per template</div>
+              </div>
+              {canEdit && buttons.length < 3 && (
+                <button
+                  onClick={addButton}
+                  className="flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300"
+                >
+                  <Plus size={14} /> Add Button
+                </button>
+              )}
+            </div>
+
+            {buttons.length === 0 ? (
+              <div className="text-center py-4 text-zinc-600 text-xs">
+                No buttons added. Buttons let customers respond with one tap.
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {buttons.map((button, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 p-2 bg-zinc-950 rounded-lg"
+                  >
+                    <select
+                      value={button.type}
+                      onChange={(e) => updateButton(index, { type: e.target.value as ButtonType })}
+                      disabled={!canEdit}
+                      className="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white focus:outline-none disabled:opacity-50"
+                    >
+                      {BUTTON_TYPES.map((bt) => (
+                        <option key={bt.value} value={bt.value}>
+                          {bt.label}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="text"
+                      value={button.text}
+                      onChange={(e) => updateButton(index, { text: e.target.value })}
+                      disabled={!canEdit}
+                      placeholder="Button text"
+                      className="flex-1 bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white focus:outline-none disabled:opacity-50"
+                    />
+                    {button.type === 'URL' && (
+                      <input
+                        type="text"
+                        value={button.url || ''}
+                        onChange={(e) => updateButton(index, { url: e.target.value })}
+                        disabled={!canEdit}
+                        placeholder="https://..."
+                        className="flex-1 bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white focus:outline-none disabled:opacity-50"
+                      />
+                    )}
+                    {canEdit && (
+                      <button
+                        onClick={() => removeButton(index)}
+                        className="p-1 text-zinc-500 hover:text-red-400"
+                      >
+                        <X size={14} />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Preview */}
@@ -345,6 +460,7 @@ export function TemplateBuilder({ locale, mode, template }: TemplateBuilderProps
             headerText={headerText}
             bodyText={bodyText}
             footerText={footerText}
+            buttons={buttons}
           />
         </div>
       </div>
