@@ -21,6 +21,11 @@ services:
       SUPABASE_SERVICE_ROLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
       NEXT_PUBLIC_APP_URL: http://localhost:3000
       NEXT_PUBLIC_DEFAULT_LOCALE: ar-MA
+      # Instagram OAuth
+      INSTAGRAM_APP_ID: "${INSTAGRAM_APP_ID:-}"
+      INSTAGRAM_APP_SECRET: "${INSTAGRAM_APP_SECRET:-}"
+      INSTAGRAM_REDIRECT_URI: "${INSTAGRAM_REDIRECT_URI:-http://localhost:3000/api/auth/instagram/callback}"
+      INSTAGRAM_TOKEN_ENCRYPTION_KEY: "${INSTAGRAM_TOKEN_ENCRYPTION_KEY:-}"
     volumes:
       - ../src:/app/src
       - ../public:/app/public
@@ -221,6 +226,26 @@ services:
       - db
     profiles:
       - tools
+
+  # ngrok tunnel for Instagram OAuth (exposes localhost to internet)
+  # Get your free auth token at: https://dashboard.ngrok.com/get-started/your-authtoken
+  # Get a free static domain at: https://dashboard.ngrok.com/cloud-edge/domains
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: vibecart-ngrok
+    restart: unless-stopped
+    command:
+      - "http"
+      - "http://app:3000"
+      - "--domain=${NGROK_DOMAIN:-}"
+    environment:
+      NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
+    ports:
+      - "4040:4040"  # ngrok web interface
+    depends_on:
+      - app
+    profiles:
+      - ngrok
 
 volumes:
   db_data:

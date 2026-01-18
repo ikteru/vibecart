@@ -49,6 +49,7 @@ next-env.d.ts
 
 # Docker volumes
 docker/data/
+docker/.env
 postgres_data/
 
 # Debug
