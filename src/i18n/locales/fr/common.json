@@ -336,6 +336,16 @@
         "welcomeMessage": "Message d'accueil",
         "cloudApi": "Intégration Cloud API"
       },
+      "whatsappBusiness": {
+        "title": "WhatsApp Business API",
+        "autoNotify": "Notifier automatiquement les clients des mises à jour",
+        "connectWithWhatsApp": "Connecter WhatsApp Business",
+        "connectedAs": "Connecté: {phone}",
+        "connectedSuccess": "WhatsApp Business connecté avec succès",
+        "disconnect": "Déconnecter",
+        "disconnectedSuccess": "WhatsApp Business déconnecté",
+        "disconnectFailed": "Échec de la déconnexion WhatsApp"
+      },
       "instagram": {
         "title": "Instagram",
         "connect": "Connecter Instagram",

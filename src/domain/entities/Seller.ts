@@ -59,6 +59,16 @@ export interface InstagramConfig {
   tokenExpiresAt?: string;   // ISO date string for UI warning about expiring token
 }
 
+export interface WhatsAppBusinessConfig {
+  isConnected: boolean;
+  phoneNumberId?: string;          // WhatsApp Phone Number ID for API calls
+  displayPhoneNumber?: string;     // Human-readable phone number
+  verifiedName?: string;           // Business verified name
+  businessAccountId?: string;      // WhatsApp Business Account ID
+  businessAccountName?: string;    // Business account name
+  tokenExpiresAt?: string;         // ISO date string for UI warning
+}
+
 export interface ShopConfig {
   heroText?: string;
   accentColor?: string;
@@ -70,6 +80,7 @@ export interface ShopConfig {
   vibe?: VibeConfig;
   googleMaps?: GoogleMapsConfig;
   instagram?: InstagramConfig;
+  whatsappBusiness?: WhatsAppBusinessConfig;
 }
 
 export interface SellerProps {

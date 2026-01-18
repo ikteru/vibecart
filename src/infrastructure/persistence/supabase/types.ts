@@ -118,3 +118,47 @@ export interface InstagramTokenRow {
   created_at: string;
   updated_at: string;
 }
+
+export interface WhatsAppBusinessTokenRow {
+  id: string;
+  seller_id: string;
+  phone_number_id: string;
+  display_phone_number: string;
+  business_account_id: string;
+  access_token_encrypted: string;
+  token_expires_at: string | null;
+  is_active: boolean;
+  connected_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WhatsAppMessageTemplateRow {
+  id: string;
+  seller_id: string;
+  template_name: string;
+  template_language: string;
+  category: string;
+  status: string;
+  components: Record<string, unknown>[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WhatsAppMessageRow {
+  id: string;
+  seller_id: string;
+  order_id: string | null;
+  whatsapp_message_id: string | null;
+  recipient_phone: string;
+  template_name: string | null;
+  message_type: string;
+  message_content: Record<string, unknown>;
+  status: string;
+  error_code: string | null;
+  error_message: string | null;
+  sent_at: string | null;
+  delivered_at: string | null;
+  read_at: string | null;
+  created_at: string;
+}

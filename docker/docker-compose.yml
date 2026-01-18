@@ -19,13 +19,21 @@ services:
       SUPABASE_URL: http://kong:8000
       NEXT_PUBLIC_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
       SUPABASE_SERVICE_ROLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
-      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_URL: "${NEXT_PUBLIC_APP_URL:-http://localhost:3000}"
       NEXT_PUBLIC_DEFAULT_LOCALE: ar-MA
       # Instagram OAuth
       INSTAGRAM_APP_ID: "${INSTAGRAM_APP_ID:-}"
       INSTAGRAM_APP_SECRET: "${INSTAGRAM_APP_SECRET:-}"
       INSTAGRAM_REDIRECT_URI: "${INSTAGRAM_REDIRECT_URI:-http://localhost:3000/api/auth/instagram/callback}"
       INSTAGRAM_TOKEN_ENCRYPTION_KEY: "${INSTAGRAM_TOKEN_ENCRYPTION_KEY:-}"
+      # WhatsApp Business API
+      WHATSAPP_APP_ID: "${WHATSAPP_APP_ID:-}"
+      WHATSAPP_APP_SECRET: "${WHATSAPP_APP_SECRET:-}"
+      WHATSAPP_REDIRECT_URI: "${WHATSAPP_REDIRECT_URI:-http://localhost:3000/api/auth/whatsapp/callback}"
+      WHATSAPP_TOKEN_ENCRYPTION_KEY: "${WHATSAPP_TOKEN_ENCRYPTION_KEY:-}"
+      WHATSAPP_VERIFY_TOKEN: "${WHATSAPP_VERIFY_TOKEN:-}"
+      # Gemini AI
+      GEMINI_API_KEY: "${GEMINI_API_KEY:-}"
     volumes:
       - ../src:/app/src
       - ../public:/app/public

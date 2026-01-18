@@ -54,8 +54,10 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
   const searchParams = useSearchParams();
   const t = useTranslations();
 
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [isDisconnecting, setIsDisconnecting] = useState(false);
+  const [isConnectingInstagram, setIsConnectingInstagram] = useState(false);
+  const [isDisconnectingInstagram, setIsDisconnectingInstagram] = useState(false);
+  const [isConnectingWhatsApp, setIsConnectingWhatsApp] = useState(false);
+  const [isDisconnectingWhatsApp, setIsDisconnectingWhatsApp] = useState(false);
   const [isSyncingMaps, setIsSyncingMaps] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [newCity, setNewCity] = useState('');
@@ -63,6 +65,7 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
   const [showComingSoon, setShowComingSoon] = useState(false);
   const [comingSoonFeature, setComingSoonFeature] = useState('');
   const [instagramMessage, setInstagramMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [whatsappMessage, setWhatsappMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Handle Instagram OAuth callback messages
   useEffect(() => {
@@ -88,11 +91,48 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
     }
   }, [searchParams, pathname, router, t]);
 
+  // Handle WhatsApp OAuth callback messages
+  useEffect(() => {
+    const whatsappSuccess = searchParams.get('whatsapp_success');
+    const whatsappError = searchParams.get('whatsapp_error');
+    const whatsappPhone = searchParams.get('whatsapp_phone');
+
+    if (whatsappSuccess === 'true') {
+      setWhatsappMessage({
+        type: 'success',
+        text: whatsappPhone
+          ? t('seller.settings.whatsappBusiness.connectedAs', { phone: whatsappPhone })
+          : t('seller.settings.whatsappBusiness.connectedSuccess'),
+      });
+      // Update local state
+      setConfig((prev) => ({
+        ...prev,
+        whatsappBusiness: {
+          ...prev.whatsappBusiness,
+          isConnected: true,
+          displayPhoneNumber: whatsappPhone || '',
+        },
+      }));
+      router.replace(pathname, { scroll: false });
+    } else if (whatsappError) {
+      setWhatsappMessage({
+        type: 'error',
+        text: whatsappError,
+      });
+      router.replace(pathname, { scroll: false });
+    }
+  }, [searchParams, pathname, router, t]);
+
   // Initialize config from seller data
   const [config, setConfig] = useState({
     whatsapp: {
       enabled: true,
       businessNumber: seller.whatsappDisplayNumber,
+    },
+    whatsappBusiness: {
+      isConnected: seller.shopConfig.whatsappBusiness?.isConnected || false,
+      displayPhoneNumber: seller.shopConfig.whatsappBusiness?.displayPhoneNumber || '',
+      verifiedName: seller.shopConfig.whatsappBusiness?.verifiedName || '',
     },
     instagram: {
       isConnected: seller.shopConfig.instagram?.isConnected || false,
@@ -111,13 +151,13 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
   });
 
   const handleConnectInstagram = () => {
-    setIsConnecting(true);
+    setIsConnectingInstagram(true);
     // Redirect to Instagram OAuth flow
     window.location.href = '/api/auth/instagram';
   };
 
   const handleDisconnectInstagram = async () => {
-    setIsDisconnecting(true);
+    setIsDisconnectingInstagram(true);
     try {
       const response = await fetch('/api/instagram/disconnect', {
         method: 'POST',
@@ -145,7 +185,46 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
         text: t('seller.settings.instagram.disconnectFailed'),
       });
     } finally {
-      setIsDisconnecting(false);
+      setIsDisconnectingInstagram(false);
+    }
+  };
+
+  const handleConnectWhatsApp = () => {
+    setIsConnectingWhatsApp(true);
+    // Redirect to WhatsApp OAuth flow
+    window.location.href = '/api/auth/whatsapp';
+  };
+
+  const handleDisconnectWhatsApp = async () => {
+    setIsDisconnectingWhatsApp(true);
+    try {
+      const response = await fetch('/api/auth/whatsapp/disconnect', {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        setConfig((prev) => ({
+          ...prev,
+          whatsappBusiness: { isConnected: false, displayPhoneNumber: '', verifiedName: '' },
+        }));
+        setWhatsappMessage({
+          type: 'success',
+          text: t('seller.settings.whatsappBusiness.disconnectedSuccess'),
+        });
+      } else {
+        const data = await response.json();
+        setWhatsappMessage({
+          type: 'error',
+          text: data.error || t('seller.settings.whatsappBusiness.disconnectFailed'),
+        });
+      }
+    } catch {
+      setWhatsappMessage({
+        type: 'error',
+        text: t('seller.settings.whatsappBusiness.disconnectFailed'),
+      });
+    } finally {
+      setIsDisconnectingWhatsApp(false);
     }
   };
 
@@ -319,35 +398,81 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
       <div className="space-y-4">
         <h3 className="text-xs font-bold text-zinc-500 uppercase px-1">{t('seller.settings.connections')}</h3>
 
-        {/* WhatsApp Business */}
-        <div className="bg-[#25D366]/10 border border-[#25D366]/20 rounded-2xl p-4 space-y-4 relative overflow-hidden">
-          <div className="flex items-center justify-between z-10 relative">
+        {/* WhatsApp Business API */}
+        <div className="bg-[#25D366]/10 border border-[#25D366]/20 rounded-2xl p-4 space-y-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-[#25D366] rounded-lg flex items-center justify-center shadow-lg shadow-[#25D366]/20">
                 <Phone size={20} className="text-white" />
               </div>
               <div>
-                <h3 className="font-bold text-sm text-white">{t('seller.settings.whatsapp.title')}</h3>
-                <p className="text-[10px] text-[#25D366] font-medium">{t('seller.settings.whatsapp.cloudApi')}</p>
+                <h3 className="font-bold text-sm text-white">{t('seller.settings.whatsappBusiness.title')}</h3>
+                <p className="text-[10px] text-[#25D366] font-medium">{t('seller.settings.whatsappBusiness.autoNotify')}</p>
               </div>
             </div>
             <div
               className={`w-2 h-2 rounded-full ${
-                config.whatsapp.enabled ? 'bg-emerald-500' : 'bg-red-500'
+                config.whatsappBusiness.isConnected ? 'bg-emerald-500' : 'bg-red-500'
               }`}
             />
           </div>
-          <div className="flex justify-between items-center bg-zinc-900/50 p-2 rounded-lg border border-[#25D366]/20">
-            <span className="text-[10px] text-zinc-400 px-2">
-              {config.whatsapp.enabled ? t('seller.settings.connected') : t('seller.settings.notConnected')}
-            </span>
-            <button
-              onClick={() => showFeatureComingSoon(t('seller.settings.manageKeys'))}
-              className="text-[10px] font-bold text-[#25D366] hover:underline px-2"
+
+          {/* Success/Error Message */}
+          {whatsappMessage && (
+            <div
+              className={`flex items-center gap-2 p-3 rounded-lg text-xs ${
+                whatsappMessage.type === 'success'
+                  ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
+                  : 'bg-red-500/10 border border-red-500/20 text-red-400'
+              }`}
             >
-              {t('seller.settings.manageKeys')}
+              {whatsappMessage.type === 'success' ? (
+                <CheckCircle size={14} />
+              ) : (
+                <AlertCircle size={14} />
+              )}
+              <span>{whatsappMessage.text}</span>
+              <button
+                onClick={() => setWhatsappMessage(null)}
+                className="ms-auto hover:opacity-70"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          )}
+
+          {!config.whatsappBusiness.isConnected ? (
+            <button
+              onClick={handleConnectWhatsApp}
+              disabled={isConnectingWhatsApp}
+              className="w-full flex items-center justify-center gap-2 bg-[#25D366] text-white text-xs font-bold py-3 rounded-lg hover:bg-[#22c55e] disabled:opacity-50 transition-colors"
+            >
+              {isConnectingWhatsApp ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Phone size={14} />
+              )}
+              {t('seller.settings.whatsappBusiness.connectWithWhatsApp')}
             </button>
-          </div>
+          ) : (
+            <div className="bg-zinc-900/50 rounded-lg p-3 flex items-center justify-between border border-[#25D366]/20">
+              <div className="flex items-center gap-2">
+                <CheckCircle size={14} className="text-emerald-400" />
+                <span className="text-sm font-medium text-white">{config.whatsappBusiness.displayPhoneNumber}</span>
+                {config.whatsappBusiness.verifiedName && (
+                  <span className="text-[10px] text-zinc-500">({config.whatsappBusiness.verifiedName})</span>
+                )}
+              </div>
+              <button
+                onClick={handleDisconnectWhatsApp}
+                disabled={isDisconnectingWhatsApp}
+                className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-1 disabled:opacity-50"
+              >
+                {isDisconnectingWhatsApp && <Loader2 size={10} className="animate-spin" />}
+                {t('seller.settings.whatsappBusiness.disconnect')}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Instagram Integration */}
@@ -396,10 +521,10 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
           {!config.instagram.isConnected ? (
             <button
               onClick={handleConnectInstagram}
-              disabled={isConnecting}
+              disabled={isConnectingInstagram}
               className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 text-white text-xs font-bold py-3 rounded-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
             >
-              {isConnecting ? (
+              {isConnectingInstagram ? (
                 <Loader2 size={14} className="animate-spin" />
               ) : (
                 <Instagram size={14} />
@@ -414,10 +539,10 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
               </div>
               <button
                 onClick={handleDisconnectInstagram}
-                disabled={isDisconnecting}
+                disabled={isDisconnectingInstagram}
                 className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-1 disabled:opacity-50"
               >
-                {isDisconnecting && <Loader2 size={10} className="animate-spin" />}
+                {isDisconnectingInstagram && <Loader2 size={10} className="animate-spin" />}
                 {t('seller.settings.instagram.disconnect')}
               </button>
             </div>

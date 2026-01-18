@@ -336,6 +336,16 @@
         "welcomeMessage": "رسالة الترحيب",
         "cloudApi": "تكامل Cloud API"
       },
+      "whatsappBusiness": {
+        "title": "واتساب للأعمال API",
+        "autoNotify": "إشعار العملاء تلقائياً عند تحديث الطلب",
+        "connectWithWhatsApp": "ربط واتساب للأعمال",
+        "connectedAs": "متصل: {phone}",
+        "connectedSuccess": "تم ربط واتساب للأعمال بنجاح",
+        "disconnect": "فصل",
+        "disconnectedSuccess": "تم فصل واتساب للأعمال",
+        "disconnectFailed": "فشل فصل واتساب"
+      },
       "instagram": {
         "title": "إنستغرام",
         "connect": "ربط إنستغرام",

@@ -154,6 +154,7 @@ export interface UpdateOrderStatusDTO {
   action: 'confirm' | 'ship' | 'deliver' | 'cancel';
   trackingNumber?: string;
   cancelReason?: string;
+  sendNotification?: boolean; // Send WhatsApp notification (default: true if connected)
 }
 
 /**
