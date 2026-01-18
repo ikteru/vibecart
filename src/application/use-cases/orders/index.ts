@@ -20,3 +20,9 @@ export type { UpdateOrderStatusOutput } from './UpdateOrderStatus';
 
 export { AddOrderMessage } from './AddOrderMessage';
 export type { AddOrderMessageOutput } from './AddOrderMessage';
+
+export { ConfirmOrderByCustomer } from './ConfirmOrderByCustomer';
+export type {
+  ConfirmOrderByCustomerInput,
+  ConfirmOrderByCustomerOutput,
+} from './ConfirmOrderByCustomer';

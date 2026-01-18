@@ -35,4 +35,10 @@ export interface WhatsAppTokenRepository {
    * Used for batch operations
    */
   findActiveTokens(): Promise<WhatsAppBusinessToken[]>;
+
+  /**
+   * Find token by WhatsApp Business phone number ID
+   * Used to map incoming webhook messages to the correct seller
+   */
+  findByPhoneNumberId(phoneNumberId: string): Promise<WhatsAppBusinessToken | null>;
 }

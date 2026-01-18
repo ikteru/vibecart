@@ -48,7 +48,12 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
     const supabaseServer = await createClient();
     const repos = createRepositories(supabaseServer);
 
-    const updateUseCase = new UpdateOrderStatus(repos.orderRepository);
+    // Pass WhatsApp repositories for sending notifications
+    const updateUseCase = new UpdateOrderStatus(
+      repos.orderRepository,
+      repos.whatsAppTokenRepository,
+      repos.whatsAppMessageRepository
+    );
     const updateResult = await updateUseCase.execute({
       orderId,
       action,

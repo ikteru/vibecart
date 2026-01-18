@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 import { WhatsAppCommandParser } from '@/infrastructure/external-services/WhatsAppCommandParser';
 import { WhatsAppCloudApiService } from '@/infrastructure/external-services/WhatsAppCloudApiService';
 import { processWhatsAppCommand } from '@/application/use-cases/whatsapp/ProcessCommand';
+import { ConfirmOrderByCustomer } from '@/application/use-cases/orders';
 import { createAdminClient } from '@/infrastructure/auth/supabase-server';
 import { createRepositories } from '@/infrastructure/persistence/supabase';
 
@@ -191,6 +192,7 @@ async function handleStatusUpdates(
 
 /**
  * Handle incoming messages (customer replies)
+ * Processes customer confirmations/cancellations for orders
  */
 async function handleIncomingMessages(
   messages: Array<{
@@ -200,13 +202,26 @@ async function handleIncomingMessages(
     type: string;
     text?: { body: string };
   }>,
-  _phoneNumberId?: string
+  phoneNumberId?: string
 ): Promise<void> {
-  // For now, just log incoming messages
-  // In the future, this could:
-  // 1. Route to customer support
-  // 2. Process as slash commands
-  // 3. Trigger automated responses
+  // Need phoneNumberId to identify which seller this message is for
+  if (!phoneNumberId) {
+    console.log('No phoneNumberId in webhook, cannot route messages');
+    return;
+  }
+
+  const adminClient = createAdminClient();
+  const repos = createRepositories(adminClient);
+
+  // Find the seller by their WhatsApp Business phone number ID
+  const token = await repos.whatsAppTokenRepository.findByPhoneNumberId(phoneNumberId);
+  if (!token) {
+    console.log('No seller found for phoneNumberId:', phoneNumberId);
+    return;
+  }
+
+  const sellerId = token.sellerId;
+  const parser = new WhatsAppCommandParser();
 
   for (const message of messages) {
     console.log('Incoming WhatsApp message:', {
@@ -214,12 +229,88 @@ async function handleIncomingMessages(
       id: message.id,
       type: message.type,
       text: message.text?.body,
+      sellerId,
     });
 
-    // If it's a text message that looks like a command, process it
-    if (message.type === 'text' && message.text?.body?.startsWith('/')) {
-      // TODO: Route to command processing
-      // Would need to map phone number to seller
+    // Only process text messages
+    if (message.type !== 'text' || !message.text?.body) {
+      continue;
+    }
+
+    const customerPhone = message.from;
+    const messageText = message.text.body;
+
+    // Parse the message for commands (including simple "1", "confirm", etc.)
+    const parsed = await parser.parse(messageText);
+
+    if (!parsed.isCommand) {
+      console.log('Message is not a command:', messageText);
+      continue;
+    }
+
+    console.log('Parsed command:', parsed);
+
+    // Handle confirm command
+    if (parsed.command === 'confirm') {
+      try {
+        const confirmUseCase = new ConfirmOrderByCustomer(
+          repos.orderRepository,
+          repos.whatsAppTokenRepository,
+          repos.whatsAppMessageRepository
+        );
+
+        const result = await confirmUseCase.execute({
+          sellerId,
+          customerPhone,
+          orderNumber: parsed.args.orderNumber,
+        });
+
+        if (result.success) {
+          console.log(`Order confirmed by customer: ${result.order?.orderNumber}`);
+        } else {
+          console.log(`Failed to confirm order: ${result.error}`);
+        }
+      } catch (error) {
+        console.error('Error processing confirm command:', error);
+      }
+    }
+
+    // Handle cancel command
+    if (parsed.command === 'cancel') {
+      try {
+        // Use the existing processWhatsAppCommand for cancel
+        // This could be enhanced later with a dedicated CancelOrderByCustomer use case
+        const result = await processWhatsAppCommand({
+          sellerId,
+          buyerPhone: customerPhone,
+          rawMessage: messageText,
+          command: 'cancel',
+          args: parsed.args,
+        });
+
+        if (result.success) {
+          console.log('Order cancelled by customer');
+        } else {
+          console.log(`Failed to cancel order: ${result.error}`);
+        }
+      } catch (error) {
+        console.error('Error processing cancel command:', error);
+      }
+    }
+
+    // Handle other commands (status, track, etc.)
+    if (parsed.command && !['confirm', 'cancel'].includes(parsed.command)) {
+      try {
+        await processWhatsAppCommand({
+          sellerId,
+          buyerPhone: customerPhone,
+          rawMessage: messageText,
+          command: parsed.command,
+          args: parsed.args,
+        });
+      } catch (error) {
+        console.error(`Error processing ${parsed.command} command:`, error);
+      }
     }
   }
 }

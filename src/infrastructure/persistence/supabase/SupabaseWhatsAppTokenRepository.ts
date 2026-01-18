@@ -96,6 +96,25 @@ export class SupabaseWhatsAppTokenRepository implements WhatsAppTokenRepository 
     return (data as WhatsAppBusinessTokenRow[]).map((row) => this.toDomain(row));
   }
 
+  async findByPhoneNumberId(phoneNumberId: string): Promise<WhatsAppBusinessToken | null> {
+    const { data, error } = await this.supabase
+      .from(this.tableName)
+      .select('*')
+      .eq('phone_number_id', phoneNumberId)
+      .eq('is_active', true)
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        // No rows returned
+        return null;
+      }
+      throw new Error(`Failed to find WhatsApp token by phone number ID: ${error.message}`);
+    }
+
+    return this.toDomain(data as WhatsAppBusinessTokenRow);
+  }
+
   private toDomain(row: WhatsAppBusinessTokenRow): WhatsAppBusinessToken {
     return WhatsAppBusinessToken.fromPersistence({
       id: row.id,

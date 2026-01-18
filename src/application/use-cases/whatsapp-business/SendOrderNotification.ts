@@ -12,6 +12,7 @@ import type { WhatsAppMessageRepository } from '@/domain/repositories/WhatsAppMe
 import type { OrderRepository } from '@/domain/repositories/OrderRepository';
 
 export type NotificationType =
+  | 'ORDER_PENDING_CONFIRMATION'
   | 'ORDER_CONFIRMED'
   | 'ORDER_SHIPPED'
   | 'ORDER_DELIVERED'
@@ -30,6 +31,7 @@ interface SendOrderNotificationOutput {
 
 // Template names matching what's registered in Meta Business Manager
 const TEMPLATE_NAMES: Record<NotificationType, string> = {
+  ORDER_PENDING_CONFIRMATION: 'order_pending_confirmation',
   ORDER_CONFIRMED: 'order_confirmation',
   ORDER_SHIPPED: 'order_shipped',
   ORDER_DELIVERED: 'order_delivered',
@@ -144,11 +146,23 @@ export class SendOrderNotification {
 
   private buildTemplateComponents(
     notificationType: NotificationType,
-    order: { orderNumber: string; customerName: string; trackingNumber?: string | null }
+    order: { orderNumber: string; customerName: string; trackingNumber?: string | null; total?: { amount: number; currency: string } }
   ): TemplateComponent[] {
     const components: TemplateComponent[] = [];
 
     switch (notificationType) {
+      case 'ORDER_PENDING_CONFIRMATION':
+        // Template: "مرحباً {{1}}! تم استلام طلبك رقم {{2}}. المجموع: {{3}} درهم. للتأكيد، أرسل 1. للإلغاء، أرسل 0"
+        components.push({
+          type: 'body',
+          parameters: [
+            { type: 'text', text: order.customerName },
+            { type: 'text', text: order.orderNumber },
+            { type: 'text', text: order.total ? `${order.total.amount}` : '0' },
+          ],
+        });
+        break;
+
       case 'ORDER_CONFIRMED':
         // Template: "مرحباً {{1}}! تم تأكيد طلبك رقم {{2}}. سنقوم بشحنه قريباً."
         components.push({
@@ -193,5 +207,77 @@ export class SendOrderNotification {
     }
 
     return components;
+  }
+
+  /**
+   * Send pending confirmation as text message (fallback for testing)
+   * Note: Text messages only work within 24-hour window after customer initiates contact
+   */
+  async sendPendingConfirmationText(orderId: string): Promise<SendOrderNotificationOutput> {
+    try {
+      const order = await this.orderRepository.findById(orderId);
+      if (!order) {
+        return { success: false, error: 'Order not found' };
+      }
+
+      const token = await this.whatsAppTokenRepository.findBySellerId(order.sellerId);
+      if (!token || !token.isActive) {
+        return { success: false, error: 'WhatsApp Business not connected' };
+      }
+
+      if (token.isExpired()) {
+        return { success: false, error: 'WhatsApp token has expired' };
+      }
+
+      const accessToken = decryptWhatsAppToken(token.accessTokenEncrypted);
+      const customerPhone = order.customerPhone.toWhatsAppFormat();
+
+      // Build text message in Arabic
+      const textMessage = `مرحباً ${order.customerName}!
+
+تم استلام طلبك رقم ${order.orderNumber}
+المجموع: ${order.total.amount} درهم
+
+للتأكيد، أرسل 1
+للإلغاء، أرسل 0`;
+
+      // Create message record
+      const message = WhatsAppMessage.create({
+        sellerId: order.sellerId,
+        orderId: order.id,
+        recipientPhone: customerPhone,
+        messageType: 'text',
+        messageContent: {
+          notificationType: 'ORDER_PENDING_CONFIRMATION',
+          text: textMessage,
+        },
+      });
+
+      await this.whatsAppMessageRepository.create(message);
+
+      // Send text message
+      const response = await this.whatsAppService.sendTextMessage(
+        token.phoneNumberId,
+        accessToken,
+        customerPhone,
+        textMessage
+      );
+
+      const whatsappMessageId = response.messages[0]?.id;
+      if (whatsappMessageId) {
+        await this.whatsAppMessageRepository.updateStatus(message.id, 'SENT', {
+          whatsappMessageId,
+          timestamp: new Date(),
+        });
+      }
+
+      return { success: true, messageId: whatsappMessageId };
+    } catch (error) {
+      console.error('Send pending confirmation text error:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to send text message',
+      };
+    }
   }
 }

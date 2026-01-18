@@ -18,18 +18,25 @@ export interface ParsedCommand {
 
 // Command aliases for fuzzy matching
 const COMMAND_ALIASES: Record<string, CommandType> = {
+  // Numeric (for quick reply)
+  '1': 'confirm',
+  '0': 'cancel',
+  '2': 'cancel',
+
   // English
   'confirm': 'confirm',
   'confirmed': 'confirm',
   'approve': 'confirm',
   'ok': 'confirm',
   'yes': 'confirm',
+  'y': 'confirm',
 
   'cancel': 'cancel',
   'cancelled': 'cancel',
   'delete': 'cancel',
   'remove': 'cancel',
   'no': 'cancel',
+  'n': 'cancel',
 
   'status': 'status',
   'check': 'status',
@@ -54,6 +61,10 @@ const COMMAND_ALIASES: Record<string, CommandType> = {
   'تأكيد': 'confirm',
   'موافق': 'confirm',
   'واخا': 'confirm',
+  'نعم': 'confirm',
+  'اه': 'confirm',
+  'ايه': 'confirm',
+  'اوك': 'confirm',
 
   'الغي': 'cancel',
   'الغاء': 'cancel',
@@ -73,7 +84,9 @@ const COMMAND_ALIASES: Record<string, CommandType> = {
 
   // French
   'confirmer': 'confirm',
+  'oui': 'confirm',
   'annuler': 'cancel',
+  'non': 'cancel',
   'statut': 'status',
   'suivre': 'track',
   'aide': 'help',
@@ -114,6 +127,12 @@ export class WhatsAppCommandParser {
       return this.parseExplicitCommand(trimmedMessage);
     }
 
+    // Check for direct alias match (for simple responses like "1", "confirm", "نعم")
+    const directMatch = this.matchDirectAlias(trimmedMessage);
+    if (directMatch) {
+      return directMatch;
+    }
+
     // Try natural language parsing with AI if available
     if (this.geminiService) {
       const aiResult = await this.parseWithAI(trimmedMessage);
@@ -130,6 +149,26 @@ export class WhatsAppCommandParser {
       confidence: 0,
       originalMessage: message,
     };
+  }
+
+  /**
+   * Match simple messages directly against aliases (e.g., "1", "confirm", "نعم")
+   */
+  private matchDirectAlias(message: string): ParsedCommand | null {
+    const normalized = message.toLowerCase().trim();
+
+    // Check direct match
+    if (COMMAND_ALIASES[normalized]) {
+      return {
+        isCommand: true,
+        command: COMMAND_ALIASES[normalized],
+        args: {},
+        confidence: 1.0,
+        originalMessage: message,
+      };
+    }
+
+    return null;
   }
 
   /**
