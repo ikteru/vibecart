@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Plus, FileText, Clock, CheckCircle2, XCircle, RefreshCw, Settings2 } from 'lucide-react';
+import { Plus, FileText, Clock, CheckCircle2, XCircle, RefreshCw, Settings2, Sparkles } from 'lucide-react';
 import type { WhatsAppTemplateSummaryDTO, TemplateStatsDTO } from '@/application/dtos/WhatsAppTemplateDTO';
 import type { TemplateStatus } from '@/domain/entities/WhatsAppMessageTemplate';
 
@@ -88,6 +88,29 @@ export function TemplateList({ initialTemplates, stats, locale }: TemplateListPr
         </div>
       </div>
 
+      {/* Quick Start Banner */}
+      <Link
+        href={`/${locale}/seller/templates/presets`}
+        className="block mb-6 p-4 bg-gradient-to-r from-yellow-900/20 to-orange-900/20 border border-yellow-800/50 rounded-xl hover:border-yellow-600/50 transition-colors"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+            <Sparkles size={20} className="text-yellow-400" />
+          </div>
+          <div className="flex-1">
+            <div className="text-yellow-400 text-sm font-medium">
+              Quick Start with Preset Templates
+            </div>
+            <p className="text-yellow-300/60 text-xs">
+              10 ready-to-use templates optimized for Meta approval
+            </p>
+          </div>
+          <div className="text-yellow-500 text-xs font-medium">
+            Browse →
+          </div>
+        </div>
+      </Link>
+
       {/* Stats */}
       {stats && (
         <div className="grid grid-cols-4 gap-2 mb-6">
@@ -138,12 +161,21 @@ export function TemplateList({ initialTemplates, stats, locale }: TemplateListPr
             {filter === 'ALL' ? 'No templates yet' : `No ${filter.toLowerCase()} templates`}
           </p>
           {filter === 'ALL' && (
-            <Link
-              href={`/${locale}/seller/templates/new`}
-              className="inline-flex items-center gap-1 mt-4 text-emerald-400 text-sm hover:underline"
-            >
-              <Plus size={14} /> Create your first template
-            </Link>
+            <div className="flex flex-col items-center gap-3 mt-4">
+              <Link
+                href={`/${locale}/seller/templates/presets`}
+                className="inline-flex items-center gap-1 text-yellow-400 text-sm hover:underline"
+              >
+                <Sparkles size={14} /> Use a preset template
+              </Link>
+              <span className="text-zinc-600 text-xs">or</span>
+              <Link
+                href={`/${locale}/seller/templates/new`}
+                className="inline-flex items-center gap-1 text-zinc-400 text-sm hover:underline"
+              >
+                <Plus size={14} /> Create from scratch
+              </Link>
+            </div>
           )}
         </div>
       ) : (
