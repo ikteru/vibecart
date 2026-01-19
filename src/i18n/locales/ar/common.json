@@ -178,7 +178,14 @@
       "selectCity": "يرجى اختيار المدينة",
       "fillDetails": "أكمل جميع البيانات للمتابعة"
     },
-    "nearLandmark": "قريب من"
+    "nearLandmark": "قريب من",
+    "deliveryInstructions": "تعليمات التوصيل",
+    "instructionTemplates": {
+      "callWhenArriving": "اتصل عند الوصول",
+      "leaveAtDoor": "اتركها عند الباب",
+      "ringBell": "اضغط الجرس",
+      "dontRing": "لا تضغط الجرس، الطفل نائم"
+    }
   },
   "map": {
     "title": "حدد موقعك",

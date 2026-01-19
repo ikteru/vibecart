@@ -178,7 +178,14 @@
       "selectCity": "Veuillez sélectionner une ville",
       "fillDetails": "Remplissez tous les détails pour continuer"
     },
-    "nearLandmark": "Proche de"
+    "nearLandmark": "Proche de",
+    "deliveryInstructions": "Instructions de livraison",
+    "instructionTemplates": {
+      "callWhenArriving": "Appelez en arrivant",
+      "leaveAtDoor": "Laissez devant la porte",
+      "ringBell": "Sonnez à la porte",
+      "dontRing": "Ne sonnez pas, bébé dort"
+    }
   },
   "map": {
     "title": "Épinglez votre emplacement",

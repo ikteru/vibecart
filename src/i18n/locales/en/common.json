@@ -178,7 +178,14 @@
       "selectCity": "Please select a city",
       "fillDetails": "Fill all details to continue"
     },
-    "nearLandmark": "Near"
+    "nearLandmark": "Near",
+    "deliveryInstructions": "Delivery Instructions",
+    "instructionTemplates": {
+      "callWhenArriving": "Call when you arrive",
+      "leaveAtDoor": "Leave at the door",
+      "ringBell": "Ring the doorbell",
+      "dontRing": "Don't ring, baby sleeping"
+    }
   },
   "map": {
     "title": "Pin Your Location",

@@ -178,7 +178,14 @@
       "selectCity": "اختار المدينة",
       "fillDetails": "عمر كاع المعلومات باش تكمل"
     },
-    "nearLandmark": "قريب من"
+    "nearLandmark": "قريب من",
+    "deliveryInstructions": "تعليمات التوصيل",
+    "instructionTemplates": {
+      "callWhenArriving": "عيط ليا ملي توصل",
+      "leaveAtDoor": "خليها عند الباب",
+      "ringBell": "دق السونيت",
+      "dontRing": "ما تدقش، البيبي نايم"
+    }
   },
   "map": {
     "title": "حدد البلاصة ديالك",

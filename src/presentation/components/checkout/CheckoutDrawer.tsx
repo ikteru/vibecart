@@ -20,7 +20,14 @@ import {
 } from 'lucide-react';
 import { SwipeButton } from '../ui/SwipeButton';
 import { MapPicker } from '../map/MapPicker';
-import { MOROCCAN_CITIES, MOROCCAN_LOCATIONS } from '@/lib/constants';
+import {
+  MOROCCAN_CITIES,
+  MOROCCAN_LOCATIONS,
+  getAllRegions,
+  getProvincesForRegionWithNames,
+  getCommunesForProvinceWithNames,
+  getNeighborhoodsForCity,
+} from '@/lib/constants';
 import type { NearbyLandmark } from '@/domain/entities/MoroccoLocation';
 import type { Product } from '@/domain/entities/Product';
 
@@ -99,6 +106,9 @@ export function CheckoutDrawer({
   // Admin Divisions State (from MapPicker)
   const [adminDivisions, setAdminDivisions] = useState<AddressFields | null>(null);
   const [nearbyLandmark, setNearbyLandmark] = useState<NearbyLandmark | null>(null);
+  const [openAdminDropdown, setOpenAdminDropdown] = useState<
+    'region' | 'province' | 'commune' | 'neighborhood' | null
+  >(null);
 
   // City Selector State
   const [citySearch, setCitySearch] = useState('');
@@ -169,7 +179,15 @@ export function CheckoutDrawer({
       const saved = localStorage.getItem('vibecart_saved_address');
       if (saved) {
         try {
-          setSavedAddress(JSON.parse(saved));
+          const parsedSaved = JSON.parse(saved);
+          setSavedAddress(parsedSaved);
+          // Also set admin divisions and landmark from saved data so they display immediately
+          if (parsedSaved.adminDivisions) {
+            setAdminDivisions(parsedSaved.adminDivisions);
+          }
+          if (parsedSaved.nearbyLandmark) {
+            setNearbyLandmark(parsedSaved.nearbyLandmark);
+          }
         } catch {
           console.error('Failed to parse saved address');
         }
@@ -219,6 +237,64 @@ export function CheckoutDrawer({
     );
   }, [neighborhoodSearch, availableNeighborhoods]);
 
+  // Admin Divisions Memoized Options
+  const allRegions = useMemo(() => getAllRegions(), []);
+
+  const availableProvinces = useMemo(() => {
+    if (!adminDivisions?.region) return [];
+    return getProvincesForRegionWithNames(adminDivisions.region.key);
+  }, [adminDivisions?.region]);
+
+  const availableCommunes = useMemo(() => {
+    if (!adminDivisions?.province) return [];
+    return getCommunesForProvinceWithNames(adminDivisions.province.key);
+  }, [adminDivisions?.province]);
+
+  // Smart neighborhood detection - check commune first, then province
+  const adminNeighborhoods = useMemo(() => {
+    if (adminDivisions?.commune) {
+      const hoods = getNeighborhoodsForCity(adminDivisions.commune.key);
+      if (hoods.length > 0) return hoods;
+    }
+    if (adminDivisions?.province) {
+      return getNeighborhoodsForCity(adminDivisions.province.key);
+    }
+    return [];
+  }, [adminDivisions?.commune, adminDivisions?.province]);
+
+  // Admin Division Change Handlers
+  const handleRegionChange = useCallback((region: AdminDivision) => {
+    setAdminDivisions({ region, province: null, commune: null, neighborhood: '' });
+    setOpenAdminDropdown(null);
+    setOrder(prev => ({ ...prev, city: '' }));
+    setCitySearch('');
+  }, []);
+
+  const handleProvinceChange = useCallback((province: AdminDivision) => {
+    setAdminDivisions(prev => prev ? { ...prev, province, commune: null, neighborhood: '' } : null);
+    setOpenAdminDropdown(null);
+    const cityName = isArabic ? province.name_ar : province.name_fr;
+    setOrder(prev => ({ ...prev, city: cityName }));
+    setCitySearch(cityName);
+  }, [isArabic]);
+
+  const handleCommuneChange = useCallback((commune: AdminDivision) => {
+    setAdminDivisions(prev => prev ? { ...prev, commune, neighborhood: '' } : null);
+    setOpenAdminDropdown(null);
+    const cityName = isArabic ? commune.name_ar : commune.name_fr;
+    setOrder(prev => ({ ...prev, city: cityName }));
+    setCitySearch(cityName);
+    setNeighborhood('');
+    setNeighborhoodSearch('');
+  }, [isArabic]);
+
+  const handleAdminNeighborhoodChange = useCallback((neighborhoodValue: string) => {
+    setAdminDivisions(prev => prev ? { ...prev, neighborhood: neighborhoodValue } : null);
+    setOpenAdminDropdown(null);
+    setNeighborhood(neighborhoodValue);
+    setNeighborhoodSearch(neighborhoodValue);
+  }, []);
+
   const handleCitySelect = (city: string) => {
     setOrder((prev) => ({ ...prev, city }));
     setCitySearch(city);
@@ -249,13 +325,9 @@ export function CheckoutDrawer({
     setIsMapOpen(false);
     setOrder((prev) => ({ ...prev, locationUrl: mapsUrl }));
 
-    // Store admin divisions and landmark
-    if (divisions) {
-      setAdminDivisions(divisions);
-    }
-    if (landmark) {
-      setNearbyLandmark(landmark);
-    }
+    // Always store admin divisions and landmark (even if null to clear previous state)
+    setAdminDivisions(divisions || null);
+    setNearbyLandmark(landmark || null);
 
     // Save if requested
     if (shouldSave && typeof window !== 'undefined') {
@@ -598,7 +670,9 @@ export function CheckoutDrawer({
                     <Smartphone size={10} className="text-emerald-500" />
                     {t('checkout.phoneWithCode')}
                   </label>
-                  <div className={`flex items-center h-[52px] bg-zinc-900 border rounded-xl overflow-hidden transition-colors ${
+                  <div
+                    dir="ltr"
+                    className={`flex items-center h-[52px] bg-zinc-900 border rounded-xl overflow-hidden transition-colors ${
                     touched.phone && errors.phone
                       ? 'border-red-500'
                       : 'border-zinc-800 focus-within:border-emerald-500/50'
@@ -724,44 +798,176 @@ export function CheckoutDrawer({
                     />
                   </button>
 
-                  {/* Admin Divisions Display (from MapPicker) or City/Neighborhood Selectors */}
+                  {/* Admin Divisions Dropdowns (from MapPicker) or City/Neighborhood Selectors */}
                   {adminDivisions && (adminDivisions.region || adminDivisions.province || adminDivisions.commune) ? (
                     <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 space-y-3">
-                      {/* Region */}
-                      {adminDivisions.region && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-zinc-500 uppercase">{t('map.region')}</span>
-                          <span className="text-sm text-white font-medium">
-                            {isArabic ? adminDivisions.region.name_ar : adminDivisions.region.name_fr}
+                      {/* Region Dropdown */}
+                      <div className="space-y-1 relative">
+                        <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
+                          {t('map.region')}
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => setOpenAdminDropdown(openAdminDropdown === 'region' ? null : 'region')}
+                          className={`w-full h-[52px] bg-zinc-800/50 border rounded-xl px-4 text-start flex items-center justify-between transition-colors ${
+                            openAdminDropdown === 'region'
+                              ? 'border-emerald-500/50 text-white'
+                              : 'border-zinc-700 text-white hover:border-zinc-600'
+                          }`}
+                        >
+                          <span className={adminDivisions.region ? 'text-white' : 'text-zinc-600'}>
+                            {adminDivisions.region
+                              ? (isArabic ? adminDivisions.region.name_ar : adminDivisions.region.name_fr)
+                              : t('map.selectRegion')}
                           </span>
-                        </div>
-                      )}
-                      {/* Province */}
-                      {adminDivisions.province && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-zinc-500 uppercase">{t('map.province')}</span>
-                          <span className="text-sm text-white font-medium">
-                            {isArabic ? adminDivisions.province.name_ar : adminDivisions.province.name_fr}
+                          <ChevronDown
+                            size={14}
+                            className={`text-zinc-500 transition-transform ${openAdminDropdown === 'region' ? 'rotate-180' : ''}`}
+                          />
+                        </button>
+                        {openAdminDropdown === 'region' && (
+                          <div className="absolute z-50 top-full mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl max-h-48 overflow-y-auto no-scrollbar">
+                            {allRegions.map((r) => (
+                              <button
+                                key={r.key}
+                                type="button"
+                                onClick={() => handleRegionChange(r)}
+                                className="w-full px-4 py-3 text-start text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white first:rounded-t-xl last:rounded-b-xl transition-colors border-b border-zinc-800/50 last:border-0"
+                              >
+                                {isArabic ? r.name_ar : r.name_fr}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Province Dropdown */}
+                      <div className="space-y-1 relative">
+                        <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
+                          {t('map.province')}
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => adminDivisions.region && setOpenAdminDropdown(openAdminDropdown === 'province' ? null : 'province')}
+                          disabled={!adminDivisions.region}
+                          className={`w-full h-[52px] bg-zinc-800/50 border rounded-xl px-4 text-start flex items-center justify-between transition-colors ${
+                            !adminDivisions.region
+                              ? 'border-zinc-800 text-zinc-600 cursor-not-allowed'
+                              : openAdminDropdown === 'province'
+                              ? 'border-emerald-500/50 text-white'
+                              : 'border-zinc-700 text-white hover:border-zinc-600'
+                          }`}
+                        >
+                          <span className={adminDivisions.province ? 'text-white' : 'text-zinc-600'}>
+                            {adminDivisions.province
+                              ? (isArabic ? adminDivisions.province.name_ar : adminDivisions.province.name_fr)
+                              : t('map.selectProvince')}
                           </span>
-                        </div>
-                      )}
-                      {/* Commune */}
-                      {adminDivisions.commune && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-zinc-500 uppercase">{t('map.commune')}</span>
-                          <span className="text-sm text-white font-medium">
-                            {isArabic ? adminDivisions.commune.name_ar : adminDivisions.commune.name_fr}
+                          <ChevronDown
+                            size={14}
+                            className={`text-zinc-500 transition-transform ${openAdminDropdown === 'province' ? 'rotate-180' : ''}`}
+                          />
+                        </button>
+                        {openAdminDropdown === 'province' && availableProvinces.length > 0 && (
+                          <div className="absolute z-50 top-full mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl max-h-48 overflow-y-auto no-scrollbar">
+                            {availableProvinces.map((p) => (
+                              <button
+                                key={p.key}
+                                type="button"
+                                onClick={() => handleProvinceChange(p)}
+                                className="w-full px-4 py-3 text-start text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white first:rounded-t-xl last:rounded-b-xl transition-colors border-b border-zinc-800/50 last:border-0"
+                              >
+                                {isArabic ? p.name_ar : p.name_fr}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Commune Dropdown */}
+                      <div className="space-y-1 relative">
+                        <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
+                          {t('map.commune')}
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => adminDivisions.province && setOpenAdminDropdown(openAdminDropdown === 'commune' ? null : 'commune')}
+                          disabled={!adminDivisions.province}
+                          className={`w-full h-[52px] bg-zinc-800/50 border rounded-xl px-4 text-start flex items-center justify-between transition-colors ${
+                            !adminDivisions.province
+                              ? 'border-zinc-800 text-zinc-600 cursor-not-allowed'
+                              : openAdminDropdown === 'commune'
+                              ? 'border-emerald-500/50 text-white'
+                              : 'border-zinc-700 text-white hover:border-zinc-600'
+                          }`}
+                        >
+                          <span className={adminDivisions.commune ? 'text-white' : 'text-zinc-600'}>
+                            {adminDivisions.commune
+                              ? (isArabic ? adminDivisions.commune.name_ar : adminDivisions.commune.name_fr)
+                              : t('map.selectCommune')}
                           </span>
+                          <ChevronDown
+                            size={14}
+                            className={`text-zinc-500 transition-transform ${openAdminDropdown === 'commune' ? 'rotate-180' : ''}`}
+                          />
+                        </button>
+                        {openAdminDropdown === 'commune' && availableCommunes.length > 0 && (
+                          <div className="absolute z-50 top-full mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl max-h-48 overflow-y-auto no-scrollbar">
+                            {availableCommunes.map((c) => (
+                              <button
+                                key={c.key}
+                                type="button"
+                                onClick={() => handleCommuneChange(c)}
+                                className="w-full px-4 py-3 text-start text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white first:rounded-t-xl last:rounded-b-xl transition-colors border-b border-zinc-800/50 last:border-0"
+                              >
+                                {isArabic ? c.name_ar : c.name_fr}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Neighborhood Dropdown - Only show if neighborhoods exist */}
+                      {adminNeighborhoods.length > 0 && (
+                        <div className="space-y-1 relative">
+                          <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
+                            {t('map.neighborhood')}
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => setOpenAdminDropdown(openAdminDropdown === 'neighborhood' ? null : 'neighborhood')}
+                            className={`w-full h-[52px] bg-zinc-800/50 border rounded-xl px-4 text-start flex items-center justify-between transition-colors ${
+                              openAdminDropdown === 'neighborhood'
+                                ? 'border-emerald-500/50 text-white'
+                                : 'border-zinc-700 text-white hover:border-zinc-600'
+                            }`}
+                          >
+                            <span className={adminDivisions.neighborhood ? 'text-white' : 'text-zinc-600'}>
+                              {adminDivisions.neighborhood || t('map.selectNeighborhood')}
+                            </span>
+                            <ChevronDown
+                              size={14}
+                              className={`text-zinc-500 transition-transform ${openAdminDropdown === 'neighborhood' ? 'rotate-180' : ''}`}
+                            />
+                          </button>
+                          {openAdminDropdown === 'neighborhood' && (
+                            <div className="absolute z-50 top-full mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl max-h-48 overflow-y-auto no-scrollbar">
+                              {adminNeighborhoods.map((n) => (
+                                <button
+                                  key={n}
+                                  type="button"
+                                  onClick={() => handleAdminNeighborhoodChange(n)}
+                                  className="w-full px-4 py-3 text-start text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white first:rounded-t-xl last:rounded-b-xl transition-colors border-b border-zinc-800/50 last:border-0"
+                                >
+                                  {n}
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       )}
-                      {/* Neighborhood */}
-                      {adminDivisions.neighborhood && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-zinc-500 uppercase">{t('map.neighborhood')}</span>
-                          <span className="text-sm text-white font-medium">{adminDivisions.neighborhood}</span>
-                        </div>
-                      )}
-                      {/* Nearby Landmark */}
+
+                      {/* Nearby Landmark - Keep as read-only display */}
                       {nearbyLandmark && (
                         <div className="flex items-center justify-between pt-2 border-t border-zinc-800">
                           <span className="text-[10px] font-bold text-emerald-500 uppercase">{t('checkout.nearLandmark')}</span>
@@ -811,7 +1017,7 @@ export function CheckoutDrawer({
                                   handleCitySelect(city);
                                 }}
                               >
-                                {t(`cities.${city}`, { defaultValue: city })}
+                                {city}
                               </button>
                             ))}
                           </div>
@@ -891,6 +1097,52 @@ export function CheckoutDrawer({
                       </p>
                     )}
                   </div>
+
+                  {/* Delivery Instructions Templates */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
+                      {t('checkout.deliveryInstructions')}
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { key: 'callWhenArriving', emoji: '📞' },
+                        { key: 'leaveAtDoor', emoji: '🚪' },
+                        { key: 'ringBell', emoji: '🔔' },
+                        { key: 'dontRing', emoji: '🤫' },
+                      ].map(({ key, emoji }) => {
+                        const template = t(`checkout.instructionTemplates.${key}`);
+                        const isSelected = order.address.includes(template);
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => {
+                              if (isSelected) {
+                                // Remove template from address
+                                setOrder((p) => ({
+                                  ...p,
+                                  address: p.address.replace(template, '').replace(/\s+/g, ' ').trim(),
+                                }));
+                              } else {
+                                // Add template to address
+                                setOrder((p) => ({
+                                  ...p,
+                                  address: p.address ? `${p.address} - ${template}` : template,
+                                }));
+                              }
+                            }}
+                            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                              isSelected
+                                ? 'bg-emerald-500/20 border border-emerald-500/50 text-emerald-400'
+                                : 'bg-zinc-800/50 border border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300'
+                            }`}
+                          >
+                            {emoji} {template}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -903,7 +1155,7 @@ export function CheckoutDrawer({
                 <div className="flex justify-between text-xs text-zinc-400">
                   <span className="flex items-center gap-1">
                     <Truck size={12} /> {t('checkout.shipping')}{' '}
-                    {order.city ? t('checkout.shippingTo', { city: t(`cities.${order.city}`, { defaultValue: order.city }) }) : ''}
+                    {order.city ? t('checkout.shippingTo', { city: order.city }) : ''}
                   </span>
                   <span
                     className={
@@ -956,7 +1208,9 @@ export function CheckoutDrawer({
                 </h3>
                 <p className="text-zinc-400 text-sm max-w-[280px] mx-auto">
                   {t('checkout.verificationSentTo')}{' '}
-                  <span className="text-white font-mono">{order.phone}</span>.
+                  <span dir="ltr" className="text-white font-mono inline-block">
+                    0{order.phone.replace(/\s/g, '').slice(0, 1)} ** ** ** {order.phone.replace(/\s/g, '').slice(-2)}
+                  </span>
                 </p>
               </div>
 
