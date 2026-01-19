@@ -308,6 +308,11 @@
     "vibe": {
       "title": "ڤايب الحانوت",
       "saveChanges": "حفظ التغييرات",
+      "saved": "تحفظات التغييرات",
+      "uploading": "كيتحمل...",
+      "uploadError": "ما قدرناش نحملو التصويرة",
+      "saveError": "ما قدرناش نحفظو التغييرات",
+      "maxReviews": "الحد الأقصى 6 آراء",
       "spotlight": {
         "title": "بانير العرض",
         "description": "بانير الترويج فالحانوت",
@@ -328,7 +333,9 @@
         "image": "الصورة ديالك",
         "personalize": "شخصن الحانوت ديالك",
         "rolePlaceholder": "الدور (مثلا: حرفي)",
-        "bioPlaceholder": "قصة قصيرة..."
+        "bioPlaceholder": "قصة قصيرة...",
+        "uploadPhoto": "حمل صورة",
+        "photoHint": "صورة بسمة كتبني الثقة"
       },
       "reviews": {
         "title": "آراء الزبائن",
@@ -336,8 +343,12 @@
         "addReview": "زيد رأي",
         "noReviews": "مازال ما كاين آراء",
         "pinned": "آراء مثبتة",
-        "showcase": "بين حب الزبائن من الستوريز",
-        "addNote": "زيد ملاحظة..."
+        "showcase": "بين حب الزبائن",
+        "addNote": "زيد ملاحظة...",
+        "uploadImage": "حمل تصويرة",
+        "removeReview": "مسح الرأي",
+        "usernamePlaceholder": "@اسم_المستخدم",
+        "empty": "مازال ما مثبتيتي آراء"
       }
     },
     "settings": {

@@ -308,6 +308,11 @@
     "vibe": {
       "title": "Ambiance de la boutique",
       "saveChanges": "Enregistrer",
+      "saved": "Modifications enregistrées",
+      "uploading": "Téléchargement...",
+      "uploadError": "Échec du téléchargement de l'image",
+      "saveError": "Échec de l'enregistrement",
+      "maxReviews": "Maximum 6 avis autorisés",
       "spotlight": {
         "title": "Bannière promotionnelle",
         "description": "Bannière affichée dans votre boutique",
@@ -328,7 +333,9 @@
         "image": "Votre photo",
         "personalize": "Personnalisez votre boutique",
         "rolePlaceholder": "Rôle (ex. Artisan)",
-        "bioPlaceholder": "Courte biographie..."
+        "bioPlaceholder": "Courte biographie...",
+        "uploadPhoto": "Télécharger une photo",
+        "photoHint": "Une photo amicale inspire confiance"
       },
       "reviews": {
         "title": "Avis clients",
@@ -336,8 +343,12 @@
         "addReview": "Ajouter un avis",
         "noReviews": "Pas encore d'avis",
         "pinned": "Avis épinglés",
-        "showcase": "Montrez l'amour des clients via les Stories",
-        "addNote": "Ajouter une note..."
+        "showcase": "Montrez l'amour des clients",
+        "addNote": "Ajouter une note...",
+        "uploadImage": "Télécharger une image",
+        "removeReview": "Supprimer l'avis",
+        "usernamePlaceholder": "@nom_utilisateur",
+        "empty": "Aucun avis épinglé"
       }
     },
     "settings": {

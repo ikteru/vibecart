@@ -308,6 +308,11 @@
     "vibe": {
       "title": "Shop Vibe",
       "saveChanges": "Save Changes",
+      "saved": "Changes saved successfully",
+      "uploading": "Uploading...",
+      "uploadError": "Failed to upload image",
+      "saveError": "Failed to save changes",
+      "maxReviews": "Maximum 6 reviews allowed",
       "spotlight": {
         "title": "Spotlight Banner",
         "description": "Promotional banner shown in your shop",
@@ -328,7 +333,9 @@
         "image": "Profile Image",
         "personalize": "Personalize your shop",
         "rolePlaceholder": "Role (e.g. Artisan)",
-        "bioPlaceholder": "Short bio..."
+        "bioPlaceholder": "Short bio...",
+        "uploadPhoto": "Upload Photo",
+        "photoHint": "A friendly photo builds trust"
       },
       "reviews": {
         "title": "Customer Reviews",
@@ -336,8 +343,12 @@
         "addReview": "Add Review",
         "noReviews": "No reviews yet",
         "pinned": "Pinned Reviews",
-        "showcase": "Showcase customer love from Stories",
-        "addNote": "Add note..."
+        "showcase": "Showcase customer love",
+        "addNote": "Add note...",
+        "uploadImage": "Upload Image",
+        "removeReview": "Remove review",
+        "usernamePlaceholder": "@username",
+        "empty": "No reviews pinned yet"
       }
     },
     "settings": {

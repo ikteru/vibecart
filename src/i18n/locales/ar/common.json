@@ -308,6 +308,11 @@
     "vibe": {
       "title": "أجواء المتجر",
       "saveChanges": "حفظ التغييرات",
+      "saved": "تم حفظ التغييرات بنجاح",
+      "uploading": "جاري الرفع...",
+      "uploadError": "فشل رفع الصورة",
+      "saveError": "فشل حفظ التغييرات",
+      "maxReviews": "الحد الأقصى 6 آراء",
       "spotlight": {
         "title": "لافتة العرض",
         "description": "لافتة ترويجية في متجرك",
@@ -328,7 +333,9 @@
         "image": "صورتك",
         "personalize": "خصص متجرك",
         "rolePlaceholder": "الدور (مثال: حرفي)",
-        "bioPlaceholder": "قصة قصيرة..."
+        "bioPlaceholder": "قصة قصيرة...",
+        "uploadPhoto": "رفع صورة",
+        "photoHint": "صورة ودية تبني الثقة"
       },
       "reviews": {
         "title": "آراء العملاء",
@@ -336,8 +343,12 @@
         "addReview": "إضافة رأي",
         "noReviews": "لا توجد آراء بعد",
         "pinned": "آراء مثبتة",
-        "showcase": "اعرض حب العملاء من القصص",
-        "addNote": "أضف ملاحظة..."
+        "showcase": "اعرض حب العملاء",
+        "addNote": "أضف ملاحظة...",
+        "uploadImage": "رفع صورة",
+        "removeReview": "إزالة الرأي",
+        "usernamePlaceholder": "@اسم_المستخدم",
+        "empty": "لا توجد آراء مثبتة بعد"
       }
     },
     "settings": {

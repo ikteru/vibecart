@@ -56,45 +56,49 @@ export function ShopPageClient({ seller, products: productDTOs }: ShopPageClient
   const [view, setView] = useState<View>('profile');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
 
-  // Build shop config from seller data
+  // Build shop config from real seller data
   const shopConfig = useMemo(() => {
+    const vibe = seller.shopConfig?.vibe;
+    const googleMaps = seller.shopConfig?.googleMaps;
+    const shipping = seller.shopConfig?.shipping;
+
     return {
-      // Google Maps (disabled by default, can be configured via seller dashboard)
+      // Google Maps from seller config
       googleMaps: {
-        enabled: false,
-        rating: 0,
-        reviews: 0,
-        placeName: '',
+        enabled: googleMaps?.enabled || false,
+        rating: googleMaps?.rating || 0,
+        reviews: googleMaps?.reviews || 0,
+        placeName: googleMaps?.placeName || '',
       },
-      // Spotlight (disabled by default, can be configured via seller dashboard)
+      // Spotlight from vibe config
       spotlight: {
-        enabled: false,
-        title: '',
-        subtitle: '',
-        color: 'from-zinc-500 to-zinc-600',
+        enabled: vibe?.spotlight?.enabled || false,
+        title: vibe?.spotlight?.title || '',
+        subtitle: vibe?.spotlight?.subtitle || '',
+        color: vibe?.spotlight?.color || 'from-zinc-500 to-zinc-600',
       },
-      // Maker bio (disabled by default)
+      // Maker bio from vibe config
       makerBio: {
-        enabled: false,
-        name: '',
-        role: '',
-        bio: '',
-        imageUrl: '',
+        enabled: vibe?.makerBio?.enabled || false,
+        name: vibe?.makerBio?.name || '',
+        role: vibe?.makerBio?.role || '',
+        bio: vibe?.makerBio?.bio || '',
+        imageUrl: vibe?.makerBio?.imageUrl || '',
       },
-      // Reviews (future feature)
-      reviews: [],
+      // Pinned reviews from vibe config
+      reviews: (vibe?.pinnedReviews || []).map((review) => ({
+        ...review,
+        enabled: true,
+      })),
       // WhatsApp
       whatsapp: {
         businessNumber: seller.whatsappUrl,
       },
-      // Shipping (default rates, can be customized)
+      // Shipping from seller config with defaults
       shipping: {
-        defaultRate: 35,
-        rules: [
-          { city: 'Casablanca', rate: 25 },
-          { city: 'Marrakech', rate: 0 },
-          { city: 'Rabat', rate: 30 },
-        ],
+        defaultRate: shipping?.defaultRate || 35,
+        freeShippingThreshold: shipping?.freeShippingThreshold,
+        rules: shipping?.rules || [],
       },
     };
   }, [seller]);

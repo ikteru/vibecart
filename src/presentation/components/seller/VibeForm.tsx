@@ -2,8 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { Zap, User, Upload, Plus, X, Loader2 } from 'lucide-react';
-import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
+import { Zap, User, Upload, Plus, X, Loader2, AlertCircle, Check } from 'lucide-react';
 import type { SellerResponseDTO, UpdateSellerDTO } from '@/application/dtos/SellerDTO';
 import type { VibeConfig, PinnedReview } from '@/domain/entities/Seller';
 
@@ -29,28 +28,7 @@ interface VibeFormConfig {
   reviews: ReviewItem[];
 }
 
-const MOCK_ARCHIVED_STORIES = [
-  {
-    id: 's1',
-    url: 'https://images.unsplash.com/photo-1512413914633-b5043f4041ea?w=400&q=80',
-    date: '2h ago',
-  },
-  {
-    id: 's2',
-    url: 'https://images.unsplash.com/photo-1528913753736-2313fa43cb8d?w=400&q=80',
-    date: '5h ago',
-  },
-  {
-    id: 's3',
-    url: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&q=80',
-    date: '1d ago',
-  },
-  {
-    id: 's4',
-    url: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&q=80',
-    date: '2d ago',
-  },
-];
+const MAX_REVIEWS = 6;
 
 interface VibeFormProps {
   seller: SellerResponseDTO;
@@ -64,18 +42,22 @@ interface VibeFormProps {
  */
 export function VibeForm({ seller, updateAction }: VibeFormProps) {
   const t = useTranslations();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isSelectingStory, setIsSelectingStory] = useState(false);
+  const makerBioFileInputRef = useRef<HTMLInputElement>(null);
+  const reviewFileInputRef = useRef<HTMLInputElement>(null);
+  const [isAddingReview, setIsAddingReview] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [showComingSoon, setShowComingSoon] = useState(false);
+  const [isUploadingMakerBio, setIsUploadingMakerBio] = useState(false);
+  const [isUploadingReview, setIsUploadingReview] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   // Initialize config from seller's vibe settings
   const vibeConfig = seller.shopConfig.vibe;
   const [config, setConfig] = useState<VibeFormConfig>({
     spotlight: {
       enabled: vibeConfig?.spotlight?.enabled || false,
-      title: vibeConfig?.spotlight?.title || 'Winter Sale',
-      subtitle: vibeConfig?.spotlight?.subtitle || 'Up to 50% Off',
+      title: vibeConfig?.spotlight?.title || '',
+      subtitle: vibeConfig?.spotlight?.subtitle || '',
       color: vibeConfig?.spotlight?.color || 'from-orange-500 to-red-600',
     },
     makerBio: {
@@ -88,31 +70,86 @@ export function VibeForm({ seller, updateAction }: VibeFormProps) {
     reviews: (vibeConfig?.pinnedReviews || []).map((r) => ({ ...r, enabled: true })),
   });
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const imageUrl = URL.createObjectURL(file);
-      setConfig((prev) => ({
-        ...prev,
-        makerBio: { ...prev.makerBio, imageUrl },
-      }));
+  // Upload image to server
+  const uploadImage = async (file: File, type: 'maker-bio' | 'pinned-review'): Promise<string | null> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('type', type);
+
+    try {
+      const response = await fetch('/api/vibe/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        return result.url;
+      } else {
+        setError(result.error || t('seller.vibe.uploadError'));
+        return null;
+      }
+    } catch {
+      setError(t('seller.vibe.uploadError'));
+      return null;
     }
   };
 
-  const handleSelectStory = (storyUrl: string) => {
-    const newReview: ReviewItem = {
-      id: `story-${Date.now()}`,
-      username: 'customer_love',
-      image: storyUrl,
-      note: 'Customer Love',
-      enabled: true,
-    };
-    setConfig((prev) => ({ ...prev, reviews: [...prev.reviews, newReview] }));
-    setIsSelectingStory(false);
+  const handleMakerBioImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+
+    setIsUploadingMakerBio(true);
+    setError(null);
+
+    const url = await uploadImage(e.target.files[0], 'maker-bio');
+
+    if (url) {
+      setConfig((prev) => ({
+        ...prev,
+        makerBio: { ...prev.makerBio, imageUrl: url },
+      }));
+    }
+
+    setIsUploadingMakerBio(false);
+    // Reset input so same file can be selected again
+    e.target.value = '';
+  };
+
+  const handleReviewImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+
+    if (config.reviews.length >= MAX_REVIEWS) {
+      setError(t('seller.vibe.maxReviews'));
+      return;
+    }
+
+    setIsUploadingReview(true);
+    setError(null);
+
+    const url = await uploadImage(e.target.files[0], 'pinned-review');
+
+    if (url) {
+      const newReview: ReviewItem = {
+        id: `review-${Date.now()}`,
+        username: 'customer',
+        image: url,
+        note: '',
+        enabled: true,
+      };
+      setConfig((prev) => ({ ...prev, reviews: [...prev.reviews, newReview] }));
+      setIsAddingReview(false);
+    }
+
+    setIsUploadingReview(false);
+    // Reset input so same file can be selected again
+    e.target.value = '';
   };
 
   const handleSave = async () => {
     setIsSaving(true);
+    setError(null);
+    setSuccess(false);
 
     const vibeData: VibeConfig = {
       spotlight: config.spotlight,
@@ -134,8 +171,11 @@ export function VibeForm({ seller, updateAction }: VibeFormProps) {
     const result = await updateAction(updateData);
     setIsSaving(false);
 
-    if (!result.success) {
-      setShowComingSoon(true);
+    if (result.success) {
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } else {
+      setError(result.error || t('seller.vibe.saveError'));
     }
   };
 
@@ -152,6 +192,22 @@ export function VibeForm({ seller, updateAction }: VibeFormProps) {
           {t('seller.vibe.saveChanges')}
         </button>
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+          <AlertCircle size={16} />
+          {error}
+        </div>
+      )}
+
+      {/* Success Message */}
+      {success && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm">
+          <Check size={16} />
+          {t('seller.vibe.saved')}
+        </div>
+      )}
 
       {/* Spotlight / Offers */}
       <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
@@ -248,7 +304,11 @@ export function VibeForm({ seller, updateAction }: VibeFormProps) {
           <div className="space-y-3">
             <div className="flex items-center gap-4">
               <div className="relative w-16 h-16 rounded-full bg-black border border-zinc-800 overflow-hidden group">
-                {config.makerBio.imageUrl ? (
+                {isUploadingMakerBio ? (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Loader2 size={20} className="animate-spin text-zinc-400" />
+                  </div>
+                ) : config.makerBio.imageUrl ? (
                   <img
                     src={config.makerBio.imageUrl}
                     className="w-full h-full object-cover"
@@ -263,10 +323,11 @@ export function VibeForm({ seller, updateAction }: VibeFormProps) {
                   <Upload size={16} className="text-white" />
                   <input
                     type="file"
-                    ref={fileInputRef}
+                    ref={makerBioFileInputRef}
                     className="hidden"
-                    accept="image/*"
-                    onChange={handleImageUpload}
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleMakerBioImageUpload}
+                    disabled={isUploadingMakerBio}
                   />
                 </label>
               </div>
@@ -313,37 +374,60 @@ export function VibeForm({ seller, updateAction }: VibeFormProps) {
         )}
       </div>
 
-      {/* Reviews / Stories Selector */}
+      {/* Pinned Reviews */}
       <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="font-bold text-sm text-white">{t('seller.vibe.reviews.pinned')}</h3>
-            <p className="text-[10px] text-zinc-500">{t('seller.vibe.reviews.showcase')}</p>
+            <p className="text-[10px] text-zinc-500">
+              {t('seller.vibe.reviews.showcase')} ({config.reviews.length}/{MAX_REVIEWS})
+            </p>
           </div>
-          <button
-            onClick={() => setIsSelectingStory(!isSelectingStory)}
-            className="bg-zinc-800 hover:bg-zinc-700 text-white p-2 rounded-lg"
-          >
-            {isSelectingStory ? <X size={16} /> : <Plus size={16} />}
-          </button>
+          {config.reviews.length < MAX_REVIEWS && (
+            <button
+              onClick={() => setIsAddingReview(!isAddingReview)}
+              disabled={isUploadingReview}
+              className="bg-zinc-800 hover:bg-zinc-700 text-white p-2 rounded-lg disabled:opacity-50"
+            >
+              {isAddingReview ? <X size={16} /> : <Plus size={16} />}
+            </button>
+          )}
         </div>
 
-        {isSelectingStory && (
-          <div className="grid grid-cols-4 gap-2 mb-4 animate-slide-down">
-            {MOCK_ARCHIVED_STORIES.map((story) => (
-              <button
-                key={story.id}
-                onClick={() => handleSelectStory(story.url)}
-                className="aspect-[9/16] rounded-lg overflow-hidden border border-zinc-800 hover:border-emerald-500 transition-colors relative"
-              >
-                <img src={story.url} className="w-full h-full object-cover" alt="Story" />
-                <div className="absolute inset-0 bg-black/20" />
-              </button>
-            ))}
+        {/* Upload Review Image */}
+        {isAddingReview && (
+          <div className="mb-4 animate-slide-down">
+            <label className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-zinc-700 rounded-xl hover:border-emerald-500/50 cursor-pointer transition-colors">
+              {isUploadingReview ? (
+                <Loader2 size={24} className="animate-spin text-zinc-400 mb-2" />
+              ) : (
+                <Upload size={24} className="text-zinc-500 mb-2" />
+              )}
+              <span className="text-sm text-zinc-400">
+                {isUploadingReview ? t('seller.vibe.uploading') : t('seller.vibe.reviews.uploadImage')}
+              </span>
+              <span className="text-[10px] text-zinc-600 mt-1">
+                JPG, PNG, WebP (max 5MB)
+              </span>
+              <input
+                type="file"
+                ref={reviewFileInputRef}
+                className="hidden"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleReviewImageUpload}
+                disabled={isUploadingReview}
+              />
+            </label>
           </div>
         )}
 
+        {/* Reviews List */}
         <div className="space-y-2">
+          {config.reviews.length === 0 && !isAddingReview && (
+            <div className="text-center py-6 text-zinc-600 text-sm">
+              {t('seller.vibe.reviews.empty')}
+            </div>
+          )}
           {config.reviews.map((review) => (
             <div
               key={review.id}
@@ -354,8 +438,19 @@ export function VibeForm({ seller, updateAction }: VibeFormProps) {
                 className="w-8 h-12 rounded bg-zinc-800 object-cover"
                 alt="Review"
               />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold text-white truncate">@{review.username}</p>
+              <div className="flex-1 min-w-0 space-y-1">
+                <input
+                  type="text"
+                  value={review.username}
+                  onChange={(e) => {
+                    const newReviews = config.reviews.map((r) =>
+                      r.id === review.id ? { ...r, username: e.target.value } : r
+                    );
+                    setConfig((prev) => ({ ...prev, reviews: newReviews }));
+                  }}
+                  className="w-full bg-transparent text-xs font-bold text-white focus:outline-none"
+                  placeholder={t('seller.vibe.reviews.usernamePlaceholder')}
+                />
                 <input
                   type="text"
                   value={review.note}
@@ -365,7 +460,7 @@ export function VibeForm({ seller, updateAction }: VibeFormProps) {
                     );
                     setConfig((prev) => ({ ...prev, reviews: newReviews }));
                   }}
-                  className="w-full bg-transparent text-[10px] text-zinc-400 focus:text-white focus:outline-none mt-0.5"
+                  className="w-full bg-transparent text-[10px] text-zinc-400 focus:text-white focus:outline-none"
                   placeholder={t('seller.vibe.reviews.addNote')}
                 />
               </div>
@@ -375,6 +470,7 @@ export function VibeForm({ seller, updateAction }: VibeFormProps) {
                   setConfig((prev) => ({ ...prev, reviews: newReviews }));
                 }}
                 className="p-2 text-zinc-600 hover:text-red-400"
+                title={t('seller.vibe.reviews.removeReview')}
               >
                 <X size={14} />
               </button>
@@ -382,12 +478,6 @@ export function VibeForm({ seller, updateAction }: VibeFormProps) {
           ))}
         </div>
       </div>
-
-      <ComingSoonModal
-        isOpen={showComingSoon}
-        onClose={() => setShowComingSoon(false)}
-        featureName={t('seller.vibe.title')}
-      />
     </div>
   );
 }
