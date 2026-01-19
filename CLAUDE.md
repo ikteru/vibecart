@@ -658,6 +658,78 @@ export function MyComponent() {
 
 ---
 
+## Claude Skills
+
+Claude can invoke specialized skills via slash commands for high-quality, specialized output. Use these skills when the task matches their purpose.
+
+### Primary Skills for This Project
+
+| Skill | Command | When to Use |
+|-------|---------|-------------|
+| Frontend Design | `/frontend-design` | New UI components, pages, landing pages, dashboards |
+| Web App Testing | `/webapp-testing` | Automated E2E testing with Playwright |
+| Theme Factory | `/theme-factory` | Apply consistent visual themes across artifacts |
+
+### Frontend Design (`/frontend-design`)
+
+**Invoke when:**
+- Creating new pages or components from scratch
+- Building landing pages, dashboards, or complex layouts
+- User requests "make it look good" or "design a new..."
+- Implementing visual features (cards, forms, navigation)
+
+**Produces:**
+- Production-ready code (not placeholder/skeleton)
+- Distinctive design avoiding generic AI aesthetics (no purple gradients, default fonts)
+- Bold directional choices: brutalist, maximalist, retro, organic, luxury, playful
+- Meticulous attention to typography, color, motion, spatial composition
+
+**Guidelines:**
+- Never default to generic choices (standard fonts, clichéd colors, predictable layouts)
+- Execute with intentionality whether pursuing maximalist or minimalist
+- Must still follow project's zinc dark theme and RTL requirements
+
+### Web App Testing (`/webapp-testing`)
+
+**Invoke when:**
+- Testing dynamic web applications requiring JavaScript execution
+- Verifying frontend functionality across UI states
+- Debugging browser behavior and rendered DOM
+- Automating UI interactions (clicks, form submissions)
+- Capturing screenshots for verification
+
+**Produces:**
+- Playwright sync API test scripts
+- Screenshots of rendered pages
+- Browser logs and console output
+- Verification results from UI interactions
+
+**Guidelines:**
+- Wait for `page.wait_for_load_state('networkidle')` before inspection on dynamic apps
+- Use synchronous Playwright API, close browsers after use
+- Employ descriptive selectors (text, role, CSS, IDs)
+
+### Document & Data Skills
+
+| Skill | Command | Use Case |
+|-------|---------|----------|
+| Doc Co-authoring | `/doc-coauthoring` | PRDs, design docs, RFCs, proposals |
+| PDF | `/pdf` | Invoices, receipts, PDF extraction |
+| XLSX | `/xlsx` | Reports, data exports, financial models |
+| DOCX | `/docx` | Word documents with tracked changes |
+| PPTX | `/pptx` | Presentations and slide decks |
+
+### Other Available Skills
+
+| Skill | Command | Use Case |
+|-------|---------|----------|
+| Theme Factory | `/theme-factory` | Consistent styling across presentations/docs |
+| MCP Builder | `/mcp-builder` | Building MCP servers for LLM tool integration |
+| Canvas Design | `/canvas-design` | Artistic posters, designs (visual-first) |
+| Web Artifacts Builder | `/web-artifacts-builder` | Self-contained HTML artifacts |
+
+---
+
 ## DTO & Mapper Patterns
 
 ### DTO Types
@@ -790,6 +862,7 @@ When implementing features, invoke these personas mentally:
 - Component structure
 - State management patterns
 - Loading and error states
+- **Invoke `/frontend-design` for new UI components, pages, or complex layouts**
 
 ### i18n Specialist
 - Translation quality
@@ -800,6 +873,11 @@ When implementing features, invoke these personas mentally:
 - Input sanitization
 - RLS policies
 - Token encryption
+
+### QA Automation Engineer
+- Invoke `/webapp-testing` for E2E test automation
+- Playwright script creation
+- Visual regression testing
 
 ---
 
@@ -901,11 +979,21 @@ async function myAction(data: MyDTO) {
 
 ### Adding a New Component
 1. Create in appropriate folder under `presentation/components/`
-2. Use `'use client'` directive if interactive
-3. Use `useTranslations` for all text
-4. Follow zinc dark theme styling
-5. Support RTL with logical properties (start/end, ps/pe)
-6. Handle loading and error states
+2. **For complex UI, invoke `/frontend-design` skill**
+3. Use `'use client'` directive if interactive
+4. Use `useTranslations` for all text
+5. Follow zinc dark theme styling
+6. Support RTL with logical properties (start/end, ps/pe)
+7. Handle loading and error states
+
+### Creating a New Page
+1. Add i18n keys to all 4 locales (FIRST!)
+2. **Invoke `/frontend-design` for the page layout and components**
+3. Create server component in `app/[locale]/` directory
+4. Add server actions with proper auth verification
+5. Adapt skill output to zinc dark theme
+6. Ensure RTL compatibility
+7. Run QA checklist
 
 ### Image Upload Pattern
 ```typescript
@@ -942,3 +1030,5 @@ if (!result.success) {
 8. **Sync state with useEffect when props change**
 9. **Run type-check and build before done**
 10. **QA checklist for every feature**
+11. **Use `/frontend-design` for new UI components and pages**
+12. **Use `/webapp-testing` for E2E test automation**

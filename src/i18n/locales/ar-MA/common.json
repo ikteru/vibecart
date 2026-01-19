@@ -125,7 +125,12 @@
     "title": "كمل الطلب",
     "customerDetails": "المعلومات ديالك",
     "fullName": "الاسم الكامل",
+    "firstName": "السمية",
+    "lastName": "النسبة",
+    "firstNamePlaceholder": "أحمد",
+    "lastNamePlaceholder": "بناني",
     "phone": "رقم التيليفون",
+    "phoneWithCode": "نمرة الواتساب",
     "deliveryAddress": "عنوان التوصيل",
     "city": "المدينة",
     "selectCity": "اختار المدينة",
@@ -172,7 +177,8 @@
       "pinLocation": "حدد البلاصة ديالك GPS",
       "selectCity": "اختار المدينة",
       "fillDetails": "عمر كاع المعلومات باش تكمل"
-    }
+    },
+    "nearLandmark": "قريب من"
   },
   "map": {
     "title": "حدد البلاصة ديالك",
@@ -211,6 +217,28 @@
       "house": "دار",
       "office": "مكتب",
       "other": "آخر"
+    },
+    "administrativeLocation": "الموقع الإداري",
+    "region": "الجهة",
+    "selectRegion": "ختار الجهة",
+    "province": "الإقليم / العمالة",
+    "selectProvince": "ختار الإقليم أو العمالة",
+    "commune": "الجماعة / المدينة",
+    "selectCommune": "ختار الجماعة أو المدينة",
+    "neighborhood": "الحي / الدرب",
+    "selectNeighborhood": "ختار الحي",
+    "nearbyPlaces": "بلايص قراب منك",
+    "selectNearbyPlace": "واش العنوان ديالك قريب من شي بلاصة من هادو؟",
+    "noneOfThese": "حتى وحدة من هادو",
+    "noNearbyPlaces": "ما لقيناش شي بلاصة معروفة قريبة",
+    "addressFormat": {
+      "apt": "شقة",
+      "floor": "طابق",
+      "bld": "عمارة",
+      "villa": "فيلا",
+      "house": "دار",
+      "office": "مكتب",
+      "near": "قرب"
     }
   },
   "seller": {

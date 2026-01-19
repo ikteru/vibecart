@@ -9,27 +9,34 @@ import { z } from 'zod';
  * - +212612345678 (international with +)
  * - 212612345678 (international without +)
  * - 00212612345678 (international with 00 prefix)
+ * - 612345678 (9 digits without prefix - used in new UI)
  *
- * The second digit after country code must be 5, 6, or 7
+ * The first digit (after removing country code) must be 5, 6, or 7
  */
-const moroccanPhoneRegex = /^(?:(?:\+|00)?212|0)[567]\d{8}$/;
+const moroccanPhoneRegex = /^(?:(?:\+|00)?212|0)?[567]\d{8}$/;
 
 /**
  * Checkout form validation schema
  */
 export const checkoutFormSchema = z.object({
-  fullName: z
+  firstName: z
     .string()
-    .min(1, 'Name is required')
-    .min(2, 'Name must be at least 2 characters')
-    .max(100, 'Name is too long'),
+    .min(1, 'First name is required')
+    .min(2, 'First name must be at least 2 characters')
+    .max(50, 'First name is too long'),
+
+  lastName: z
+    .string()
+    .min(1, 'Last name is required')
+    .min(2, 'Last name must be at least 2 characters')
+    .max(50, 'Last name is too long'),
 
   phone: z
     .string()
     .min(1, 'Phone number is required')
     .transform((val) => val.replace(/[\s\-\(\)]/g, '')) // Remove spaces, dashes, parentheses
     .refine((val) => moroccanPhoneRegex.test(val), {
-      message: 'Enter a valid Moroccan phone number (e.g., 0612345678)',
+      message: 'Enter a valid Moroccan phone number',
     }),
 
   city: z.string().min(1, 'City is required'),
@@ -55,11 +62,17 @@ export type CheckoutFormData = z.infer<typeof checkoutFormSchema>;
  * Individual field validators for real-time validation
  */
 export const fieldValidators = {
-  fullName: z
+  firstName: z
     .string()
-    .min(1, 'Name is required')
-    .min(2, 'Name must be at least 2 characters')
-    .max(100, 'Name is too long'),
+    .min(1, 'First name is required')
+    .min(2, 'First name must be at least 2 characters')
+    .max(50, 'First name is too long'),
+
+  lastName: z
+    .string()
+    .min(1, 'Last name is required')
+    .min(2, 'Last name must be at least 2 characters')
+    .max(50, 'Last name is too long'),
 
   phone: z
     .string()
@@ -69,7 +82,7 @@ export const fieldValidators = {
         const cleaned = val.replace(/[\s\-\(\)]/g, '');
         return moroccanPhoneRegex.test(cleaned);
       },
-      { message: 'Enter a valid Moroccan phone number (e.g., 0612345678)' }
+      { message: 'Enter a valid phone number starting with 5, 6, or 7' }
     ),
 
   city: z.string().min(1, 'City is required'),
@@ -87,7 +100,7 @@ export const fieldValidators = {
  * Validate and normalize phone number to international format
  *
  * @param phone - Input phone number in various formats
- * @returns Validation result with optional formatted phone
+ * @returns Validation result with optional formatted phone (always 212XXXXXXXXX format)
  */
 export function validateAndFormatPhone(phone: string): {
   valid: boolean;
@@ -101,7 +114,7 @@ export function validateAndFormatPhone(phone: string): {
   }
 
   if (!moroccanPhoneRegex.test(cleaned)) {
-    return { valid: false, error: 'Enter a valid Moroccan phone number (e.g., 0612345678)' };
+    return { valid: false, error: 'Enter a valid phone number starting with 5, 6, or 7' };
   }
 
   // Normalize to 212 format (same as PhoneNumber value object)
@@ -110,8 +123,13 @@ export function validateAndFormatPhone(phone: string): {
     normalized = normalized.slice(2);
   } else if (normalized.startsWith('+212')) {
     normalized = normalized.slice(1);
+  } else if (normalized.startsWith('212')) {
+    // Already in correct format
   } else if (normalized.startsWith('0')) {
     normalized = '212' + normalized.slice(1);
+  } else if (/^[567]\d{8}$/.test(normalized)) {
+    // Just 9 digits starting with 5, 6, or 7 - prepend 212
+    normalized = '212' + normalized;
   }
 
   return { valid: true, formatted: normalized };

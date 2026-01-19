@@ -125,7 +125,12 @@
     "title": "Complete Order",
     "customerDetails": "Your Details",
     "fullName": "Full Name",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "firstNamePlaceholder": "Ahmed",
+    "lastNamePlaceholder": "Bennani",
     "phone": "Phone Number",
+    "phoneWithCode": "WhatsApp Number",
     "deliveryAddress": "Delivery Address",
     "city": "City",
     "selectCity": "Select city",
@@ -172,7 +177,8 @@
       "pinLocation": "Please pin your GPS location",
       "selectCity": "Please select a city",
       "fillDetails": "Fill all details to continue"
-    }
+    },
+    "nearLandmark": "Near"
   },
   "map": {
     "title": "Pin Your Location",
@@ -211,6 +217,28 @@
       "house": "House",
       "office": "Office",
       "other": "Other"
+    },
+    "administrativeLocation": "Administrative Location",
+    "region": "Region",
+    "selectRegion": "Select region",
+    "province": "Province",
+    "selectProvince": "Select province",
+    "commune": "Commune / City",
+    "selectCommune": "Select commune or city",
+    "neighborhood": "Neighborhood",
+    "selectNeighborhood": "Select neighborhood",
+    "nearbyPlaces": "Places near you",
+    "selectNearbyPlace": "Is your address near one of these places?",
+    "noneOfThese": "None of these",
+    "noNearbyPlaces": "No known places found nearby",
+    "addressFormat": {
+      "apt": "Apt",
+      "floor": "Floor",
+      "bld": "Bld",
+      "villa": "Villa",
+      "house": "House",
+      "office": "Office",
+      "near": "near"
     }
   },
   "seller": {

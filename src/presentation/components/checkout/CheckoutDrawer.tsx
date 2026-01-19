@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import {
   X,
   ShoppingBag,
@@ -21,7 +21,21 @@ import {
 import { SwipeButton } from '../ui/SwipeButton';
 import { MapPicker } from '../map/MapPicker';
 import { MOROCCAN_CITIES, MOROCCAN_LOCATIONS } from '@/lib/constants';
+import type { NearbyLandmark } from '@/domain/entities/MoroccoLocation';
 import type { Product } from '@/domain/entities/Product';
+
+interface AdminDivision {
+  key: string;
+  name_fr: string;
+  name_ar: string;
+}
+
+interface AddressFields {
+  region: AdminDivision | null;
+  province: AdminDivision | null;
+  commune: AdminDivision | null;
+  neighborhood: string;
+}
 import {
   fieldValidators,
   validateAndFormatPhone,
@@ -35,7 +49,8 @@ interface ShopConfig {
 }
 
 interface OrderDetails {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   address: string;
   city: string;
   phone: string;
@@ -66,6 +81,8 @@ export function CheckoutDrawer({
   shopConfig,
 }: CheckoutDrawerProps) {
   const t = useTranslations();
+  const locale = useLocale();
+  const isArabic = locale === 'ar' || locale === 'ar-MA';
   const [step, setStep] = useState<'form' | 'success' | 'error'>('form');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
@@ -79,6 +96,10 @@ export function CheckoutDrawer({
   // Saved Address State
   const [savedAddress, setSavedAddress] = useState<any>(null);
 
+  // Admin Divisions State (from MapPicker)
+  const [adminDivisions, setAdminDivisions] = useState<AddressFields | null>(null);
+  const [nearbyLandmark, setNearbyLandmark] = useState<NearbyLandmark | null>(null);
+
   // City Selector State
   const [citySearch, setCitySearch] = useState('');
   const [isCityListOpen, setIsCityListOpen] = useState(false);
@@ -91,7 +112,8 @@ export function CheckoutDrawer({
   const neighborhoodInputRef = useRef<HTMLInputElement>(null);
 
   const [order, setOrder] = useState<OrderDetails>({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     address: '',
     city: '',
     phone: '',
@@ -217,17 +239,27 @@ export function CheckoutDrawer({
     addressString: string;
     details: any;
     saveAddress?: boolean;
+    nearbyLandmark?: NearbyLandmark | null;
+    adminDivisions?: AddressFields;
   }) => {
-    const { lat, lng, details, addressString, saveAddress: shouldSave } = data;
+    const { lat, lng, details, addressString, saveAddress: shouldSave, nearbyLandmark: landmark, adminDivisions: divisions } = data;
     const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
 
     setMapLocation({ lat, lng });
     setIsMapOpen(false);
     setOrder((prev) => ({ ...prev, locationUrl: mapsUrl }));
 
+    // Store admin divisions and landmark
+    if (divisions) {
+      setAdminDivisions(divisions);
+    }
+    if (landmark) {
+      setNearbyLandmark(landmark);
+    }
+
     // Save if requested
     if (shouldSave && typeof window !== 'undefined') {
-      const dataToSave = { lat, lng, addressString, details, saveAddress: true };
+      const dataToSave = { lat, lng, addressString, details, saveAddress: true, adminDivisions: divisions, nearbyLandmark: landmark };
       localStorage.setItem('vibecart_saved_address', JSON.stringify(dataToSave));
       setSavedAddress(dataToSave);
     }
@@ -237,8 +269,21 @@ export function CheckoutDrawer({
       setOrder((prev) => ({ ...prev, address: addressString }));
     }
 
-    // Parse City/Neighborhood
-    if (details && details.address) {
+    // If we have admin divisions, use them for city
+    if (divisions?.commune || divisions?.province) {
+      const cityName = divisions.commune
+        ? (isArabic ? divisions.commune.name_ar : divisions.commune.name_fr)
+        : (divisions.province ? (isArabic ? divisions.province.name_ar : divisions.province.name_fr) : '');
+
+      setOrder((prev) => ({ ...prev, city: cityName }));
+      setCitySearch(cityName);
+
+      if (divisions.neighborhood) {
+        setNeighborhood(divisions.neighborhood);
+        setNeighborhoodSearch(divisions.neighborhood);
+      }
+    } else if (details && details.address) {
+      // Fallback to parsing from geocoding details
       const addr = details.address;
 
       let detectedCity =
@@ -310,13 +355,17 @@ export function CheckoutDrawer({
         }
       }
 
+      // Format phone to 212XXXXXXXXX format
+      const phoneResult = validateAndFormatPhone(order.phone);
+      const formattedPhone = phoneResult.formatted || order.phone;
+
       const response = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sellerId,
-          customerName: order.fullName,
-          customerPhone: order.phone,
+          customerName: `${order.firstName} ${order.lastName}`.trim(),
+          customerPhone: formattedPhone,
           shippingAddress: {
             city: order.city,
             neighborhood: neighborhood || undefined,
@@ -356,7 +405,7 @@ export function CheckoutDrawer({
 
   const isFormValid = () => {
     // Check required fields are present
-    if (!order.fullName || !order.phone || !order.city || !order.address)
+    if (!order.firstName || !order.lastName || !order.phone || !order.city || !order.address)
       return false;
     if (!order.locationUrl) return false;
     if (
@@ -487,58 +536,110 @@ export function CheckoutDrawer({
                   </div>
                 )}
 
-                {/* Name & Phone */}
+                {/* First Name & Last Name */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
                     <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
-                      {t('checkout.fullName')}
+                      {t('checkout.firstName')}
                     </label>
                     <input
                       required
                       type="text"
-                      placeholder={t('checkout.yourNamePlaceholder')}
+                      placeholder={t('checkout.firstNamePlaceholder')}
                       className={`w-full h-[52px] bg-zinc-900 border rounded-xl px-4 text-white placeholder-zinc-600 focus:outline-none transition-colors ${
-                        touched.fullName && errors.fullName
+                        touched.firstName && errors.firstName
                           ? 'border-red-500 focus:border-red-500'
                           : 'border-zinc-800 focus:border-emerald-500/50'
                       }`}
-                      value={order.fullName}
+                      value={order.firstName}
                       onChange={(e) =>
-                        setOrder((p) => ({ ...p, fullName: e.target.value }))
+                        setOrder((p) => ({ ...p, firstName: e.target.value }))
                       }
-                      onBlur={() => handleFieldBlur('fullName', order.fullName)}
+                      onBlur={() => handleFieldBlur('firstName', order.firstName)}
                     />
-                    {touched.fullName && errors.fullName && (
+                    {touched.firstName && errors.firstName && (
                       <p className="text-red-400 text-[10px] ms-1 flex items-center gap-1">
                         <AlertCircle size={10} />
-                        {errors.fullName}
+                        {errors.firstName}
                       </p>
                     )}
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
-                      {t('checkout.whatsapp')}
+                      {t('checkout.lastName')}
                     </label>
                     <input
                       required
-                      type="tel"
-                      placeholder={t('checkout.phonePlaceholder')}
+                      type="text"
+                      placeholder={t('checkout.lastNamePlaceholder')}
                       className={`w-full h-[52px] bg-zinc-900 border rounded-xl px-4 text-white placeholder-zinc-600 focus:outline-none transition-colors ${
-                        touched.phone && errors.phone
+                        touched.lastName && errors.lastName
                           ? 'border-red-500 focus:border-red-500'
                           : 'border-zinc-800 focus:border-emerald-500/50'
                       }`}
-                      value={order.phone}
-                      onChange={(e) => handlePhoneChange(e.target.value)}
-                      onBlur={() => handleFieldBlur('phone', order.phone)}
+                      value={order.lastName}
+                      onChange={(e) =>
+                        setOrder((p) => ({ ...p, lastName: e.target.value }))
+                      }
+                      onBlur={() => handleFieldBlur('lastName', order.lastName)}
                     />
-                    {touched.phone && errors.phone && (
+                    {touched.lastName && errors.lastName && (
                       <p className="text-red-400 text-[10px] ms-1 flex items-center gap-1">
                         <AlertCircle size={10} />
-                        {errors.phone}
+                        {errors.lastName}
                       </p>
                     )}
                   </div>
+                </div>
+
+                {/* WhatsApp Phone with +212 prefix */}
+                <div className="space-y-1">
+                  <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1 flex items-center gap-1.5">
+                    <Smartphone size={10} className="text-emerald-500" />
+                    {t('checkout.phoneWithCode')}
+                  </label>
+                  <div className={`flex items-center h-[52px] bg-zinc-900 border rounded-xl overflow-hidden transition-colors ${
+                    touched.phone && errors.phone
+                      ? 'border-red-500'
+                      : 'border-zinc-800 focus-within:border-emerald-500/50'
+                  }`}>
+                    {/* Country Code Badge */}
+                    <div className="h-full px-4 bg-zinc-800/50 flex items-center gap-2 border-e border-zinc-700/50">
+                      <span className="text-lg">🇲🇦</span>
+                      <span className="text-white font-bold text-sm">+212</span>
+                    </div>
+                    {/* Phone Input */}
+                    <input
+                      required
+                      type="tel"
+                      inputMode="numeric"
+                      placeholder="6 12 34 56 78"
+                      className="flex-1 h-full bg-transparent px-4 text-white text-lg font-medium tracking-wider placeholder-zinc-600 focus:outline-none"
+                      value={order.phone}
+                      onChange={(e) => {
+                        // Only allow digits and format nicely
+                        const digits = e.target.value.replace(/\D/g, '');
+                        // Limit to 9 digits (Moroccan phone without country code)
+                        const limited = digits.slice(0, 9);
+                        // Format with spaces: 6 12 34 56 78
+                        const formatted = limited.replace(/(\d{1})(\d{2})?(\d{2})?(\d{2})?(\d{2})?/, (_, a, b, c, d, e) => {
+                          return [a, b, c, d, e].filter(Boolean).join(' ');
+                        });
+                        handlePhoneChange(formatted);
+                      }}
+                      onBlur={() => handleFieldBlur('phone', order.phone)}
+                    />
+                  </div>
+                  {touched.phone && errors.phone ? (
+                    <p className="text-red-400 text-[10px] ms-1 flex items-center gap-1">
+                      <AlertCircle size={10} />
+                      {errors.phone}
+                    </p>
+                  ) : (
+                    <p className="text-zinc-600 text-[10px] ms-1">
+                      {t('checkout.phonePlaceholder')}
+                    </p>
+                  )}
                 </div>
 
                 {/* Location Section */}
@@ -623,100 +724,148 @@ export function CheckoutDrawer({
                     />
                   </button>
 
-                  {/* City + Neighborhood */}
-                  <div className="grid grid-cols-2 gap-3 relative">
-                    {/* City Selector */}
-                    <div className="space-y-1 relative">
-                      <div className="relative">
-                        <input
-                          ref={cityInputRef}
-                          type="text"
-                          placeholder={t('checkout.city')}
-                          className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl ps-4 pe-8 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-all cursor-pointer"
-                          value={citySearch}
-                          onChange={(e) => {
-                            setCitySearch(e.target.value);
-                            setIsCityListOpen(true);
-                            if (order.city && e.target.value !== order.city) {
-                              setOrder((prev) => ({ ...prev, city: '' }));
-                            }
-                          }}
-                          onFocus={() => setIsCityListOpen(true)}
-                          onBlur={() =>
-                            setTimeout(() => setIsCityListOpen(false), 200)
-                          }
-                        />
-                        <ChevronDown
-                          size={14}
-                          className="absolute end-3 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none"
-                        />
-                      </div>
-                      {isCityListOpen && (
-                        <div className="absolute top-[calc(100%+4px)] start-0 w-full max-h-48 overflow-y-auto bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl z-20 no-scrollbar">
-                          {filteredCities.map((city) => (
-                            <button
-                              key={city}
-                              type="button"
-                              className="w-full text-start px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors border-b border-zinc-800/50 last:border-0"
-                              onMouseDown={(e) => {
-                                e.preventDefault();
-                                handleCitySelect(city);
-                              }}
-                            >
-                              {t(`cities.${city}`, { defaultValue: city })}
-                            </button>
-                          ))}
+                  {/* Admin Divisions Display (from MapPicker) or City/Neighborhood Selectors */}
+                  {adminDivisions && (adminDivisions.region || adminDivisions.province || adminDivisions.commune) ? (
+                    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 space-y-3">
+                      {/* Region */}
+                      {adminDivisions.region && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-zinc-500 uppercase">{t('map.region')}</span>
+                          <span className="text-sm text-white font-medium">
+                            {isArabic ? adminDivisions.region.name_ar : adminDivisions.region.name_fr}
+                          </span>
+                        </div>
+                      )}
+                      {/* Province */}
+                      {adminDivisions.province && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-zinc-500 uppercase">{t('map.province')}</span>
+                          <span className="text-sm text-white font-medium">
+                            {isArabic ? adminDivisions.province.name_ar : adminDivisions.province.name_fr}
+                          </span>
+                        </div>
+                      )}
+                      {/* Commune */}
+                      {adminDivisions.commune && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-zinc-500 uppercase">{t('map.commune')}</span>
+                          <span className="text-sm text-white font-medium">
+                            {isArabic ? adminDivisions.commune.name_ar : adminDivisions.commune.name_fr}
+                          </span>
+                        </div>
+                      )}
+                      {/* Neighborhood */}
+                      {adminDivisions.neighborhood && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-zinc-500 uppercase">{t('map.neighborhood')}</span>
+                          <span className="text-sm text-white font-medium">{adminDivisions.neighborhood}</span>
+                        </div>
+                      )}
+                      {/* Nearby Landmark */}
+                      {nearbyLandmark && (
+                        <div className="flex items-center justify-between pt-2 border-t border-zinc-800">
+                          <span className="text-[10px] font-bold text-emerald-500 uppercase">{t('checkout.nearLandmark')}</span>
+                          <span className="text-sm text-emerald-400 font-medium">
+                            {isArabic ? nearbyLandmark.name_ar : nearbyLandmark.name}
+                          </span>
                         </div>
                       )}
                     </div>
-
-                    {/* Neighborhood Selector */}
-                    <div className="space-y-1 relative">
-                      <div className="relative">
-                        <input
-                          ref={neighborhoodInputRef}
-                          type="text"
-                          disabled={!order.city}
-                          placeholder={!order.city ? t('checkout.cityFirst') : t('checkout.neighborhood')}
-                          className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl ps-4 pe-8 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                          value={neighborhoodSearch}
-                          onChange={(e) => {
-                            setNeighborhoodSearch(e.target.value);
-                            setNeighborhood(e.target.value);
-                            setIsNeighborhoodListOpen(true);
-                          }}
-                          onFocus={() => setIsNeighborhoodListOpen(true)}
-                          onBlur={() =>
-                            setTimeout(() => setIsNeighborhoodListOpen(false), 200)
-                          }
-                        />
-                        {!neighborhoodSearch && (
-                          <Search
+                  ) : (
+                    <div className="grid grid-cols-2 gap-3 relative">
+                      {/* City Selector */}
+                      <div className="space-y-1 relative">
+                        <div className="relative">
+                          <input
+                            ref={cityInputRef}
+                            type="text"
+                            placeholder={t('checkout.city')}
+                            className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl ps-4 pe-8 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-all cursor-pointer"
+                            value={citySearch}
+                            onChange={(e) => {
+                              setCitySearch(e.target.value);
+                              setIsCityListOpen(true);
+                              if (order.city && e.target.value !== order.city) {
+                                setOrder((prev) => ({ ...prev, city: '' }));
+                              }
+                            }}
+                            onFocus={() => setIsCityListOpen(true)}
+                            onBlur={() =>
+                              setTimeout(() => setIsCityListOpen(false), 200)
+                            }
+                          />
+                          <ChevronDown
                             size={14}
                             className="absolute end-3 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none"
                           />
-                        )}
-                      </div>
-                      {isNeighborhoodListOpen &&
-                        availableNeighborhoods.length > 0 && (
+                        </div>
+                        {isCityListOpen && (
                           <div className="absolute top-[calc(100%+4px)] start-0 w-full max-h-48 overflow-y-auto bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl z-20 no-scrollbar">
-                            {filteredNeighborhoods.map((n) => (
+                            {filteredCities.map((city) => (
                               <button
-                                key={n}
+                                key={city}
                                 type="button"
                                 className="w-full text-start px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors border-b border-zinc-800/50 last:border-0"
                                 onMouseDown={(e) => {
                                   e.preventDefault();
-                                  handleNeighborhoodSelect(n);
+                                  handleCitySelect(city);
                                 }}
                               >
-                                {n}
+                                {t(`cities.${city}`, { defaultValue: city })}
                               </button>
                             ))}
                           </div>
                         )}
+                      </div>
+
+                      {/* Neighborhood Selector */}
+                      <div className="space-y-1 relative">
+                        <div className="relative">
+                          <input
+                            ref={neighborhoodInputRef}
+                            type="text"
+                            disabled={!order.city}
+                            placeholder={!order.city ? t('checkout.cityFirst') : t('checkout.neighborhood')}
+                            className="w-full h-[52px] bg-zinc-900 border border-zinc-800 rounded-xl ps-4 pe-8 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            value={neighborhoodSearch}
+                            onChange={(e) => {
+                              setNeighborhoodSearch(e.target.value);
+                              setNeighborhood(e.target.value);
+                              setIsNeighborhoodListOpen(true);
+                            }}
+                            onFocus={() => setIsNeighborhoodListOpen(true)}
+                            onBlur={() =>
+                              setTimeout(() => setIsNeighborhoodListOpen(false), 200)
+                            }
+                          />
+                          {!neighborhoodSearch && (
+                            <Search
+                              size={14}
+                              className="absolute end-3 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none"
+                            />
+                          )}
+                        </div>
+                        {isNeighborhoodListOpen &&
+                          availableNeighborhoods.length > 0 && (
+                            <div className="absolute top-[calc(100%+4px)] start-0 w-full max-h-48 overflow-y-auto bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl z-20 no-scrollbar">
+                              {filteredNeighborhoods.map((n) => (
+                                <button
+                                  key={n}
+                                  type="button"
+                                  className="w-full text-start px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors border-b border-zinc-800/50 last:border-0"
+                                  onMouseDown={(e) => {
+                                    e.preventDefault();
+                                    handleNeighborhoodSelect(n);
+                                  }}
+                                >
+                                  {n}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Street Address */}
                   <div className="space-y-1">

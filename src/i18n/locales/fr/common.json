@@ -125,7 +125,12 @@
     "title": "Finaliser la commande",
     "customerDetails": "Vos informations",
     "fullName": "Nom complet",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "firstNamePlaceholder": "Ahmed",
+    "lastNamePlaceholder": "Bennani",
     "phone": "Numéro de téléphone",
+    "phoneWithCode": "Numéro WhatsApp",
     "deliveryAddress": "Adresse de livraison",
     "city": "Ville",
     "selectCity": "Sélectionner une ville",
@@ -172,7 +177,8 @@
       "pinLocation": "Veuillez épingler votre position GPS",
       "selectCity": "Veuillez sélectionner une ville",
       "fillDetails": "Remplissez tous les détails pour continuer"
-    }
+    },
+    "nearLandmark": "Proche de"
   },
   "map": {
     "title": "Épinglez votre emplacement",
@@ -211,6 +217,28 @@
       "house": "Maison",
       "office": "Bureau",
       "other": "Autre"
+    },
+    "administrativeLocation": "Localisation administrative",
+    "region": "Région",
+    "selectRegion": "Sélectionner la région",
+    "province": "Province / Préfecture",
+    "selectProvince": "Sélectionner la province",
+    "commune": "Commune / Ville",
+    "selectCommune": "Sélectionner la commune ou ville",
+    "neighborhood": "Quartier",
+    "selectNeighborhood": "Sélectionner le quartier",
+    "nearbyPlaces": "Lieux à proximité",
+    "selectNearbyPlace": "Votre adresse est-elle proche de l'un de ces lieux?",
+    "noneOfThese": "Aucun de ceux-ci",
+    "noNearbyPlaces": "Aucun lieu connu trouvé à proximité",
+    "addressFormat": {
+      "apt": "App",
+      "floor": "Étage",
+      "bld": "Imm",
+      "villa": "Villa",
+      "house": "Maison",
+      "office": "Bureau",
+      "near": "près de"
     }
   },
   "seller": {

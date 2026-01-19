@@ -125,7 +125,12 @@
     "title": "إتمام الطلب",
     "customerDetails": "بياناتك",
     "fullName": "الاسم الكامل",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "firstNamePlaceholder": "أحمد",
+    "lastNamePlaceholder": "بناني",
     "phone": "رقم الهاتف",
+    "phoneWithCode": "رقم الواتساب",
     "deliveryAddress": "عنوان التوصيل",
     "city": "المدينة",
     "selectCity": "اختر المدينة",
@@ -172,7 +177,8 @@
       "pinLocation": "يرجى تحديد موقعك GPS",
       "selectCity": "يرجى اختيار المدينة",
       "fillDetails": "أكمل جميع البيانات للمتابعة"
-    }
+    },
+    "nearLandmark": "قريب من"
   },
   "map": {
     "title": "حدد موقعك",
@@ -211,6 +217,28 @@
       "house": "منزل",
       "office": "مكتب",
       "other": "أخرى"
+    },
+    "administrativeLocation": "الموقع الإداري",
+    "region": "الجهة",
+    "selectRegion": "اختر الجهة",
+    "province": "الإقليم / العمالة",
+    "selectProvince": "اختر الإقليم أو العمالة",
+    "commune": "الجماعة / المدينة",
+    "selectCommune": "اختر الجماعة أو المدينة",
+    "neighborhood": "الحي",
+    "selectNeighborhood": "اختر الحي",
+    "nearbyPlaces": "أماكن قريبة منك",
+    "selectNearbyPlace": "هل عنوانك قريب من أحد هذه الأماكن؟",
+    "noneOfThese": "لا شيء من هذه",
+    "noNearbyPlaces": "لم يتم العثور على أماكن معروفة قريبة",
+    "addressFormat": {
+      "apt": "شقة",
+      "floor": "طابق",
+      "bld": "عمارة",
+      "villa": "فيلا",
+      "house": "منزل",
+      "office": "مكتب",
+      "near": "قرب"
     }
   },
   "seller": {

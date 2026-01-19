@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
 import {
   X,
   Navigation,
@@ -16,8 +16,32 @@ import {
   Flag,
   ArrowLeft,
   Bookmark,
+  MapPinned,
+  ChevronDown,
+  MapIcon,
 } from 'lucide-react';
 import { DirectionalIcon } from '@/presentation/components/ui/DirectionalIcon';
+import type { NearbyLandmark } from '@/domain/entities/MoroccoLocation';
+import {
+  getAllRegions,
+  getProvincesForRegionWithNames,
+  getCommunesForProvinceWithNames,
+  getNeighborhoodsForCity,
+  matchCityToAdminDivision,
+} from '@/lib/constants';
+
+interface AdminDivision {
+  key: string;
+  name_fr: string;
+  name_ar: string;
+}
+
+interface AddressFields {
+  region: AdminDivision | null;
+  province: AdminDivision | null;
+  commune: AdminDivision | null;
+  neighborhood: string;
+}
 
 interface MapPickerProps {
   isOpen: boolean;
@@ -28,6 +52,8 @@ interface MapPickerProps {
     addressString: string;
     details: any;
     saveAddress?: boolean;
+    nearbyLandmark?: NearbyLandmark | null;
+    adminDivisions?: AddressFields;
   }) => void;
   initialLocation?: { lat: number; lng: number };
 }
@@ -47,10 +73,18 @@ export function MapPicker({
   initialLocation,
 }: MapPickerProps) {
   const t = useTranslations('map');
+  const locale = useLocale();
+  const isArabic = locale === 'ar' || locale === 'ar-MA';
+
   // UI State
-  const [step, setStep] = useState<'map' | 'details'>('map');
+  const [step, setStep] = useState<'map' | 'landmarks' | 'details'>('map');
   const [residenceType, setResidenceType] = useState<ResidenceType>('apartment');
   const [saveAddress, setSaveAddress] = useState(true);
+
+  // Landmarks State
+  const [nearbyLandmarks, setNearbyLandmarks] = useState<NearbyLandmark[]>([]);
+  const [selectedLandmark, setSelectedLandmark] = useState<NearbyLandmark | null>(null);
+  const [isLoadingLandmarks, setIsLoadingLandmarks] = useState(false);
 
   // Map State
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -68,6 +102,17 @@ export function MapPicker({
   const [rawDetails, setRawDetails] = useState<any>(null);
   const [mapType, setMapType] = useState<'standard' | 'satellite'>('standard');
 
+  // Administrative Division State
+  const [addressFields, setAddressFields] = useState<AddressFields>({
+    region: null,
+    province: null,
+    commune: null,
+    neighborhood: '',
+  });
+
+  // Dropdown visibility state
+  const [openDropdown, setOpenDropdown] = useState<'region' | 'province' | 'commune' | 'neighborhood' | null>(null);
+
   // Form State
   const [detailsForm, setDetailsForm] = useState({
     buildingNumber: '',
@@ -80,12 +125,47 @@ export function MapPicker({
   // Default to Casablanca
   const DEFAULT_CENTER = { lat: 33.5731, lng: -7.5898 };
 
+  // Get available options based on selections
+  const allRegions = useMemo(() => getAllRegions(), []);
+
+  const availableProvinces = useMemo(() => {
+    if (!addressFields.region) return [];
+    return getProvincesForRegionWithNames(addressFields.region.key);
+  }, [addressFields.region]);
+
+  const availableCommunes = useMemo(() => {
+    if (!addressFields.province) return [];
+    return getCommunesForProvinceWithNames(addressFields.province.key);
+  }, [addressFields.province]);
+
+  const availableNeighborhoods = useMemo(() => {
+    // Try to get neighborhoods for the commune/city
+    if (addressFields.commune) {
+      const hoods = getNeighborhoodsForCity(addressFields.commune.key);
+      if (hoods.length > 0) return hoods;
+    }
+    if (addressFields.province) {
+      const hoods = getNeighborhoodsForCity(addressFields.province.key);
+      if (hoods.length > 0) return hoods;
+    }
+    return [];
+  }, [addressFields.commune, addressFields.province]);
+
   // Reset state when opening
   useEffect(() => {
     if (isOpen) {
       setStep('map');
       setSaveAddress(true);
       setResidenceType('apartment');
+      setNearbyLandmarks([]);
+      setSelectedLandmark(null);
+      setAddressFields({
+        region: null,
+        province: null,
+        commune: null,
+        neighborhood: '',
+      });
+      setOpenDropdown(null);
       setDetailsForm({
         buildingNumber: '',
         floor: '',
@@ -214,6 +294,20 @@ export function MapPicker({
         if (!street && area) display = area;
 
         setAddress(display || '');
+
+        // Try to auto-fill administrative divisions
+        const cityName = addr.city || addr.town || addr.village || addr.county || addr.state;
+        if (cityName) {
+          const matched = matchCityToAdminDivision(cityName);
+          if (matched) {
+            setAddressFields(prev => ({
+              ...prev,
+              region: matched.region || null,
+              province: matched.province || null,
+              commune: matched.commune || null,
+            }));
+          }
+        }
       } else {
         setAddress('');
       }
@@ -244,27 +338,117 @@ export function MapPicker({
     );
   };
 
-  const handleProceedToDetails = () => {
+  const handleProceedToLandmarks = async () => {
+    if (!currentCenter) return;
+
+    setIsLoadingLandmarks(true);
+    try {
+      const res = await fetch(
+        `/api/landmarks/nearby?lat=${currentCenter.lat}&lng=${currentCenter.lng}&radius=1000&limit=8`
+      );
+      const data = await res.json();
+      setNearbyLandmarks(data.landmarks || []);
+      setStep('landmarks');
+    } catch (err) {
+      // If landmarks fetch fails, skip to details
+      console.warn('Failed to fetch landmarks:', err);
+      setStep('details');
+    } finally {
+      setIsLoadingLandmarks(false);
+    }
+  };
+
+  const handleLandmarkSelection = (landmark: NearbyLandmark | null) => {
+    setSelectedLandmark(landmark);
     setStep('details');
+  };
+
+  // Handle region change - reset dependent fields
+  const handleRegionChange = (region: AdminDivision) => {
+    setAddressFields({
+      region,
+      province: null,
+      commune: null,
+      neighborhood: '',
+    });
+    setOpenDropdown(null);
+  };
+
+  // Handle province change - reset dependent fields
+  const handleProvinceChange = (province: AdminDivision) => {
+    setAddressFields(prev => ({
+      ...prev,
+      province,
+      commune: null,
+      neighborhood: '',
+    }));
+    setOpenDropdown(null);
+  };
+
+  // Handle commune change
+  const handleCommuneChange = (commune: AdminDivision) => {
+    setAddressFields(prev => ({
+      ...prev,
+      commune,
+      neighborhood: '',
+    }));
+    setOpenDropdown(null);
+  };
+
+  // Handle neighborhood change
+  const handleNeighborhoodChange = (neighborhood: string) => {
+    setAddressFields(prev => ({
+      ...prev,
+      neighborhood,
+    }));
+    setOpenDropdown(null);
   };
 
   const handleFinalConfirm = () => {
     if (!currentCenter || !rawDetails) return;
 
-    // Construct detailed address string
+    // Get address format translations
+    const apt = t('addressFormat.apt');
+    const floor = t('addressFormat.floor');
+    const bld = t('addressFormat.bld');
+    const villa = t('addressFormat.villa');
+    const house = t('addressFormat.house');
+    const office = t('addressFormat.office');
+    const near = t('addressFormat.near');
+
+    // Construct detailed address string with translations
     let detailedAddress = '';
 
     if (residenceType === 'apartment') {
-      detailedAddress = `Apt ${detailsForm.apartmentNumber}, Floor ${detailsForm.floor}, Bld ${detailsForm.buildingNumber}`;
+      detailedAddress = `${apt} ${detailsForm.apartmentNumber}, ${floor} ${detailsForm.floor}, ${bld} ${detailsForm.buildingNumber}`;
     } else if (residenceType === 'house') {
-      detailedAddress = `Villa/House ${detailsForm.buildingNumber}`;
+      detailedAddress = `${villa}/${house} ${detailsForm.buildingNumber}`;
     } else if (residenceType === 'office') {
-      detailedAddress = `Office: ${detailsForm.companyName}, Floor ${detailsForm.floor}, Bld ${detailsForm.buildingNumber}`;
+      detailedAddress = `${office}: ${detailsForm.companyName}, ${floor} ${detailsForm.floor}, ${bld} ${detailsForm.buildingNumber}`;
     }
 
-    const finalAddressString = detailedAddress
-      ? `${detailedAddress} - ${address}`
+    // Add landmark context if selected (with translated "near")
+    const landmarkContext = selectedLandmark
+      ? ` (${near} ${isArabic ? selectedLandmark.name_ar : selectedLandmark.name})`
+      : '';
+
+    // Build location string with admin divisions
+    const locationParts: string[] = [];
+    if (addressFields.neighborhood) locationParts.push(addressFields.neighborhood);
+    if (addressFields.commune) {
+      locationParts.push(isArabic ? addressFields.commune.name_ar : addressFields.commune.name_fr);
+    }
+    if (addressFields.province) {
+      locationParts.push(isArabic ? addressFields.province.name_ar : addressFields.province.name_fr);
+    }
+
+    const locationString = locationParts.length > 0
+      ? locationParts.join(', ')
       : address;
+
+    const finalAddressString = detailedAddress
+      ? `${detailedAddress} - ${locationString}${landmarkContext}`
+      : `${locationString}${landmarkContext}`;
 
     const fullString = detailsForm.instructions
       ? `${finalAddressString} (${detailsForm.instructions})`
@@ -282,7 +466,15 @@ export function MapPicker({
         },
       },
       saveAddress,
+      nearbyLandmark: selectedLandmark,
+      adminDivisions: addressFields,
     });
+  };
+
+  // Helper to get display name based on locale
+  const getDisplayName = (item: AdminDivision | null) => {
+    if (!item) return '';
+    return isArabic ? item.name_ar : item.name_fr;
   };
 
   if (!isOpen) return null;
@@ -293,6 +485,67 @@ export function MapPicker({
     { id: 'office' as const, icon: Briefcase, labelKey: 'residenceType.office' },
     { id: 'other' as const, icon: Flag, labelKey: 'residenceType.other' },
   ];
+
+  // Custom dropdown component
+  const AddressDropdown = ({
+    label,
+    value,
+    placeholder,
+    options,
+    isOpen: dropdownOpen,
+    onToggle,
+    onSelect,
+    disabled = false,
+  }: {
+    label: string;
+    value: string;
+    placeholder: string;
+    options: { key: string; label: string }[];
+    isOpen: boolean;
+    onToggle: () => void;
+    onSelect: (key: string) => void;
+    disabled?: boolean;
+  }) => (
+    <div className="relative">
+      <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
+        {label}
+      </label>
+      <button
+        type="button"
+        onClick={onToggle}
+        disabled={disabled}
+        className={`w-full bg-zinc-800 border rounded-xl px-4 py-3 text-start flex items-center justify-between transition-colors ${
+          disabled
+            ? 'border-zinc-800 text-zinc-600 cursor-not-allowed'
+            : dropdownOpen
+            ? 'border-emerald-500 text-white'
+            : 'border-zinc-700 text-white hover:border-zinc-600'
+        }`}
+      >
+        <span className={value ? 'text-white' : 'text-zinc-500'}>
+          {value || placeholder}
+        </span>
+        <ChevronDown
+          size={16}
+          className={`text-zinc-400 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
+        />
+      </button>
+      {dropdownOpen && options.length > 0 && (
+        <div className="absolute z-50 top-full mt-1 w-full bg-zinc-800 border border-zinc-700 rounded-xl shadow-xl max-h-48 overflow-y-auto">
+          {options.map((opt) => (
+            <button
+              key={opt.key}
+              type="button"
+              onClick={() => onSelect(opt.key)}
+              className="w-full px-4 py-3 text-start text-white hover:bg-zinc-700 first:rounded-t-xl last:rounded-b-xl transition-colors"
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className="fixed inset-0 z-[60] bg-zinc-950 flex flex-col">
@@ -305,9 +558,16 @@ export function MapPicker({
           >
             <X size={20} />
           </button>
-        ) : (
+        ) : step === 'landmarks' ? (
           <button
             onClick={() => setStep('map')}
+            className="pointer-events-auto absolute left-4 p-2 bg-white/90 backdrop-blur-md text-black rounded-full shadow-lg"
+          >
+            <DirectionalIcon icon={ArrowLeft} size={20} />
+          </button>
+        ) : (
+          <button
+            onClick={() => setStep('landmarks')}
             className="pointer-events-auto absolute left-4 p-2 bg-white/90 backdrop-blur-md text-black rounded-full shadow-lg"
           >
             <DirectionalIcon icon={ArrowLeft} size={20} />
@@ -333,11 +593,11 @@ export function MapPicker({
 
       {/* Map Container */}
       <div
-        className={`relative bg-zinc-800 transition-all duration-300 ${step === 'map' ? 'flex-1' : 'h-[30vh]'}`}
+        className={`relative bg-zinc-800 transition-all duration-300 ${step === 'map' ? 'flex-1' : 'h-[25vh]'}`}
       >
         <div ref={mapContainerRef} className="absolute inset-0 z-0" />
 
-        {step === 'details' && (
+        {(step === 'details' || step === 'landmarks') && (
           <div className="absolute inset-0 z-10 bg-black/40 backdrop-blur-[2px]" />
         )}
 
@@ -377,7 +637,7 @@ export function MapPicker({
 
       {/* Bottom Panel */}
       <div
-        className={`bg-zinc-900 border-t border-zinc-800 shadow-2xl z-20 flex flex-col ${step === 'details' ? 'flex-1 overflow-y-auto no-scrollbar' : ''}`}
+        className={`bg-zinc-900 border-t border-zinc-800 shadow-2xl z-20 flex flex-col ${step !== 'map' ? 'flex-1 min-h-0 overflow-y-auto' : ''}`}
       >
         {/* STEP 1: CONFIRM LOCATION */}
         {step === 'map' && (
@@ -402,12 +662,14 @@ export function MapPicker({
             </div>
 
             <button
-              onClick={handleProceedToDetails}
-              disabled={isDragging || isLoading || !currentCenter}
+              onClick={handleProceedToLandmarks}
+              disabled={isDragging || isLoading || isLoadingLandmarks || !currentCenter}
               className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-4 rounded-xl shadow-lg shadow-emerald-900/20 disabled:opacity-50 disabled:scale-95 transition-all flex items-center justify-center gap-2"
             >
-              {isLoading ? (
-                t('waitASec')
+              {isLoading || isLoadingLandmarks ? (
+                <>
+                  <Loader2 size={20} className="animate-spin" /> {t('waitASec')}
+                </>
               ) : (
                 <>
                   <Check size={20} /> {t('confirm')}
@@ -417,12 +679,140 @@ export function MapPicker({
           </div>
         )}
 
-        {/* STEP 2: ADDRESS DETAILS FORM */}
+        {/* STEP 2: NEARBY LANDMARKS */}
+        {step === 'landmarks' && (
+          <div className="p-6 pb-10 animate-slide-up">
+            <div className="mb-6">
+              <h3 className="text-white font-bold text-lg mb-1">{t('nearbyPlaces')}</h3>
+              <p className="text-zinc-500 text-sm">{t('selectNearbyPlace')}</p>
+            </div>
+
+            {nearbyLandmarks.length > 0 ? (
+              <div className="space-y-3 mb-6">
+                {nearbyLandmarks.map((landmark) => (
+                  <button
+                    key={landmark.id}
+                    onClick={() => handleLandmarkSelection(landmark)}
+                    className="w-full p-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-emerald-500/50 text-start flex items-center justify-between transition-all group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+                        <MapPinned size={18} className="text-emerald-500" />
+                      </div>
+                      <div>
+                        <div className="font-medium text-white group-hover:text-emerald-400 transition-colors">
+                          {isArabic ? landmark.name_ar : landmark.name}
+                        </div>
+                        <div className="text-xs text-zinc-500">{landmark.type}</div>
+                      </div>
+                    </div>
+                    <span className="text-sm text-zinc-400 font-medium">{landmark.distance}m</span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-zinc-800/50 rounded-xl p-6 mb-6 text-center">
+                <MapPinned size={32} className="mx-auto text-zinc-600 mb-2" />
+                <p className="text-zinc-500 text-sm">{t('noNearbyPlaces')}</p>
+              </div>
+            )}
+
+            <button
+              onClick={() => handleLandmarkSelection(null)}
+              className="w-full p-4 rounded-xl border border-zinc-700 hover:bg-zinc-800 text-zinc-400 hover:text-white font-medium transition-all flex items-center justify-center gap-2"
+            >
+              {t('noneOfThese')}
+            </button>
+          </div>
+        )}
+
+        {/* STEP 3: ADDRESS DETAILS FORM */}
         {step === 'details' && (
-          <div className="p-6 animate-slide-up">
+          <div className="p-6 pb-10 animate-slide-up">
             <div className="mb-6 border-b border-zinc-800 pb-4">
               <h3 className="text-white font-bold text-lg mb-1">{t('moreDetails')}</h3>
               <p className="text-zinc-500 text-sm truncate">{address || t('pinnedLocation')}</p>
+            </div>
+
+            {/* Administrative Divisions Section */}
+            <div className="mb-6">
+              <div className="flex items-center gap-2 mb-4">
+                <MapIcon size={16} className="text-emerald-500" />
+                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
+                  {t('administrativeLocation')}
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                {/* Region Dropdown */}
+                <AddressDropdown
+                  label={t('region')}
+                  value={getDisplayName(addressFields.region)}
+                  placeholder={t('selectRegion')}
+                  options={allRegions.map(r => ({
+                    key: r.key,
+                    label: isArabic ? r.name_ar : r.name_fr,
+                  }))}
+                  isOpen={openDropdown === 'region'}
+                  onToggle={() => setOpenDropdown(openDropdown === 'region' ? null : 'region')}
+                  onSelect={(key) => {
+                    const region = allRegions.find(r => r.key === key);
+                    if (region) handleRegionChange(region);
+                  }}
+                />
+
+                {/* Province Dropdown */}
+                <AddressDropdown
+                  label={t('province')}
+                  value={getDisplayName(addressFields.province)}
+                  placeholder={t('selectProvince')}
+                  options={availableProvinces.map(p => ({
+                    key: p.key,
+                    label: isArabic ? p.name_ar : p.name_fr,
+                  }))}
+                  isOpen={openDropdown === 'province'}
+                  onToggle={() => setOpenDropdown(openDropdown === 'province' ? null : 'province')}
+                  onSelect={(key) => {
+                    const province = availableProvinces.find(p => p.key === key);
+                    if (province) handleProvinceChange(province);
+                  }}
+                  disabled={!addressFields.region}
+                />
+
+                {/* Commune Dropdown */}
+                <AddressDropdown
+                  label={t('commune')}
+                  value={getDisplayName(addressFields.commune)}
+                  placeholder={t('selectCommune')}
+                  options={availableCommunes.map(c => ({
+                    key: c.key,
+                    label: isArabic ? c.name_ar : c.name_fr,
+                  }))}
+                  isOpen={openDropdown === 'commune'}
+                  onToggle={() => setOpenDropdown(openDropdown === 'commune' ? null : 'commune')}
+                  onSelect={(key) => {
+                    const commune = availableCommunes.find(c => c.key === key);
+                    if (commune) handleCommuneChange(commune);
+                  }}
+                  disabled={!addressFields.province}
+                />
+
+                {/* Neighborhood Dropdown (if available) */}
+                {availableNeighborhoods.length > 0 && (
+                  <AddressDropdown
+                    label={t('neighborhood')}
+                    value={addressFields.neighborhood}
+                    placeholder={t('selectNeighborhood')}
+                    options={availableNeighborhoods.map(n => ({
+                      key: n,
+                      label: n,
+                    }))}
+                    isOpen={openDropdown === 'neighborhood'}
+                    onToggle={() => setOpenDropdown(openDropdown === 'neighborhood' ? null : 'neighborhood')}
+                    onSelect={handleNeighborhoodChange}
+                  />
+                )}
+              </div>
             </div>
 
             {/* Residence Type Selector */}
