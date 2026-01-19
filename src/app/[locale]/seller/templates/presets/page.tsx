@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Sparkles } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 import { getCurrentUser } from '@/infrastructure/auth/supabase-server';
 import { PRESET_TEMPLATES, EVENT_DISPLAY_INFO } from '@/application/data/presetTemplates';
 import { PresetTemplateCard } from '@/presentation/components/seller/templates/PresetTemplateCard';
@@ -22,6 +23,8 @@ export default async function PresetsPage({ params }: PresetsPageProps) {
   if (!user) {
     redirect(`/${locale}/auth/login`);
   }
+
+  const t = await getTranslations('templates');
 
   // Map locale to template language
   const languageMap: Record<string, TemplateLanguage> = {
@@ -65,10 +68,10 @@ export default async function PresetsPage({ params }: PresetsPageProps) {
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <Sparkles size={20} className="text-yellow-400" />
-            Preset Templates
+            {t('presets.title')}
           </h2>
           <p className="text-xs text-zinc-500 mt-1">
-            Ready-to-use templates for every order event
+            {t('presets.description')}
           </p>
         </div>
       </div>
@@ -76,11 +79,10 @@ export default async function PresetsPage({ params }: PresetsPageProps) {
       {/* Info Banner */}
       <div className="mb-6 p-4 bg-gradient-to-r from-yellow-900/20 to-orange-900/20 border border-yellow-800/50 rounded-xl">
         <div className="text-yellow-400 text-sm font-medium mb-1">
-          Quick Start Templates
+          {t('presets.quickStart')}
         </div>
         <p className="text-yellow-300/70 text-xs">
-          These templates are optimized for Meta approval. Tap &quot;Use This Template&quot; to
-          create a draft, then submit to Meta for approval.
+          {t('presets.info')}
         </p>
       </div>
 

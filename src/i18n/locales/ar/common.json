@@ -250,7 +250,23 @@
       "pendingStatusExplainer": "الطلب المعلق يعني أن العميل استلم الرسالة لكنه لم ينقر على \"تأكيد\" بعد.",
       "noOrdersInFilter": "لا توجد طلبات في \"{filter}\"",
       "viewChat": "عرض المحادثة",
-      "new": "جديد"
+      "new": "جديد",
+      "customerInfo": "معلومات العميل",
+      "floor": "الطابق",
+      "apt": "شقة",
+      "viewOnMap": "عرض على الخريطة",
+      "items": "المنتجات",
+      "subtotal": "المجموع الفرعي",
+      "shipping": "الشحن",
+      "total": "المجموع",
+      "timeline": "سجل الطلب",
+      "cancelOrder": "إلغاء الطلب",
+      "confirmCancel": "هل أنت متأكد من إلغاء هذا الطلب؟",
+      "messages": "الرسائل",
+      "noMessages": "لا توجد رسائل بعد",
+      "you": "أنت",
+      "typeMessage": "اكتب رسالة...",
+      "whatsappGreeting": "مرحباً {name}! بخصوص طلبك {orderNumber}..."
     },
     "inventory": {
       "title": "المخزون",
@@ -280,7 +296,14 @@
       "publishDrop": "نشر الإصدار",
       "noProducts": "لا توجد منتجات بعد",
       "addFirstProduct": "أضف أول منتج لك",
-      "noVideo": "لا يوجد فيديو"
+      "noVideo": "لا يوجد فيديو",
+      "instagramReconnectRequired": "يلزم إعادة الاتصال بإنستغرام",
+      "fetchMediaFailed": "فشل في جلب الوسائط",
+      "noVideosFound": "لم يتم العثور على فيديوهات",
+      "connectInstagramFirst": "اربط إنستغرام أولاً لاستيراد الفيديوهات",
+      "noCaption": "لا يوجد وصف",
+      "selectFromReels": "اختر فيديو من ريلز إنستغرام",
+      "fetchMyReels": "جلب فيديوهاتي"
     },
     "vibe": {
       "title": "أجواء المتجر",
@@ -353,7 +376,13 @@
         "connect": "ربط إنستغرام",
         "connected": "متصل بـ @{handle}",
         "disconnect": "فصل",
-        "syncProducts": "مزامنة المنتجات والآراء"
+        "syncProducts": "مزامنة المنتجات والآراء",
+        "connectWithInstagram": "الاتصال بإنستغرام",
+        "reconnect": "إعادة الاتصال",
+        "connectedAs": "متصل بـ @{username}",
+        "connectedSuccess": "تم الاتصال بإنستغرام بنجاح",
+        "disconnectedSuccess": "تم فصل إنستغرام",
+        "disconnectFailed": "فشل في فصل إنستغرام"
       },
       "shipping": {
         "title": "قواعد الشحن",
@@ -416,6 +445,7 @@
     "confirm": "تأكيد",
     "close": "إغلاق",
     "back": "رجوع",
+    "goBack": "رجوع",
     "search": "بحث",
     "noResults": "لا توجد نتائج",
     "currency": "درهم",
@@ -427,6 +457,7 @@
     "disabled": "معطل",
     "or": "أو",
     "saveChanges": "حفظ التغييرات",
+    "saving": "جارٍ الحفظ...",
     "comingSoon": "قريباً",
     "featureComingSoon": "ميزة {feature} قادمة قريباً!",
     "workingOnFeature": "نعمل بجد لتقديم هذه الميزة لك.",
@@ -434,6 +465,15 @@
     "confirmDelete": "تأكيد الحذف",
     "deleteMessage": "هل أنت متأكد من حذف هذا العنصر؟ لا يمكن التراجع عن هذا الإجراء.",
     "deleting": "جارٍ الحذف..."
+  },
+  "order": {
+    "status": {
+      "pending": "معلق",
+      "confirmed": "مؤكد",
+      "shipped": "شُحن",
+      "delivered": "تم التوصيل",
+      "cancelled": "ملغي"
+    }
   },
   "errors": {
     "required": "هذا الحقل مطلوب",
@@ -444,7 +484,12 @@
     "serverError": "خطأ في الخادم. يرجى المحاولة مرة أخرى.",
     "networkError": "خطأ في الشبكة. تحقق من اتصالك.",
     "notFound": "غير موجود",
-    "unauthorized": "يرجى تسجيل الدخول للمتابعة"
+    "unauthorized": "يرجى تسجيل الدخول للمتابعة",
+    "shopNotFound": "المتجر غير موجود",
+    "updateStockFailed": "فشل في تحديث المخزون",
+    "sessionExpired": "انتهت الجلسة. يرجى تحديث الصفحة والمحاولة مرة أخرى.",
+    "updateProductFailed": "فشل في تحديث المنتج",
+    "deleteProductFailed": "فشل في حذف المنتج"
   },
   "shipping": {
     "pageTitle": "إعدادات الشحن",
@@ -651,7 +696,38 @@
       "deleteFailed": "فشل في حذف القالب"
     },
     "preview": {
-      "enterBodyText": "أدخل نص الرسالة..."
+      "enterBodyText": "أدخل نص الرسالة...",
+      "label": "معاينة",
+      "customer": "العميل",
+      "online": "متصل",
+      "exampleTime": "12:34 م",
+      "defaultButton": "زر",
+      "exampleValuesHint": "المعاينة تستخدم قيم مثال:",
+      "exampleCustomerName": "أحمد",
+      "exampleOrderNumber": "ORD-A1B2",
+      "exampleAmount": "450 د.م.",
+      "exampleTracking": "MA123456",
+      "exampleShopName": "متجري",
+      "exampleItemsCount": "3"
+    },
+    "button": {
+      "created": "تم الإنشاء!",
+      "creating": "جارٍ الإنشاء...",
+      "useThis": "استخدم هذا القالب"
+    },
+    "presets": {
+      "title": "القوالب الجاهزة",
+      "description": "قوالب جاهزة للاستخدام لكل حدث طلب",
+      "quickStart": "قوالب البداية السريعة",
+      "info": "هذه القوالب محسّنة للموافقة من ميتا. اضغط \"استخدم هذا القالب\" لإنشاء مسودة، ثم أرسلها إلى ميتا للموافقة."
+    }
+  },
+  "language": {
+    "name": {
+      "english": "English",
+      "french": "Français",
+      "arabic": "العربية",
+      "darija": "الدارجة"
     }
   }
 }

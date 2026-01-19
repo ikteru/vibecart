@@ -250,7 +250,23 @@
       "pendingStatusExplainer": "Le statut en attente signifie que le client a reçu le message mais n'a pas encore cliqué sur \"Confirmer\".",
       "noOrdersInFilter": "Aucune commande trouvée dans \"{filter}\"",
       "viewChat": "Voir la conversation",
-      "new": "Nouveau"
+      "new": "Nouveau",
+      "customerInfo": "Informations client",
+      "floor": "Étage",
+      "apt": "Appt",
+      "viewOnMap": "Voir sur la carte",
+      "items": "Articles",
+      "subtotal": "Sous-total",
+      "shipping": "Livraison",
+      "total": "Total",
+      "timeline": "Historique",
+      "cancelOrder": "Annuler la commande",
+      "confirmCancel": "Êtes-vous sûr de vouloir annuler cette commande ?",
+      "messages": "Messages",
+      "noMessages": "Pas encore de messages",
+      "you": "Vous",
+      "typeMessage": "Écrire un message...",
+      "whatsappGreeting": "Bonjour {name} ! Concernant votre commande {orderNumber}..."
     },
     "inventory": {
       "title": "Inventaire",
@@ -280,7 +296,14 @@
       "publishDrop": "Publier le drop",
       "noProducts": "Aucun produit pour le moment",
       "addFirstProduct": "Ajouter votre premier produit",
-      "noVideo": "Pas de vidéo"
+      "noVideo": "Pas de vidéo",
+      "instagramReconnectRequired": "Reconnexion Instagram requise",
+      "fetchMediaFailed": "Échec de la récupération des médias",
+      "noVideosFound": "Aucune vidéo trouvée",
+      "connectInstagramFirst": "Connectez d'abord Instagram pour importer des vidéos",
+      "noCaption": "Sans légende",
+      "selectFromReels": "Sélectionnez une vidéo de vos Reels Instagram",
+      "fetchMyReels": "Récupérer mes Reels"
     },
     "vibe": {
       "title": "Ambiance de la boutique",
@@ -353,7 +376,13 @@
         "connect": "Connecter Instagram",
         "connected": "Connecté en tant que @{handle}",
         "disconnect": "Déconnecter",
-        "syncProducts": "Synchroniser produits et avis"
+        "syncProducts": "Synchroniser produits et avis",
+        "connectWithInstagram": "Connecter avec Instagram",
+        "reconnect": "Reconnecter",
+        "connectedAs": "Connecté en tant que @{username}",
+        "connectedSuccess": "Instagram connecté avec succès",
+        "disconnectedSuccess": "Instagram déconnecté",
+        "disconnectFailed": "Échec de la déconnexion d'Instagram"
       },
       "shipping": {
         "title": "Règles de livraison",
@@ -416,6 +445,8 @@
     "confirm": "Confirmer",
     "close": "Fermer",
     "back": "Retour",
+    "goBack": "Retour",
+    "saving": "Enregistrement...",
     "search": "Rechercher",
     "noResults": "Aucun résultat",
     "currency": "MAD",
@@ -435,6 +466,15 @@
     "deleteMessage": "Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.",
     "deleting": "Suppression..."
   },
+  "order": {
+    "status": {
+      "pending": "En attente",
+      "confirmed": "Confirmée",
+      "shipped": "Expédiée",
+      "delivered": "Livrée",
+      "cancelled": "Annulée"
+    }
+  },
   "errors": {
     "required": "Ce champ est requis",
     "invalidPhone": "Numéro de téléphone invalide",
@@ -444,7 +484,12 @@
     "serverError": "Erreur serveur. Veuillez réessayer.",
     "networkError": "Erreur réseau. Vérifiez votre connexion.",
     "notFound": "Non trouvé",
-    "unauthorized": "Veuillez vous connecter pour continuer"
+    "unauthorized": "Veuillez vous connecter pour continuer",
+    "shopNotFound": "Boutique introuvable",
+    "updateStockFailed": "Échec de la mise à jour du stock",
+    "sessionExpired": "Session expirée. Veuillez rafraîchir la page et réessayer.",
+    "updateProductFailed": "Échec de la mise à jour du produit",
+    "deleteProductFailed": "Échec de la suppression du produit"
   },
   "shipping": {
     "pageTitle": "Paramètres de livraison",
@@ -651,7 +696,38 @@
       "deleteFailed": "Échec de la suppression du modèle"
     },
     "preview": {
-      "enterBodyText": "Entrez le corps du message..."
+      "enterBodyText": "Entrez le corps du message...",
+      "label": "Aperçu",
+      "customer": "Client",
+      "online": "en ligne",
+      "exampleTime": "12:34",
+      "defaultButton": "Bouton",
+      "exampleValuesHint": "L'aperçu utilise des valeurs d'exemple :",
+      "exampleCustomerName": "Ahmed",
+      "exampleOrderNumber": "ORD-A1B2",
+      "exampleAmount": "450 MAD",
+      "exampleTracking": "MA123456",
+      "exampleShopName": "Ma Boutique",
+      "exampleItemsCount": "3"
+    },
+    "button": {
+      "created": "Créé !",
+      "creating": "Création...",
+      "useThis": "Utiliser ce modèle"
+    },
+    "presets": {
+      "title": "Modèles prédéfinis",
+      "description": "Modèles prêts à l'emploi pour chaque événement de commande",
+      "quickStart": "Modèles de démarrage rapide",
+      "info": "Ces modèles sont optimisés pour l'approbation Meta. Appuyez sur \"Utiliser ce modèle\" pour créer un brouillon, puis soumettez à Meta pour approbation."
+    }
+  },
+  "language": {
+    "name": {
+      "english": "English",
+      "french": "Français",
+      "arabic": "العربية",
+      "darija": "الدارجة"
     }
   }
 }

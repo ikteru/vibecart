@@ -250,7 +250,23 @@
       "pendingStatusExplainer": "الطلب المعلق معناه الزبون استلم الرسالة ولكن مازال ماكليكاش على \"تأكيد\".",
       "noOrdersInFilter": "ما لقينا حتى طلب فـ \"{filter}\"",
       "viewChat": "شوف المحادثة",
-      "new": "جديد"
+      "new": "جديد",
+      "customerInfo": "معلومات الزبون",
+      "floor": "الطابق",
+      "apt": "شقة",
+      "viewOnMap": "شوف فالخريطة",
+      "items": "المنتوجات",
+      "subtotal": "المجموع الفرعي",
+      "shipping": "التوصيل",
+      "total": "المجموع",
+      "timeline": "سجل الطلب",
+      "cancelOrder": "إلغي الطلب",
+      "confirmCancel": "واش متأكد بغيتي تلغي هاد الطلب؟",
+      "messages": "الرسائل",
+      "noMessages": "مازال ما كاين رسائل",
+      "you": "نتا",
+      "typeMessage": "كتب رسالة...",
+      "whatsappGreeting": "سلام {name}! بخصوص الطلب ديالك {orderNumber}..."
     },
     "inventory": {
       "title": "المخزون",
@@ -280,7 +296,14 @@
       "publishDrop": "نشر الدروب",
       "noProducts": "لا توجد منتجات بعد",
       "addFirstProduct": "أضف أول منتج لك",
-      "noVideo": "لا يوجد فيديو"
+      "noVideo": "لا يوجد فيديو",
+      "instagramReconnectRequired": "خاصك تعاود تكونيكتي إنستا",
+      "fetchMediaFailed": "ما قدرناش نجيبو الميديا",
+      "noVideosFound": "ما لقينا حتى ڤيديو",
+      "connectInstagramFirst": "كونيكتي إنستا أولا باش تجيب الڤيديوات",
+      "noCaption": "بلا وصف",
+      "selectFromReels": "اختار ڤيديو من ريلز إنستا ديالك",
+      "fetchMyReels": "جيب الريلز ديالي"
     },
     "vibe": {
       "title": "ڤايب الحانوت",
@@ -353,7 +376,13 @@
         "connect": "ربط إنستا",
         "connected": "مربوط بـ @{handle}",
         "disconnect": "فصل",
-        "syncProducts": "مزامنة المنتجات والآراء"
+        "syncProducts": "مزامنة المنتجات والآراء",
+        "connectWithInstagram": "ربط مع إنستا",
+        "reconnect": "عاود الربط",
+        "connectedAs": "مربوط بـ @{username}",
+        "connectedSuccess": "تربط إنستا بنجاح",
+        "disconnectedSuccess": "تفصل إنستا",
+        "disconnectFailed": "ما قدرناش نفصلو إنستا"
       },
       "shipping": {
         "title": "قواعد التوصيل",
@@ -416,6 +445,7 @@
     "confirm": "تأكيد",
     "close": "سد",
     "back": "رجوع",
+    "goBack": "رجوع",
     "search": "بحث",
     "noResults": "ما لقينا والو",
     "currency": "درهم",
@@ -427,6 +457,7 @@
     "disabled": "معطل",
     "or": "ولا",
     "saveChanges": "حفظ التغييرات",
+    "saving": "كيتحفظ...",
     "comingSoon": "قريبا",
     "featureComingSoon": "{feature} جاية قريبا!",
     "workingOnFeature": "كنخدمو بزاف باش نجيبو هاد الميزة.",
@@ -434,6 +465,15 @@
     "confirmDelete": "تأكيد الحذف",
     "deleteMessage": "واش متأكد بغيتي تحذف هاد العنصر؟ ما يمكنش ترجع من هاد القرار.",
     "deleting": "كيتحذف..."
+  },
+  "order": {
+    "status": {
+      "pending": "في الانتظار",
+      "confirmed": "مأكد",
+      "shipped": "تشحن",
+      "delivered": "توصل",
+      "cancelled": "ملغي"
+    }
   },
   "errors": {
     "required": "هاد الخانة ضرورية",
@@ -444,7 +484,12 @@
     "serverError": "مشكل فالسيرفر. عاود مرة أخرى.",
     "networkError": "مشكل فالاتصال. شوف الإنترنت.",
     "notFound": "ما لقيناش",
-    "unauthorized": "خاصك تدخل باش تكمل"
+    "unauthorized": "خاصك تدخل باش تكمل",
+    "shopNotFound": "ما لقيناش المتجر",
+    "updateStockFailed": "ما قدرناش نحدثو المخزون",
+    "sessionExpired": "الجلسة سالات. رافريشي الصفحة وعاود.",
+    "updateProductFailed": "ما قدرناش نحدثو المنتوج",
+    "deleteProductFailed": "ما قدرناش نحذفو المنتوج"
   },
   "shipping": {
     "pageTitle": "إعدادات الشحن",
@@ -668,7 +713,38 @@
       "deleteFailed": "ما قدرناش نمسحو القالب"
     },
     "preview": {
-      "enterBodyText": "دخل نص الرسالة..."
+      "enterBodyText": "دخل نص الرسالة...",
+      "label": "معاينة",
+      "customer": "زبون",
+      "online": "أونلاين",
+      "exampleTime": "12:34",
+      "defaultButton": "زر",
+      "exampleValuesHint": "المعاينة كتستعمل قيم مثال:",
+      "exampleCustomerName": "أحمد",
+      "exampleOrderNumber": "ORD-A1B2",
+      "exampleAmount": "450 د.م.",
+      "exampleTracking": "MA123456",
+      "exampleShopName": "الحانوت ديالي",
+      "exampleItemsCount": "3"
+    },
+    "button": {
+      "created": "تخلق!",
+      "creating": "كيتخلق...",
+      "useThis": "استعمل هاد القالب"
+    },
+    "presets": {
+      "title": "قوالب جاهزة",
+      "description": "قوالب جاهزة لكل حدث ديال الطلب",
+      "quickStart": "قوالب البداية السريعة",
+      "info": "هاد القوالب محسّنة باش ميتا توافق عليها. كليك على \"استعمل هاد القالب\" باش تخلق مسودة، وبعدها صيفطها لميتا للموافقة."
+    }
+  },
+  "language": {
+    "name": {
+      "english": "English",
+      "french": "Français",
+      "arabic": "العربية",
+      "darija": "الدارجة"
     }
   }
 }

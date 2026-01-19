@@ -22,12 +22,12 @@ export function TemplatePreview({ headerText, bodyText, footerText, buttons }: T
 
   // Replace variables with example values for preview
   const exampleValues: Record<string, string> = {
-    '1': 'Ahmed',
-    '2': 'ORD-A1B2',
-    '3': '450 MAD',
-    '4': 'MA123456',
-    '5': 'Zara Shop',
-    '6': '3',
+    '1': t('preview.exampleCustomerName'),
+    '2': t('preview.exampleOrderNumber'),
+    '3': t('preview.exampleAmount'),
+    '4': t('preview.exampleTracking'),
+    '5': t('preview.exampleShopName'),
+    '6': t('preview.exampleItemsCount'),
   };
 
   const replaceVariables = (text: string): string => {
@@ -48,8 +48,8 @@ export function TemplatePreview({ headerText, bodyText, footerText, buttons }: T
           C
         </div>
         <div>
-          <div className="text-white text-sm font-medium">Customer</div>
-          <div className="text-zinc-500 text-xs">online</div>
+          <div className="text-white text-sm font-medium">{t('preview.customer')}</div>
+          <div className="text-zinc-500 text-xs">{t('preview.online')}</div>
         </div>
       </div>
 
@@ -80,7 +80,7 @@ export function TemplatePreview({ headerText, bodyText, footerText, buttons }: T
 
             {/* Timestamp */}
             <div className="flex items-center justify-end gap-1 mt-1">
-              <span className="text-[10px] text-zinc-400">12:34 PM</span>
+              <span className="text-[10px] text-zinc-400">{t('preview.exampleTime')}</span>
               <CheckCheck size={14} className="text-blue-400" />
             </div>
           </div>
@@ -93,7 +93,7 @@ export function TemplatePreview({ headerText, bodyText, footerText, buttons }: T
                   key={index}
                   className="bg-[#1f2c33] text-[#00a884] text-sm text-center py-2 rounded-lg border border-zinc-700/50"
                 >
-                  {button.text || 'Button'}
+                  {button.text || t('preview.defaultButton')}
                 </div>
               ))}
             </div>
@@ -103,7 +103,7 @@ export function TemplatePreview({ headerText, bodyText, footerText, buttons }: T
 
       {/* Example values legend */}
       <div className="mt-4 pt-3 border-t border-zinc-800">
-        <div className="text-[10px] text-zinc-600 mb-2">Preview uses example values:</div>
+        <div className="text-[10px] text-zinc-600 mb-2">{t('preview.exampleValuesHint')}</div>
         <div className="flex flex-wrap gap-2">
           {Object.entries(exampleValues).slice(0, 4).map(([num, val]) => (
             <span key={num} className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded">

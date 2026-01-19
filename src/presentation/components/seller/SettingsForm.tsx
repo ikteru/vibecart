@@ -31,11 +31,11 @@ import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
 import type { SellerResponseDTO, UpdateSellerDTO } from '@/application/dtos/SellerDTO';
 import type { ShippingRule } from '@/domain/entities/Seller';
 
-const LANGUAGES = [
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'ar', name: 'العربية', flag: '🇸🇦' },
-  { code: 'ar-MA', name: 'الدارجة', flag: '🇲🇦' },
+const LANGUAGE_CODES = [
+  { code: 'en', nameKey: 'english', flag: '🇬🇧' },
+  { code: 'fr', nameKey: 'french', flag: '🇫🇷' },
+  { code: 'ar', nameKey: 'arabic', flag: '🇸🇦' },
+  { code: 'ar-MA', nameKey: 'darija', flag: '🇲🇦' },
 ];
 
 interface SettingsFormProps {
@@ -747,7 +747,7 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
           <h3 className="font-bold text-sm text-white">{t('seller.settings.language')}</h3>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          {LANGUAGES.map((lang) => (
+          {LANGUAGE_CODES.map((lang) => (
             <button
               key={lang.code}
               onClick={() => switchLanguage(lang.code)}
@@ -758,7 +758,7 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
               }`}
             >
               <span>{lang.flag}</span>
-              <span>{lang.name}</span>
+              <span>{t(`language.name.${lang.nameKey}`)}</span>
             </button>
           ))}
         </div>

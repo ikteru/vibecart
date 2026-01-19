@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Loader2, Sparkles, Check } from 'lucide-react';
 import type { PresetTemplate, PresetButton, EVENT_DISPLAY_INFO } from '@/application/data/presetTemplates';
 import type { TemplateLanguage } from '@/domain/entities/WhatsAppMessageTemplate';
@@ -25,6 +26,7 @@ export function PresetTemplateCard({
   eventInfo,
 }: PresetTemplateCardProps) {
   const router = useRouter();
+  const t = useTranslations('templates');
   const [activating, setActivating] = useState(false);
   const [activated, setActivated] = useState(false);
 
@@ -33,12 +35,12 @@ export function PresetTemplateCard({
 
   // Replace placeholders with example values for preview
   const previewText = bodyText
-    .replace('{{1}}', 'Ahmed')
-    .replace('{{2}}', 'ORD-A1B2')
-    .replace('{{3}}', '450 MAD')
-    .replace('{{4}}', 'MA123456')
-    .replace('{{5}}', 'My Shop')
-    .replace('{{6}}', '3');
+    .replace('{{1}}', t('preview.exampleCustomerName'))
+    .replace('{{2}}', t('preview.exampleOrderNumber'))
+    .replace('{{3}}', t('preview.exampleAmount'))
+    .replace('{{4}}', t('preview.exampleTracking'))
+    .replace('{{5}}', t('preview.exampleShopName'))
+    .replace('{{6}}', t('preview.exampleItemsCount'));
 
   // Get localized button text
   const getButtonText = (button: PresetButton): string => {
@@ -94,7 +96,7 @@ export function PresetTemplateCard({
 
       {/* Preview */}
       <div className="p-4 bg-zinc-950">
-        <div className="text-[10px] text-zinc-500 uppercase mb-2">Preview</div>
+        <div className="text-[10px] text-zinc-500 uppercase mb-2">{t('preview.label')}</div>
         <div className="bg-[#005C4B] text-white text-xs p-3 rounded-lg rounded-tl-none max-w-[85%]">
           {previewText}
         </div>
@@ -147,7 +149,7 @@ export function PresetTemplateCard({
           ) : (
             <Sparkles size={16} />
           )}
-          {activated ? 'Created!' : activating ? 'Creating...' : 'Use This Template'}
+          {activated ? t('button.created') : activating ? t('button.creating') : t('button.useThis')}
         </button>
       </div>
     </div>
