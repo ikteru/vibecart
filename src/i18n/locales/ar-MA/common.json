@@ -349,6 +349,21 @@
         "removeReview": "مسح الرأي",
         "usernamePlaceholder": "@اسم_المستخدم",
         "empty": "مازال ما مثبتيتي آراء"
+      },
+      "chatReviews": {
+        "title": "سكرينات الشات",
+        "description": "شارك الكونفرساسيون ديالك من واتساب ولا إنستا",
+        "uploadScreenshot": "طلع سكرين ديال شات",
+        "selectPlatform": "ختار المنصة",
+        "whatsapp": "واتساب",
+        "instagram": "إنستا",
+        "customerName": "سمية الكليان",
+        "customerNamePlaceholder": "دخل سمية الكليان",
+        "empty": "مازال ما كاين حتى سكرين",
+        "maxReached": "الماكسيموم 6 سكرينات",
+        "removeReview": "حيد السكرين",
+        "uploadError": "ماقدرناش نطلعو السكرين",
+        "invalidFile": "طلع صورة صالحة"
       }
     },
     "settings": {

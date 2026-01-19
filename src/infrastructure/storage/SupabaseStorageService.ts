@@ -18,14 +18,17 @@ export interface DeleteResult {
   error?: string;
 }
 
-export type ImageType = 'maker-bio' | 'pinned-review';
+export type ImageType = 'maker-bio' | 'pinned-review' | 'chat-screenshot';
 
 const BUCKET_NAME = 'vibe-assets';
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
 export class SupabaseStorageService {
-  constructor(private readonly supabase: SupabaseClient) {}
+  constructor(
+    private readonly supabase: SupabaseClient,
+    private readonly adminClient?: SupabaseClient
+  ) {}
 
   /**
    * Upload an image to vibe-assets bucket
@@ -61,7 +64,10 @@ export class SupabaseStorageService {
     const uniqueName = fileName || `${Date.now()}-${Math.random().toString(36).substring(7)}.${extension}`;
     const path = `${userId}/${imageType}/${uniqueName}`;
 
-    const { data, error } = await this.supabase.storage
+    // Use admin client for upload if available (bypasses RLS since auth is verified in API route)
+    const uploadClient = this.adminClient || this.supabase;
+
+    const { data, error } = await uploadClient.storage
       .from(BUCKET_NAME)
       .upload(path, file, {
         cacheControl: '3600',
@@ -89,7 +95,10 @@ export class SupabaseStorageService {
    * @param path - The full path to the file (e.g., "userId/maker-bio/filename.jpg")
    */
   async deleteImage(path: string): Promise<DeleteResult> {
-    const { error } = await this.supabase.storage
+    // Use admin client for delete if available (bypasses RLS since auth is verified in API route)
+    const deleteClient = this.adminClient || this.supabase;
+
+    const { error } = await deleteClient.storage
       .from(BUCKET_NAME)
       .remove([path]);
 

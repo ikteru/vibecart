@@ -349,6 +349,21 @@
         "removeReview": "إزالة الرأي",
         "usernamePlaceholder": "@اسم_المستخدم",
         "empty": "لا توجد آراء مثبتة بعد"
+      },
+      "chatReviews": {
+        "title": "لقطات المحادثات",
+        "description": "شارك المحادثات الحقيقية من واتساب أو إنستغرام",
+        "uploadScreenshot": "رفع لقطة محادثة",
+        "selectPlatform": "اختر المنصة",
+        "whatsapp": "واتساب",
+        "instagram": "إنستغرام",
+        "customerName": "اسم العميل",
+        "customerNamePlaceholder": "أدخل اسم العميل",
+        "empty": "لا توجد لقطات محادثات بعد",
+        "maxReached": "الحد الأقصى 6 لقطات",
+        "removeReview": "حذف اللقطة",
+        "uploadError": "فشل رفع اللقطة",
+        "invalidFile": "يرجى رفع ملف صورة صالح"
       }
     },
     "settings": {

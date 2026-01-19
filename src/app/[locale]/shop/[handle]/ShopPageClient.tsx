@@ -90,6 +90,8 @@ export function ShopPageClient({ seller, products: productDTOs }: ShopPageClient
         ...review,
         enabled: true,
       })),
+      // Chat reviews from vibe config
+      chatReviews: vibe?.chatReviews || [],
       // WhatsApp
       whatsapp: {
         businessNumber: seller.whatsappUrl,

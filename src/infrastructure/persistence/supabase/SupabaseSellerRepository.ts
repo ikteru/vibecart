@@ -8,9 +8,14 @@ import type { SellerRow } from './types';
  * SupabaseSellerRepository
  *
  * Supabase implementation of the SellerRepository interface.
+ * Optionally accepts an admin client for write operations to bypass RLS
+ * (authorization is verified in the application layer).
  */
 export class SupabaseSellerRepository implements SellerRepository {
-  constructor(private supabase: SupabaseClient) {}
+  constructor(
+    private supabase: SupabaseClient,
+    private adminClient?: SupabaseClient
+  ) {}
 
   async findById(id: string): Promise<Seller | null> {
     const { data, error } = await this.supabase
@@ -83,12 +88,56 @@ export class SupabaseSellerRepository implements SellerRepository {
   async save(seller: Seller): Promise<void> {
     const row = this.toRow(seller);
 
-    const { error } = await this.supabase
+    // Check if seller exists (use update for existing, insert for new)
+    const { data: existing } = await this.supabase
       .from('sellers')
-      .upsert(row, { onConflict: 'id' });
+      .select('id, user_id')
+      .eq('id', row.id)
+      .single();
 
-    if (error) {
-      throw new Error(`Failed to save seller: ${error.message}`);
+    if (existing) {
+      // Verify auth context matches the seller's user_id
+      const {
+        data: { user: authUser },
+      } = await this.supabase.auth.getUser();
+
+      if (!authUser) {
+        throw new Error('Failed to save seller: Not authenticated');
+      }
+
+      if (authUser.id !== existing.user_id) {
+        throw new Error('Failed to save seller: Not authorized to update this seller');
+      }
+
+      // Use admin client for update if available (bypasses RLS since we verified auth above)
+      // This is necessary because server actions may not pass JWT properly for RLS
+      const updateClient = this.adminClient || this.supabase;
+
+      // Update existing seller
+      const { error: updateError } = await updateClient
+        .from('sellers')
+        .update({
+          shop_name: row.shop_name,
+          handle: row.handle,
+          whatsapp_number: row.whatsapp_number,
+          shop_config: row.shop_config,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', row.id);
+
+      if (updateError) {
+        throw new Error(`Failed to save seller: ${updateError.message}`);
+      }
+    } else {
+      // Insert new seller - use admin client if available
+      const insertClient = this.adminClient || this.supabase;
+      const { error } = await insertClient
+        .from('sellers')
+        .insert(row);
+
+      if (error) {
+        throw new Error(`Failed to save seller: ${error.message}`);
+      }
     }
   }
 

@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { Zap, User, Upload, Plus, X, Loader2, AlertCircle, Check } from 'lucide-react';
 import type { SellerResponseDTO, UpdateSellerDTO } from '@/application/dtos/SellerDTO';
-import type { VibeConfig, PinnedReview } from '@/domain/entities/Seller';
+import type { VibeConfig, PinnedReview, ChatReview } from '@/domain/entities/Seller';
+import { ChatReviewsSection, type ChatReviewItem } from './vibe/ChatReviewsSection';
 
 // Local review interface with enabled state for UI
 interface ReviewItem extends PinnedReview {
@@ -26,6 +27,7 @@ interface VibeFormConfig {
     imageUrl: string;
   };
   reviews: ReviewItem[];
+  chatReviews: ChatReviewItem[];
 }
 
 const MAX_REVIEWS = 6;
@@ -33,6 +35,30 @@ const MAX_REVIEWS = 6;
 interface VibeFormProps {
   seller: SellerResponseDTO;
   updateAction: (data: UpdateSellerDTO) => Promise<{ success: boolean; error?: string }>;
+}
+
+/**
+ * Build config from seller's vibe settings
+ */
+function buildConfigFromSeller(seller: SellerResponseDTO): VibeFormConfig {
+  const vibeConfig = seller.shopConfig?.vibe;
+  return {
+    spotlight: {
+      enabled: vibeConfig?.spotlight?.enabled || false,
+      title: vibeConfig?.spotlight?.title || '',
+      subtitle: vibeConfig?.spotlight?.subtitle || '',
+      color: vibeConfig?.spotlight?.color || 'from-orange-500 to-red-600',
+    },
+    makerBio: {
+      enabled: vibeConfig?.makerBio?.enabled || false,
+      name: vibeConfig?.makerBio?.name || '',
+      role: vibeConfig?.makerBio?.role || '',
+      bio: vibeConfig?.makerBio?.bio || '',
+      imageUrl: vibeConfig?.makerBio?.imageUrl || '',
+    },
+    reviews: (vibeConfig?.pinnedReviews || []).map((r) => ({ ...r, enabled: true })),
+    chatReviews: (vibeConfig?.chatReviews || []).map((r) => ({ ...r, enabled: true })),
+  };
 }
 
 /**
@@ -52,26 +78,15 @@ export function VibeForm({ seller, updateAction }: VibeFormProps) {
   const [success, setSuccess] = useState(false);
 
   // Initialize config from seller's vibe settings
-  const vibeConfig = seller.shopConfig.vibe;
-  const [config, setConfig] = useState<VibeFormConfig>({
-    spotlight: {
-      enabled: vibeConfig?.spotlight?.enabled || false,
-      title: vibeConfig?.spotlight?.title || '',
-      subtitle: vibeConfig?.spotlight?.subtitle || '',
-      color: vibeConfig?.spotlight?.color || 'from-orange-500 to-red-600',
-    },
-    makerBio: {
-      enabled: vibeConfig?.makerBio?.enabled || false,
-      name: vibeConfig?.makerBio?.name || '',
-      role: vibeConfig?.makerBio?.role || '',
-      bio: vibeConfig?.makerBio?.bio || '',
-      imageUrl: vibeConfig?.makerBio?.imageUrl || '',
-    },
-    reviews: (vibeConfig?.pinnedReviews || []).map((r) => ({ ...r, enabled: true })),
-  });
+  const [config, setConfig] = useState<VibeFormConfig>(() => buildConfigFromSeller(seller));
+
+  // Sync config when seller prop changes (e.g., after server revalidation)
+  useEffect(() => {
+    setConfig(buildConfigFromSeller(seller));
+  }, [seller]);
 
   // Upload image to server
-  const uploadImage = async (file: File, type: 'maker-bio' | 'pinned-review'): Promise<string | null> => {
+  const uploadImage = async (file: File, type: 'maker-bio' | 'pinned-review' | 'chat-screenshot'): Promise<string | null> => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('type', type);
@@ -159,6 +174,13 @@ export function VibeForm({ seller, updateAction }: VibeFormProps) {
         username,
         image,
         note,
+      })),
+      chatReviews: config.chatReviews.map(({ id, platform, screenshotUrl, customerName, createdAt }) => ({
+        id,
+        platform,
+        screenshotUrl,
+        customerName,
+        createdAt,
       })),
     };
 
@@ -478,6 +500,14 @@ export function VibeForm({ seller, updateAction }: VibeFormProps) {
           ))}
         </div>
       </div>
+
+      {/* Chat Screenshots */}
+      <ChatReviewsSection
+        reviews={config.chatReviews}
+        onReviewsChange={(chatReviews) => setConfig((prev) => ({ ...prev, chatReviews }))}
+        uploadImage={uploadImage}
+        onError={setError}
+      />
     </div>
   );
 }

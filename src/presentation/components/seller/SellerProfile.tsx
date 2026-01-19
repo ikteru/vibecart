@@ -16,6 +16,8 @@ import {
 } from 'lucide-react';
 import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
 import { DirectionalIcon } from '@/presentation/components/ui/DirectionalIcon';
+import { ChatReviewDisplay } from '@/presentation/components/shop/ChatReviewDisplay';
+import type { ChatReview, ChatPlatform } from '@/domain/entities/Seller';
 
 /**
  * Shop Configuration for SellerProfile
@@ -47,6 +49,13 @@ interface ShopConfig {
     image: string;
     note: string;
   }>;
+  chatReviews: Array<{
+    id: string;
+    platform: ChatPlatform;
+    screenshotUrl: string;
+    customerName: string;
+    createdAt: string;
+  }>;
 }
 
 interface SellerProfileProps {
@@ -66,7 +75,8 @@ type GridItemType =
   | { type: 'spotlight'; id: string; title: string; subtitle: string; color: string }
   | { type: 'google-maps'; id: string; rating: number; reviews: number; address: string }
   | { type: 'ig-story-review'; id: string; username: string; image: string; note: string }
-  | { type: 'maker-bio'; id: string; name: string; role: string; bio: string; image: string };
+  | { type: 'maker-bio'; id: string; name: string; role: string; bio: string; image: string }
+  | { type: 'chat-review'; data: ChatReview };
 
 /**
  * SellerProfile Component
@@ -115,6 +125,15 @@ export function SellerProfile({
     }
   }, [products, selectedCategory]);
 
+  // Helper to insert at position or append if not enough items
+  const insertOrAppend = (items: GridItemType[], position: number, item: GridItemType) => {
+    if (items.length >= position) {
+      items.splice(position, 0, item);
+    } else {
+      items.push(item);
+    }
+  };
+
   // Algorithmically mix content based on shopConfig
   const mixedContent: GridItemType[] = useMemo(() => {
     // Start with filtered products
@@ -123,61 +142,84 @@ export function SellerProfile({
       data: p,
     }));
 
-    // Inject: Google Maps Card (Position 2)
-    if (shopConfig.googleMaps.enabled && items.length > 1) {
-      items.splice(1, 0, {
-        type: 'google-maps',
-        id: 'gmaps-1',
-        rating: shopConfig.googleMaps.rating,
-        reviews: shopConfig.googleMaps.reviews,
-        address: shopConfig.googleMaps.placeName,
+    // Collect vibe cards to inject
+    const vibeCards: { position: number; item: GridItemType }[] = [];
+
+    // Google Maps Card (preferred position 2)
+    if (shopConfig.googleMaps.enabled) {
+      vibeCards.push({
+        position: 1,
+        item: {
+          type: 'google-maps',
+          id: 'gmaps-1',
+          rating: shopConfig.googleMaps.rating,
+          reviews: shopConfig.googleMaps.reviews,
+          address: shopConfig.googleMaps.placeName,
+        },
       });
     }
 
-    // Inject: Enabled IG Story Reviews (Position 4, 10, etc)
+    // Spotlight Ad (preferred position 3)
+    if (shopConfig.spotlight.enabled) {
+      vibeCards.push({
+        position: 2,
+        item: {
+          type: 'spotlight',
+          id: 'spotlight-main',
+          title: shopConfig.spotlight.title,
+          subtitle: shopConfig.spotlight.subtitle,
+          color: shopConfig.spotlight.color,
+        },
+      });
+    }
+
+    // Maker Bio (preferred position 5)
+    if (shopConfig.makerBio.enabled) {
+      vibeCards.push({
+        position: 4,
+        item: {
+          type: 'maker-bio',
+          id: 'maker-1',
+          name: shopConfig.makerBio.name,
+          role: shopConfig.makerBio.role,
+          bio: shopConfig.makerBio.bio,
+          image: shopConfig.makerBio.imageUrl,
+        },
+      });
+    }
+
+    // Pinned Reviews (preferred positions 4, 8)
     const enabledReviews = shopConfig.reviews.filter((r) => r.enabled);
-    if (enabledReviews.length > 0 && items.length > 3) {
-      items.splice(3, 0, {
-        type: 'ig-story-review',
-        id: enabledReviews[0].id,
-        username: enabledReviews[0].username,
-        image: enabledReviews[0].image,
-        note: enabledReviews[0].note,
+    enabledReviews.slice(0, 2).forEach((review, idx) => {
+      vibeCards.push({
+        position: idx === 0 ? 3 : 7,
+        item: {
+          type: 'ig-story-review',
+          id: review.id,
+          username: review.username,
+          image: review.image,
+          note: review.note,
+        },
       });
-    }
-    // Add a second review further down if available
-    if (enabledReviews.length > 1 && items.length > 10) {
-      items.splice(10, 0, {
-        type: 'ig-story-review',
-        id: enabledReviews[1].id,
-        username: enabledReviews[1].username,
-        image: enabledReviews[1].image,
-        note: enabledReviews[1].note,
-      });
-    }
+    });
 
-    // Inject: Spotlight Ad (Position 7)
-    if (shopConfig.spotlight.enabled && items.length > 6) {
-      items.splice(6, 0, {
-        type: 'spotlight',
-        id: 'spotlight-main',
-        title: shopConfig.spotlight.title,
-        subtitle: shopConfig.spotlight.subtitle,
-        color: shopConfig.spotlight.color,
+    // Chat Reviews (preferred positions 6, 10)
+    const chatReviews = shopConfig.chatReviews || [];
+    chatReviews.slice(0, 2).forEach((review, idx) => {
+      vibeCards.push({
+        position: idx === 0 ? 5 : 9,
+        item: {
+          type: 'chat-review',
+          data: review,
+        },
       });
-    }
+    });
 
-    // Inject: Maker Bio (Position 9)
-    if (shopConfig.makerBio.enabled && items.length > 8) {
-      items.splice(8, 0, {
-        type: 'maker-bio',
-        id: 'maker-1',
-        name: shopConfig.makerBio.name,
-        role: shopConfig.makerBio.role,
-        bio: shopConfig.makerBio.bio,
-        image: shopConfig.makerBio.imageUrl,
-      });
-    }
+    // Sort by position and insert
+    vibeCards.sort((a, b) => a.position - b.position);
+    vibeCards.forEach(({ position, item }) => {
+      insertOrAppend(items, position, item);
+    });
 
     return items;
   }, [filteredProducts, shopConfig]);
@@ -185,6 +227,7 @@ export function SellerProfile({
   // Pinterest aspect ratio logic
   const getAspectRatio = (index: number, type: string) => {
     if (type === 'ig-story-review') return 'aspect-[9/16]';
+    if (type === 'chat-review') return 'aspect-[9/16]';
     if (type === 'spotlight') return 'aspect-square';
     if (type === 'google-maps') return 'aspect-[4/3]';
 
@@ -390,6 +433,18 @@ export function SellerProfile({
                       <p className="text-[10px] text-white leading-tight">&quot;{item.note}&quot;</p>
                     </div>
                   </div>
+                </div>
+              );
+            }
+
+            // --- 3.5 CHAT REVIEW CARD ---
+            if (item.type === 'chat-review') {
+              return (
+                <div
+                  key={item.data.id}
+                  className="break-inside-avoid mb-2 w-full"
+                >
+                  <ChatReviewDisplay review={item.data} />
                 </div>
               );
             }

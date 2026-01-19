@@ -1,6 +1,7 @@
+import { revalidatePath } from 'next/cache';
 import { getCurrentSeller } from '@/lib/auth/getCurrentSeller';
-import { getCurrentUser, createClient } from '@/infrastructure/auth/supabase-server';
-import { createRepositories } from '@/infrastructure/persistence/supabase';
+import { getCurrentUser, createClient, createAdminClient } from '@/infrastructure/auth/supabase-server';
+import { SupabaseSellerRepository } from '@/infrastructure/persistence/supabase';
 import { UpdateSellerProfile } from '@/application/use-cases/sellers/UpdateSellerProfile';
 import { VibeForm } from '@/presentation/components/seller/VibeForm';
 import type { UpdateSellerDTO } from '@/application/dtos/SellerDTO';
@@ -27,19 +28,27 @@ export default async function VibePage({ params }: VibePageProps) {
     'use server';
 
     const supabaseServer = await createClient();
-    const repos = createRepositories(supabaseServer);
+    const adminClient = createAdminClient();
     const currentUser = await getCurrentUser();
 
     if (!currentUser) {
       return { success: false, error: 'Not authenticated' };
     }
 
-    const updateUseCase = new UpdateSellerProfile(repos.sellerRepository);
+    // Use admin client for writes (RLS verified in application layer)
+    const sellerRepository = new SupabaseSellerRepository(supabaseServer, adminClient);
+    const updateUseCase = new UpdateSellerProfile(sellerRepository);
     const result = await updateUseCase.execute({
       userId: currentUser.id,
       updates: data,
       locale,
     });
+
+    // Revalidate the shop page to show updated vibe settings
+    if (result.success && result.seller) {
+      revalidatePath(`/${locale}/shop/${result.seller.handle}`);
+      revalidatePath(`/${locale}/seller/vibe`);
+    }
 
     return result;
   }

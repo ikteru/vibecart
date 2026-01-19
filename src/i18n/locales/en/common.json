@@ -349,6 +349,21 @@
         "removeReview": "Remove review",
         "usernamePlaceholder": "@username",
         "empty": "No reviews pinned yet"
+      },
+      "chatReviews": {
+        "title": "Chat Screenshots",
+        "description": "Share real conversations from WhatsApp or Instagram",
+        "uploadScreenshot": "Upload chat screenshot",
+        "selectPlatform": "Select platform",
+        "whatsapp": "WhatsApp",
+        "instagram": "Instagram",
+        "customerName": "Customer name",
+        "customerNamePlaceholder": "Enter customer name",
+        "empty": "No chat screenshots yet",
+        "maxReached": "Maximum 6 chat screenshots",
+        "removeReview": "Remove screenshot",
+        "uploadError": "Failed to upload screenshot",
+        "invalidFile": "Please upload a valid image file"
       }
     },
     "settings": {

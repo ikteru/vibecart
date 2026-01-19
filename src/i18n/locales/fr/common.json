@@ -349,6 +349,21 @@
         "removeReview": "Supprimer l'avis",
         "usernamePlaceholder": "@nom_utilisateur",
         "empty": "Aucun avis épinglé"
+      },
+      "chatReviews": {
+        "title": "Captures de conversations",
+        "description": "Partagez vos vraies conversations WhatsApp ou Instagram",
+        "uploadScreenshot": "Télécharger une capture",
+        "selectPlatform": "Choisir la plateforme",
+        "whatsapp": "WhatsApp",
+        "instagram": "Instagram",
+        "customerName": "Nom du client",
+        "customerNamePlaceholder": "Entrez le nom du client",
+        "empty": "Aucune capture de conversation",
+        "maxReached": "Maximum 6 captures",
+        "removeReview": "Supprimer la capture",
+        "uploadError": "Échec du téléchargement",
+        "invalidFile": "Veuillez télécharger une image valide"
       }
     },
     "settings": {

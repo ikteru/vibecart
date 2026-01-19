@@ -39,10 +39,21 @@ export interface PinnedReview {
   note: string;
 }
 
+export type ChatPlatform = 'whatsapp' | 'instagram';
+
+export interface ChatReview {
+  id: string;
+  platform: ChatPlatform;
+  screenshotUrl: string;
+  customerName: string;
+  createdAt: string;
+}
+
 export interface VibeConfig {
   spotlight?: SpotlightConfig;
   makerBio?: MakerBioConfig;
   pinnedReviews?: PinnedReview[];
+  chatReviews?: ChatReview[];
 }
 
 export interface GoogleMapsConfig {

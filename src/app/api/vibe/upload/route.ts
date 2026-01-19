@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { createClient, getCurrentUser } from '@/infrastructure/auth/supabase-server';
+import { createClient, createAdminClient, getCurrentUser } from '@/infrastructure/auth/supabase-server';
 import { SupabaseStorageService, type ImageType } from '@/infrastructure/storage';
 
-const VALID_IMAGE_TYPES: ImageType[] = ['maker-bio', 'pinned-review'];
+const VALID_IMAGE_TYPES: ImageType[] = ['maker-bio', 'pinned-review', 'chat-screenshot'];
 
 /**
  * POST /api/vibe/upload
@@ -46,9 +46,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Upload using storage service
+    // Upload using storage service with admin client (auth verified above)
     const supabase = await createClient();
-    const storageService = new SupabaseStorageService(supabase);
+    const adminClient = createAdminClient();
+    const storageService = new SupabaseStorageService(supabase, adminClient);
     const result = await storageService.uploadImage(file, user.id, imageType);
 
     if (!result.success) {
@@ -109,9 +110,10 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    // Delete using storage service
+    // Delete using storage service with admin client (auth verified above)
     const supabase = await createClient();
-    const storageService = new SupabaseStorageService(supabase);
+    const adminClient = createAdminClient();
+    const storageService = new SupabaseStorageService(supabase, adminClient);
     const result = await storageService.deleteImage(path);
 
     if (!result.success) {

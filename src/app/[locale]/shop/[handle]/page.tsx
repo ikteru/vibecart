@@ -5,6 +5,9 @@ import { GetSellerByHandle } from '@/application/use-cases/sellers';
 import { GetSellerProducts } from '@/application/use-cases/products';
 import { ShopPageClient } from './ShopPageClient';
 
+// Ensure fresh data on each request (vibe settings, products, etc.)
+export const dynamic = 'force-dynamic';
+
 interface ShopPageProps {
   params: Promise<{
     locale: string;
