@@ -20,9 +20,64 @@ import { ChatReviewDisplay } from '@/presentation/components/shop/ChatReviewDisp
 import type { ChatReview, ChatPlatform } from '@/domain/entities/Seller';
 
 /**
+ * Avatar with letter+color fallback when image fails to load
+ */
+function AvatarWithFallback({
+  src,
+  name,
+  size = 'md',
+  className = '',
+}: {
+  src?: string;
+  name: string;
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+}) {
+  const [hasError, setHasError] = useState(false);
+
+  const sizeClasses = {
+    sm: 'w-5 h-5 text-[8px]',
+    md: 'w-10 h-10 text-sm',
+    lg: 'w-16 h-16 text-xl',
+  };
+
+  const colors = [
+    'bg-rose-500', 'bg-pink-500', 'bg-fuchsia-500', 'bg-purple-500',
+    'bg-violet-500', 'bg-indigo-500', 'bg-blue-500', 'bg-sky-500',
+    'bg-cyan-500', 'bg-teal-500', 'bg-emerald-500', 'bg-green-500',
+  ];
+
+  const colorIndex = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const bgColor = colors[colorIndex % colors.length];
+
+  if (!src || hasError) {
+    return (
+      <div className={`${sizeClasses[size]} rounded-full ${bgColor} flex items-center justify-center ${className}`}>
+        <span className="font-bold text-white">{name.charAt(0).toUpperCase()}</span>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={name}
+      className={`${sizeClasses[size]} rounded-full object-cover ${className}`}
+      onError={() => setHasError(true)}
+    />
+  );
+}
+
+/**
  * Shop Configuration for SellerProfile
  */
 interface ShopConfig {
+  instagram?: {
+    isConnected: boolean;
+    handle?: string;
+    followersCount?: number;
+    profilePictureUrl?: string;
+  };
   googleMaps: {
     enabled: boolean;
     rating: number;
@@ -56,6 +111,50 @@ interface ShopConfig {
     customerName: string;
     createdAt: string;
   }>;
+}
+
+/**
+ * Format a number to a compact display format (e.g., 24500 -> 24.5k)
+ */
+function formatFollowersCount(count: number | undefined): string {
+  if (!count) return '0';
+  if (count >= 1000000) {
+    return (count / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+  }
+  if (count >= 1000) {
+    return (count / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+  }
+  return count.toString();
+}
+
+/**
+ * Generate a consistent color based on a string (for avatar fallbacks)
+ */
+const AVATAR_COLORS = [
+  'bg-rose-500',
+  'bg-pink-500',
+  'bg-fuchsia-500',
+  'bg-purple-500',
+  'bg-violet-500',
+  'bg-indigo-500',
+  'bg-blue-500',
+  'bg-sky-500',
+  'bg-cyan-500',
+  'bg-teal-500',
+  'bg-emerald-500',
+  'bg-green-500',
+  'bg-lime-500',
+  'bg-yellow-500',
+  'bg-amber-500',
+  'bg-orange-500',
+];
+
+function getAvatarColor(name: string): string {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 }
 
 interface SellerProfileProps {
@@ -98,6 +197,7 @@ export function SellerProfile({
   const [showComingSoon, setShowComingSoon] = useState(false);
   const [comingSoonFeature, setComingSoonFeature] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('all');
+  const [profileImageError, setProfileImageError] = useState(false);
 
   const showFeatureComingSoon = (feature: string) => {
     setComingSoonFeature(feature);
@@ -260,16 +360,19 @@ export function SellerProfile({
         <div className="relative shrink-0">
           <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-emerald-500 via-emerald-400 to-cyan-500 p-[2px] shadow-lg">
             <div className="w-full h-full rounded-full bg-zinc-900 flex items-center justify-center overflow-hidden border-2 border-black">
-              {shopConfig.makerBio.enabled ? (
+              {shopConfig.makerBio.enabled && shopConfig.makerBio.imageUrl && !profileImageError ? (
                 <img
                   src={shopConfig.makerBio.imageUrl}
                   className="w-full h-full object-cover"
                   alt="Profile"
+                  onError={() => setProfileImageError(true)}
                 />
               ) : (
-                <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-tr from-emerald-400 to-cyan-400">
-                  {sellerName.charAt(0)}
-                </span>
+                <div className={`w-full h-full flex items-center justify-center ${getAvatarColor(sellerName)}`}>
+                  <span className="text-2xl font-bold text-white">
+                    {sellerName.charAt(0).toUpperCase()}
+                  </span>
+                </div>
               )}
             </div>
           </div>
@@ -286,10 +389,12 @@ export function SellerProfile({
             @{sellerHandle || sellerName.toLowerCase().replace(/\s+/g, '_')}
           </p>
           <div className="flex gap-4 text-sm">
-            <div>
-              <span className="font-bold text-white">24.5k</span>{' '}
-              <span className="text-zinc-500">{t('seller.profile.followers')}</span>
-            </div>
+            {shopConfig.instagram?.isConnected && shopConfig.instagram.followersCount && (
+              <div>
+                <span className="font-bold text-white">{formatFollowersCount(shopConfig.instagram.followersCount)}</span>{' '}
+                <span className="text-zinc-500">{t('seller.profile.followers')}</span>
+              </div>
+            )}
             <div>
               <span className="font-bold text-white">{shopConfig.googleMaps.rating}</span>{' '}
               <span className="text-zinc-500">{t('seller.profile.rating')}</span>
@@ -486,10 +591,11 @@ export function SellerProfile({
                   className="break-inside-avoid mb-2 w-full bg-zinc-900 rounded-xl p-3 border border-zinc-800"
                 >
                   <div className="flex gap-3 items-center mb-2">
-                    <img
+                    <AvatarWithFallback
                       src={item.image}
-                      className="w-10 h-10 rounded-full object-cover border border-zinc-700"
-                      alt={item.name}
+                      name={item.name}
+                      size="md"
+                      className="border border-zinc-700"
                     />
                     <div>
                       <h4 className="text-xs font-bold text-white">{item.name}</h4>

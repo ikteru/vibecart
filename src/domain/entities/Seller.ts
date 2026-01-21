@@ -68,6 +68,8 @@ export interface InstagramConfig {
   handle?: string;
   userId?: string;           // Instagram user ID for API calls
   tokenExpiresAt?: string;   // ISO date string for UI warning about expiring token
+  followersCount?: number;   // Number of followers on the Instagram account
+  profilePictureUrl?: string; // Instagram profile picture URL
 }
 
 export interface WhatsAppBusinessConfig {

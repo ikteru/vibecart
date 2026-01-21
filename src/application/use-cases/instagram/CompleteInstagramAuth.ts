@@ -109,6 +109,8 @@ export class CompleteInstagramAuth {
           handle: profile.username,
           userId: profile.id,
           tokenExpiresAt: expiresAt.toISOString(),
+          followersCount: profile.followers_count,
+          profilePictureUrl: profile.profile_picture_url,
         },
       });
 
