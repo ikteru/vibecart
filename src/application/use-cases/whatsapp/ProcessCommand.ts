@@ -1,6 +1,7 @@
 import type { CommandType } from '@/infrastructure/external-services/WhatsAppCommandParser';
 import { GeminiAIService } from '@/infrastructure/external-services/GeminiAIService';
 import { createClient } from '@/infrastructure/auth/supabase-server';
+import { logger } from '@/infrastructure/utils/logger';
 
 /**
  * Process WhatsApp Command Input
@@ -106,7 +107,7 @@ export async function processWhatsAppCommand(
         };
     }
   } catch (error) {
-    console.error('ProcessCommand error:', error);
+    logger.error('ProcessCommand error', { context: 'whatsapp', error: error instanceof Error ? error.message : 'Unknown error' });
     return {
       success: false,
       response: await geminiService.generateCommandResponse(
@@ -574,7 +575,7 @@ async function logCommand(input: ProcessCommandInput): Promise<void> {
     });
   } catch (error) {
     // Don't fail the command if logging fails
-    console.error('Failed to log command:', error);
+    logger.error('Failed to log command', { context: 'whatsapp', error: error instanceof Error ? error.message : 'Unknown error' });
   }
 }
 

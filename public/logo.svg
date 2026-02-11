@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#ed7420"/>
+  
+  <!-- Shopping cart outline -->
+  <path 
+    d="M50 65H65L75 125H140L150 75H70" 
+    stroke="white" 
+    stroke-width="6" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+    fill="none"
+  />
+  
+  <!-- Cart wheel left -->
+  <circle cx="85" cy="140" r="8" fill="white"/>
+  
+  <!-- Cart wheel right -->
+  <circle cx="125" cy="140" r="8" fill="white"/>
+  
+  <!-- Play button triangle inside cart -->
+  <path 
+    d="M95 85L115 100L95 115V85Z" 
+    fill="white"
+  />
+  
+  <!-- Cart handle -->
+  <path 
+    d="M50 65L45 50H35" 
+    stroke="white" 
+    stroke-width="6" 
+    stroke-linecap="round"
+    fill="none"
+  />
+</svg>

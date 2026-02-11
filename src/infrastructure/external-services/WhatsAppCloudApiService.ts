@@ -8,6 +8,7 @@
  */
 
 import { createHmac, timingSafeEqual } from 'crypto';
+import { logger } from '@/infrastructure/utils/logger';
 
 const GRAPH_API_BASE = 'https://graph.facebook.com/v18.0';
 const FACEBOOK_OAUTH_BASE = 'https://www.facebook.com/v18.0/dialog/oauth';
@@ -538,7 +539,7 @@ export class WhatsAppCloudApiService {
       allow_category_change: true,
     };
 
-    console.log('[WhatsApp] Creating template:', JSON.stringify(payload, null, 2));
+    logger.debug('[WhatsApp] Creating template', { context: 'whatsapp', templateName: template.name });
 
     const response = await fetch(`${GRAPH_API_BASE}/${wabaId}/message_templates`, {
       method: 'POST',
@@ -563,7 +564,7 @@ export class WhatsAppCloudApiService {
     }
 
     const result = await response.json();
-    console.log('[WhatsApp] Template created:', result);
+    logger.debug('[WhatsApp] Template created', { context: 'whatsapp', templateId: result.id, status: result.status });
     return result;
   }
 

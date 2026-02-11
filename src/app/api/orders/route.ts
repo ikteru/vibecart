@@ -4,6 +4,7 @@ import { createRepositories } from '@/infrastructure/persistence/supabase';
 import { CreateOrder } from '@/application/use-cases/orders/CreateOrder';
 import { SendOrderNotification } from '@/application/use-cases/whatsapp-business';
 import type { CreateOrderDTO } from '@/application/dtos/OrderDTO';
+import { logger } from '@/infrastructure/utils/logger';
 
 /**
  * POST /api/orders
@@ -79,16 +80,16 @@ async function sendPendingConfirmationRequest(orderId: string): Promise<void> {
     });
 
     if (result.success) {
-      console.log(`WhatsApp confirmation request sent for order ${orderId}`);
+      logger.info('WhatsApp confirmation request sent', { context: 'orders', orderId });
     } else {
       // If template fails (e.g., not approved yet), try text message fallback
-      console.log(`Template message failed: ${result.error}, trying text message fallback...`);
+      logger.warn('Template message failed, trying text message fallback', { context: 'orders', orderId, error: result.error });
       const textResult = await sendNotification.sendPendingConfirmationText(orderId);
 
       if (textResult.success) {
-        console.log(`WhatsApp text confirmation sent for order ${orderId}`);
+        logger.info('WhatsApp text confirmation sent', { context: 'orders', orderId });
       } else {
-        console.warn(`Failed to send WhatsApp confirmation: ${textResult.error}`);
+        logger.warn('Failed to send WhatsApp confirmation', { context: 'orders', orderId, error: textResult.error });
       }
     }
   } catch (error) {

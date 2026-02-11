@@ -149,7 +149,9 @@ function VideoCard({
   useEffect(() => {
     if (videoRef.current) {
       if (isActive) {
-        videoRef.current.play().catch((e) => console.log('Autoplay blocked', e));
+        videoRef.current.play().catch(() => {
+          // Autoplay blocked by browser - expected behavior, no action needed
+        });
       } else {
         videoRef.current.pause();
       }

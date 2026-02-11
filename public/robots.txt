@@ -1,0 +1,22 @@
+# VibeCart Robots.txt
+# Allow all crawlers access to public content
+User-agent: *
+Allow: /
+
+# Disallow admin/internal routes
+Disallow: /api/
+Disallow: /seller/
+Disallow: /en/seller/
+Disallow: /ar/seller/
+Disallow: /fr/seller/
+Disallow: /ar-MA/seller/
+Disallow: /auth/
+Disallow: /en/auth/
+Disallow: /ar/auth/
+Disallow: /fr/auth/
+Disallow: /ar-MA/auth/
+Disallow: /_next/
+Disallow: /*?*
+
+# Sitemap location
+Sitemap: https://vibecart.ma/sitemap.xml

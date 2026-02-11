@@ -6,6 +6,7 @@ import { processWhatsAppCommand } from '@/application/use-cases/whatsapp/Process
 import { ConfirmOrderByCustomer } from '@/application/use-cases/orders';
 import { createAdminClient } from '@/infrastructure/auth/supabase-server';
 import { createRepositories } from '@/infrastructure/persistence/supabase';
+import { logger } from '@/infrastructure/utils/logger';
 
 /**
  * WhatsApp Webhook Handler
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest) {
 
     if (!expectedApiKey) {
       // If no API key configured, legacy webhooks are disabled
-      console.warn('Legacy webhook attempted but WEBHOOK_API_KEY not configured');
+      logger.warn('Legacy webhook attempted but WEBHOOK_API_KEY not configured', { context: 'webhook' });
       return NextResponse.json(
         { success: false, error: 'Legacy webhooks disabled' },
         { status: 403 }
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (apiKey !== expectedApiKey) {
-      console.warn('Legacy webhook rejected: invalid or missing API key');
+      logger.warn('Legacy webhook rejected: invalid or missing API key', { context: 'webhook' });
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
@@ -110,7 +111,7 @@ export async function GET(request: NextRequest) {
 
   // Verify webhook for WhatsApp Cloud API
   if (mode === 'subscribe' && token === process.env.WHATSAPP_VERIFY_TOKEN) {
-    console.log('WhatsApp webhook verified successfully');
+    logger.info('WhatsApp webhook verified successfully', { context: 'webhook' });
     return new NextResponse(challenge, { status: 200 });
   }
 
@@ -225,7 +226,7 @@ async function handleStatusUpdates(
         errorMessage: update.errors?.[0]?.message,
       });
 
-      console.log(`Updated WhatsApp message status to ${newStatus}`);
+      logger.debug(`Updated WhatsApp message status to ${newStatus}`, { context: 'webhook', messageId: update.id, status: newStatus });
     } catch (error) {
       console.error(`Failed to update status for message ${update.id}:`, error);
     }
@@ -248,7 +249,7 @@ async function handleIncomingMessages(
 ): Promise<void> {
   // Need phoneNumberId to identify which seller this message is for
   if (!phoneNumberId) {
-    console.log('No phoneNumberId in webhook, cannot route messages');
+    logger.debug('No phoneNumberId in webhook, cannot route messages', { context: 'webhook' });
     return;
   }
 
@@ -258,7 +259,7 @@ async function handleIncomingMessages(
   // Find the seller by their WhatsApp Business phone number ID
   const token = await repos.whatsAppTokenRepository.findByPhoneNumberId(phoneNumberId);
   if (!token) {
-    console.log('No seller found for phoneNumberId:', phoneNumberId);
+    logger.debug('No seller found for phoneNumberId', { context: 'webhook', phoneNumberId });
     return;
   }
 
@@ -267,9 +268,10 @@ async function handleIncomingMessages(
 
   for (const message of messages) {
     // Log without PII - mask phone number and don't log message content
-    console.log('Incoming WhatsApp message:', {
+    logger.debug('Incoming WhatsApp message', {
+      context: 'webhook',
       from: maskPhoneNumber(message.from),
-      id: message.id,
+      messageId: message.id,
       type: message.type,
       hasText: !!message.text?.body,
       sellerId,
@@ -288,12 +290,12 @@ async function handleIncomingMessages(
 
     if (!parsed.isCommand) {
       // Don't log message content - just note it's not a command
-      console.log('Received non-command message');
+      logger.debug('Received non-command message', { context: 'webhook' });
       continue;
     }
 
     // Log command type only, not arguments which may contain order numbers
-    console.log('Parsed command:', parsed.command);
+    logger.debug('Parsed command', { context: 'webhook', command: parsed.command });
 
     // Handle confirm command
     if (parsed.command === 'confirm') {
@@ -311,9 +313,9 @@ async function handleIncomingMessages(
         });
 
         if (result.success) {
-          console.log(`Order confirmed by customer: ${result.order?.orderNumber}`);
+          logger.info('Order confirmed by customer', { context: 'webhook', orderNumber: result.order?.orderNumber });
         } else {
-          console.log(`Failed to confirm order: ${result.error}`);
+          logger.warn('Failed to confirm order', { context: 'webhook', error: result.error });
         }
       } catch (error) {
         console.error('Error processing confirm command:', error);
@@ -334,9 +336,9 @@ async function handleIncomingMessages(
         });
 
         if (result.success) {
-          console.log('Order cancelled by customer');
+          logger.info('Order cancelled by customer', { context: 'webhook' });
         } else {
-          console.log(`Failed to cancel order: ${result.error}`);
+          logger.warn('Failed to cancel order', { context: 'webhook', error: result.error });
         }
       } catch (error) {
         console.error('Error processing cancel command:', error);
