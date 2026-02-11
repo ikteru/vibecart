@@ -14,6 +14,8 @@ import { SupabaseWhatsAppTokenRepository } from './SupabaseWhatsAppTokenReposito
 import { SupabaseWhatsAppMessageRepository } from './SupabaseWhatsAppMessageRepository';
 import { SupabaseWhatsAppTemplateRepository } from './SupabaseWhatsAppTemplateRepository';
 import { SupabaseTemplateEventBindingRepository } from './SupabaseTemplateEventBindingRepository';
+import { SupabaseDeliveryPersonRepository } from './SupabaseDeliveryPersonRepository';
+import { SupabaseOrderDispatchRepository } from './SupabaseOrderDispatchRepository';
 
 export { SupabaseProductRepository } from './SupabaseProductRepository';
 export { SupabaseSellerRepository } from './SupabaseSellerRepository';
@@ -24,6 +26,8 @@ export { SupabaseWhatsAppTokenRepository } from './SupabaseWhatsAppTokenReposito
 export { SupabaseWhatsAppMessageRepository } from './SupabaseWhatsAppMessageRepository';
 export { SupabaseWhatsAppTemplateRepository } from './SupabaseWhatsAppTemplateRepository';
 export { SupabaseTemplateEventBindingRepository } from './SupabaseTemplateEventBindingRepository';
+export { SupabaseDeliveryPersonRepository } from './SupabaseDeliveryPersonRepository';
+export { SupabaseOrderDispatchRepository } from './SupabaseOrderDispatchRepository';
 export type {
   ProductRow,
   SellerRow,
@@ -37,12 +41,14 @@ export type {
   WhatsAppMessageTemplateRow,
   WhatsAppMessageRow,
   TemplateEventBindingRow,
+  DeliveryPersonRow,
+  OrderDispatchRow,
 } from './types';
 
 /**
  * Create all repositories with a single Supabase client
  */
-export function createRepositories(supabase: SupabaseClient) {
+export function createRepositories(supabase: SupabaseClient, adminClient?: SupabaseClient) {
   return {
     productRepository: new SupabaseProductRepository(supabase),
     sellerRepository: new SupabaseSellerRepository(supabase),
@@ -53,5 +59,7 @@ export function createRepositories(supabase: SupabaseClient) {
     whatsAppMessageRepository: new SupabaseWhatsAppMessageRepository(supabase),
     whatsAppTemplateRepository: new SupabaseWhatsAppTemplateRepository(supabase),
     templateEventBindingRepository: new SupabaseTemplateEventBindingRepository(supabase),
+    deliveryPersonRepository: new SupabaseDeliveryPersonRepository(supabase, adminClient),
+    orderDispatchRepository: new SupabaseOrderDispatchRepository(supabase, adminClient),
   };
 }

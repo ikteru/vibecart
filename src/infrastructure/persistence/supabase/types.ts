@@ -175,3 +175,36 @@ export interface WhatsAppMessageRow {
   read_at: string | null;
   created_at: string;
 }
+
+export interface DeliveryPersonRow {
+  id: string;
+  seller_id: string;
+  name: string;
+  phone: string;
+  notes: string | null;
+  is_active: boolean;
+  dispatch_count: number;
+  last_dispatched_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OrderDispatchRow {
+  id: string;
+  order_id: string;
+  seller_id: string;
+  dispatch_type: string;
+  delivery_person_id: string | null;
+  delivery_person_name: string | null;
+  delivery_person_phone: string | null;
+  provider_id: string | null;
+  external_tracking_id: string | null;
+  external_status: string | null;
+  cod_amount: number | null;
+  status: string;
+  status_history: { status: string; timestamp: string; note?: string }[];
+  whatsapp_sent_at: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}

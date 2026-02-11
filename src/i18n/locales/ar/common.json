@@ -483,6 +483,67 @@
         "vintage": "كلاسيكي",
         "sale": "تخفيضات"
       }
+    },
+    "delivery": {
+      "title": "التوصيل",
+      "persons": {
+        "title": "مندوبي التوصيل",
+        "add": "إضافة مندوب توصيل",
+        "edit": "تعديل مندوب التوصيل",
+        "name": "الاسم",
+        "phone": "رقم الهاتف",
+        "notes": "ملاحظات",
+        "notesPlaceholder": "ملاحظات اختيارية عن هذا المندوب",
+        "empty": "لا يوجد مندوبي توصيل بعد",
+        "emptyDescription": "أضف مندوبي توصيل لإرسال الطلبات عبر واتساب",
+        "dispatchCount": "{count} توصيلات",
+        "lastDispatched": "آخر إرسال {time}",
+        "deleteConfirm": "حذف هذا المندوب؟",
+        "active": "نشط",
+        "inactive": "غير نشط"
+      },
+      "dispatch": {
+        "title": "إرسال الطلب",
+        "selectPerson": "اختر مندوب التوصيل",
+        "selectPersonPlaceholder": "اختر مندوب توصيل",
+        "codAmount": "مبلغ الدفع عند الاستلام",
+        "codAmountHint": "المبلغ المطلوب تحصيله عند التوصيل",
+        "notes": "ملاحظات الإرسال",
+        "notesPlaceholder": "ملاحظات اختيارية للمندوب",
+        "sendViaWhatsApp": "إرسال عبر واتساب",
+        "sending": "جارٍ فتح واتساب...",
+        "success": "تم إرسال الطلب بنجاح",
+        "alreadyDispatched": "تم إرسال هذا الطلب مسبقاً",
+        "noDeliveryPersons": "لا يوجد مندوبي توصيل",
+        "addFirstPerson": "أضف أول مندوب توصيل للبدء بالإرسال",
+        "orderNotReady": "يجب تأكيد الطلب قبل الإرسال"
+      },
+      "history": {
+        "title": "سجل التوصيل",
+        "empty": "لا يوجد سجل توصيل",
+        "dispatchedTo": "أُرسل إلى {name}",
+        "dispatchedAt": "أُرسل {time}",
+        "codAmount": "الدفع عند الاستلام: {amount}",
+        "via": "عبر {method}"
+      },
+      "status": {
+        "pending": "بانتظار الاستلام",
+        "picked_up": "تم الاستلام",
+        "in_transit": "في الطريق",
+        "delivered": "تم التوصيل",
+        "failed": "فشل",
+        "returned": "مُرتجع"
+      },
+      "whatsapp": {
+        "newDeliveryRequest": "طلب توصيل جديد",
+        "orderNumber": "الطلب",
+        "customer": "العميل",
+        "phone": "الهاتف",
+        "deliveryAddress": "عنوان التوصيل",
+        "googleMaps": "خرائط جوجل",
+        "items": "المنتجات",
+        "codToCollect": "المبلغ المطلوب تحصيله"
+      }
     }
   },
   "chat": {

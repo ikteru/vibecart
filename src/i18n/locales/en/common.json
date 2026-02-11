@@ -483,6 +483,67 @@
         "vintage": "Vintage",
         "sale": "Sale"
       }
+    },
+    "delivery": {
+      "title": "Delivery",
+      "persons": {
+        "title": "My Delivery Persons",
+        "add": "Add Delivery Person",
+        "edit": "Edit Delivery Person",
+        "name": "Name",
+        "phone": "Phone Number",
+        "notes": "Notes",
+        "notesPlaceholder": "Optional notes about this delivery person",
+        "empty": "No delivery persons yet",
+        "emptyDescription": "Add delivery persons to dispatch orders via WhatsApp",
+        "dispatchCount": "{count} deliveries",
+        "lastDispatched": "Last dispatched {time}",
+        "deleteConfirm": "Delete this delivery person?",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "dispatch": {
+        "title": "Dispatch Order",
+        "selectPerson": "Select Delivery Person",
+        "selectPersonPlaceholder": "Choose a delivery person",
+        "codAmount": "COD Amount",
+        "codAmountHint": "Amount to collect on delivery",
+        "notes": "Dispatch Notes",
+        "notesPlaceholder": "Optional notes for the delivery person",
+        "sendViaWhatsApp": "Send via WhatsApp",
+        "sending": "Opening WhatsApp...",
+        "success": "Order dispatched successfully",
+        "alreadyDispatched": "This order has already been dispatched",
+        "noDeliveryPersons": "No delivery persons available",
+        "addFirstPerson": "Add your first delivery person to start dispatching",
+        "orderNotReady": "Order must be confirmed before dispatching"
+      },
+      "history": {
+        "title": "Dispatch History",
+        "empty": "No dispatch history",
+        "dispatchedTo": "Dispatched to {name}",
+        "dispatchedAt": "Dispatched {time}",
+        "codAmount": "COD: {amount}",
+        "via": "via {method}"
+      },
+      "status": {
+        "pending": "Pending Pickup",
+        "picked_up": "Picked Up",
+        "in_transit": "In Transit",
+        "delivered": "Delivered",
+        "failed": "Failed",
+        "returned": "Returned"
+      },
+      "whatsapp": {
+        "newDeliveryRequest": "New Delivery Request",
+        "orderNumber": "Order",
+        "customer": "Customer",
+        "phone": "Phone",
+        "deliveryAddress": "Delivery Address",
+        "googleMaps": "Google Maps",
+        "items": "Items",
+        "codToCollect": "COD to Collect"
+      }
     }
   },
   "chat": {

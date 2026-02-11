@@ -483,6 +483,67 @@
         "vintage": "ڤينتاج",
         "sale": "تخفيضات"
       }
+    },
+    "delivery": {
+      "title": "التوصيل",
+      "persons": {
+        "title": "الليفرورات ديالي",
+        "add": "زيد ليفرور",
+        "edit": "عدل الليفرور",
+        "name": "السمية",
+        "phone": "رقم التيليفون",
+        "notes": "ملاحظات",
+        "notesPlaceholder": "ملاحظات اختيارية على هاد الليفرور",
+        "empty": "مازال ما كاين حتى ليفرور",
+        "emptyDescription": "زيد الليفرورات باش تصيفط الطلبات بالواتساب",
+        "dispatchCount": "{count} توصيلات",
+        "lastDispatched": "آخر إرسال {time}",
+        "deleteConfirm": "بغيتي تحذف هاد الليفرور؟",
+        "active": "نشط",
+        "inactive": "غير نشط"
+      },
+      "dispatch": {
+        "title": "صيفط الطلب",
+        "selectPerson": "ختار الليفرور",
+        "selectPersonPlaceholder": "ختار ليفرور",
+        "codAmount": "المبلغ ديال الدفع ملي يوصل",
+        "codAmountHint": "الفلوس اللي غادي يجمع الليفرور",
+        "notes": "ملاحظات الإرسال",
+        "notesPlaceholder": "ملاحظات اختيارية للليفرور",
+        "sendViaWhatsApp": "صيفط بالواتساب",
+        "sending": "كيحل الواتساب...",
+        "success": "تصيفط الطلب بنجاح",
+        "alreadyDispatched": "هاد الطلب تصيفط من قبل",
+        "noDeliveryPersons": "ما كاين حتى ليفرور",
+        "addFirstPerson": "زيد أول ليفرور باش تبدا تصيفط",
+        "orderNotReady": "خاص تأكد الطلب قبل ما تصيفطو"
+      },
+      "history": {
+        "title": "تاريخ التوصيل",
+        "empty": "ما كاين حتى تاريخ توصيل",
+        "dispatchedTo": "تصيفط لـ {name}",
+        "dispatchedAt": "تصيفط {time}",
+        "codAmount": "الدفع ملي يوصل: {amount}",
+        "via": "عبر {method}"
+      },
+      "status": {
+        "pending": "كيتسنا الاستلام",
+        "picked_up": "تستلم",
+        "in_transit": "فالطريق",
+        "delivered": "توصل",
+        "failed": "فشل",
+        "returned": "رجع"
+      },
+      "whatsapp": {
+        "newDeliveryRequest": "طلب توصيل جديد",
+        "orderNumber": "الطلب",
+        "customer": "الزبون",
+        "phone": "التيليفون",
+        "deliveryAddress": "عنوان التوصيل",
+        "googleMaps": "خرائط ڭوڭل",
+        "items": "المنتوجات",
+        "codToCollect": "الفلوس اللي غادي تجمع"
+      }
     }
   },
   "chat": {

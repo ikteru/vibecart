@@ -483,6 +483,67 @@
         "vintage": "Vintage",
         "sale": "Soldes"
       }
+    },
+    "delivery": {
+      "title": "Livraison",
+      "persons": {
+        "title": "Mes livreurs",
+        "add": "Ajouter un livreur",
+        "edit": "Modifier le livreur",
+        "name": "Nom",
+        "phone": "Numéro de téléphone",
+        "notes": "Notes",
+        "notesPlaceholder": "Notes optionnelles sur ce livreur",
+        "empty": "Aucun livreur pour le moment",
+        "emptyDescription": "Ajoutez des livreurs pour expédier les commandes via WhatsApp",
+        "dispatchCount": "{count} livraisons",
+        "lastDispatched": "Dernière expédition {time}",
+        "deleteConfirm": "Supprimer ce livreur ?",
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "dispatch": {
+        "title": "Expédier la commande",
+        "selectPerson": "Sélectionner un livreur",
+        "selectPersonPlaceholder": "Choisir un livreur",
+        "codAmount": "Montant à encaisser",
+        "codAmountHint": "Montant à collecter à la livraison",
+        "notes": "Notes d'expédition",
+        "notesPlaceholder": "Notes optionnelles pour le livreur",
+        "sendViaWhatsApp": "Envoyer via WhatsApp",
+        "sending": "Ouverture de WhatsApp...",
+        "success": "Commande expédiée avec succès",
+        "alreadyDispatched": "Cette commande a déjà été expédiée",
+        "noDeliveryPersons": "Aucun livreur disponible",
+        "addFirstPerson": "Ajoutez votre premier livreur pour commencer à expédier",
+        "orderNotReady": "La commande doit être confirmée avant l'expédition"
+      },
+      "history": {
+        "title": "Historique d'expédition",
+        "empty": "Aucun historique d'expédition",
+        "dispatchedTo": "Expédié à {name}",
+        "dispatchedAt": "Expédié {time}",
+        "codAmount": "Contre remboursement : {amount}",
+        "via": "via {method}"
+      },
+      "status": {
+        "pending": "En attente de récupération",
+        "picked_up": "Récupéré",
+        "in_transit": "En transit",
+        "delivered": "Livré",
+        "failed": "Échoué",
+        "returned": "Retourné"
+      },
+      "whatsapp": {
+        "newDeliveryRequest": "Nouvelle demande de livraison",
+        "orderNumber": "Commande",
+        "customer": "Client",
+        "phone": "Téléphone",
+        "deliveryAddress": "Adresse de livraison",
+        "googleMaps": "Google Maps",
+        "items": "Articles",
+        "codToCollect": "Montant à encaisser"
+      }
     }
   },
   "chat": {

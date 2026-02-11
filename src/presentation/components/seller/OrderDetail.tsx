@@ -17,7 +17,13 @@ import {
   Clock,
 } from 'lucide-react';
 import { DirectionalIcon } from '@/presentation/components/ui/DirectionalIcon';
+import { DispatchModal, DispatchHistory } from './delivery';
 import type { OrderResponseDTO, UpdateOrderStatusDTO } from '@/application/dtos/OrderDTO';
+import type {
+  DeliveryPersonDTO,
+  CreateManualDispatchDTO,
+  OrderDispatchDTO,
+} from '@/application/dtos/DeliveryDTO';
 
 interface OrderDetailProps {
   order: OrderResponseDTO;
@@ -27,6 +33,15 @@ interface OrderDetailProps {
     action: UpdateOrderStatusDTO['action']
   ) => Promise<{ success: boolean; error?: string; order?: OrderResponseDTO }>;
   sendMessageAction: (content: string) => Promise<{ success: boolean; error?: string }>;
+  // Delivery dispatch props
+  deliveryPersons?: DeliveryPersonDTO[];
+  dispatches?: OrderDispatchDTO[];
+  onAddDeliveryPerson?: () => void;
+  onDispatch?: (data: CreateManualDispatchDTO) => Promise<{
+    success: boolean;
+    error?: string;
+    whatsappUrl?: string;
+  }>;
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -55,6 +70,10 @@ export function OrderDetail({
   locale,
   updateStatusAction,
   sendMessageAction,
+  deliveryPersons = [],
+  dispatches = [],
+  onAddDeliveryPerson,
+  onDispatch,
 }: OrderDetailProps) {
   const router = useRouter();
   const t = useTranslations();
@@ -64,6 +83,7 @@ export function OrderDetail({
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState('');
+  const [isDispatchModalOpen, setIsDispatchModalOpen] = useState(false);
 
   const handleStatusUpdate = async (action: UpdateOrderStatusDTO['action']) => {
     setError(null);
@@ -134,6 +154,17 @@ export function OrderDetail({
   const canShip = order.isConfirmed;
   const canDeliver = order.isShipped;
   const canCancel = order.isPending || order.isConfirmed;
+
+  // Dispatch availability
+  const canDispatch = (order.isConfirmed || order.isShipped) && !order.isCancelled;
+  const hasActiveDispatch = dispatches.some(
+    (d) => d.status !== 'delivered' && d.status !== 'failed' && d.status !== 'returned'
+  );
+
+  const handleDispatch = async (data: CreateManualDispatchDTO) => {
+    if (!onDispatch) return { success: false, error: 'Dispatch not available' };
+    return onDispatch(data);
+  };
 
   return (
     <div className="h-full overflow-y-auto no-scrollbar bg-zinc-950 text-white pb-24">
@@ -324,6 +355,33 @@ export function OrderDetail({
           </div>
         </section>
 
+        {/* Dispatch Button */}
+        {canDispatch && onDispatch && (
+          <section>
+            <button
+              onClick={() => setIsDispatchModalOpen(true)}
+              disabled={hasActiveDispatch}
+              className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-colors ${
+                hasActiveDispatch
+                  ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
+                  : 'bg-green-600 hover:bg-green-700 text-white'
+              }`}
+            >
+              <Truck size={18} />
+              {hasActiveDispatch
+                ? t('seller.delivery.dispatch.alreadyDispatched')
+                : t('seller.delivery.dispatch.title')}
+            </button>
+          </section>
+        )}
+
+        {/* Dispatch History */}
+        {dispatches.length > 0 && (
+          <section className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+            <DispatchHistory dispatches={dispatches} locale={locale} />
+          </section>
+        )}
+
         {/* Action Buttons */}
         {!order.isDelivered && !order.isCancelled && (
           <section className="space-y-3">
@@ -452,6 +510,18 @@ export function OrderDetail({
           </form>
         </section>
       </div>
+
+      {/* Dispatch Modal */}
+      {onDispatch && onAddDeliveryPerson && (
+        <DispatchModal
+          order={order}
+          isOpen={isDispatchModalOpen}
+          onClose={() => setIsDispatchModalOpen(false)}
+          deliveryPersons={deliveryPersons}
+          onAddDeliveryPerson={onAddDeliveryPerson}
+          onDispatch={handleDispatch}
+        />
+      )}
     </div>
   );
 }
