@@ -284,7 +284,7 @@ function detectLocale(request: NextRequest): string {
 
 export const config = {
   matcher: [
-    // Match all pathnames except for static files
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    // Match all pathnames except for static files and Next.js generated icons
+    '/((?!_next/static|_next/image|favicon.ico|icon|apple-icon).*)',
   ],
 };

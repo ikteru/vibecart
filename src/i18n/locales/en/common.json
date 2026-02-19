@@ -89,9 +89,23 @@
       "cta": "Start Selling"
     },
     "features": {
+      "title": "Everything You Need to Sell",
+      "subtitle": "Powerful tools designed for modern commerce",
       "video": "Video-first shopping",
       "whatsapp": "WhatsApp checkout",
       "instagram": "Instagram integration"
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Start selling in three simple steps"
+    },
+    "testimonials": {
+      "title": "Loved by Sellers",
+      "subtitle": "See what our community is saying"
+    },
+    "cta": {
+      "title": "Ready to Start Selling?",
+      "subtitle": "Join thousands of sellers already growing their business with VibeCart."
     },
     "roles": {
       "seller": "I'm a Seller",

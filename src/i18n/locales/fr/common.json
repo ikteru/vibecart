@@ -89,9 +89,23 @@
       "cta": "Commencer à vendre"
     },
     "features": {
+      "title": "Tout ce qu'il vous faut pour vendre",
+      "subtitle": "Des outils puissants conçus pour le commerce moderne",
       "video": "Shopping en vidéo",
       "whatsapp": "Paiement WhatsApp",
       "instagram": "Intégration Instagram"
+    },
+    "howItWorks": {
+      "title": "Comment ça marche",
+      "subtitle": "Commencez à vendre en trois étapes simples"
+    },
+    "testimonials": {
+      "title": "Adoré par les vendeurs",
+      "subtitle": "Découvrez ce que dit notre communauté"
+    },
+    "cta": {
+      "title": "Prêt à commencer à vendre ?",
+      "subtitle": "Rejoignez des milliers de vendeurs qui développent leur activité avec VibeCart."
     },
     "roles": {
       "seller": "Je suis vendeur",
