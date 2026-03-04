@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { ProductVideo } from '../video/ProductVideo';
 import type { Product } from '@/domain/entities/Product';
 import {
   ArrowLeft,
@@ -436,8 +437,9 @@ export function SellerProfile({
                   <div
                     className={`relative w-full ${getAspectRatio(index, 'product')} rounded-xl overflow-hidden bg-zinc-800 mb-2 transform transition-transform duration-300 active:scale-95 shadow-lg`}
                   >
-                    <video
-                      src={product.videoUrl || undefined}
+                    <ProductVideo
+                      productId={product.id}
+                      src={product.videoUrl}
                       className="absolute inset-0 w-full h-full object-cover opacity-90"
                       muted
                       loop

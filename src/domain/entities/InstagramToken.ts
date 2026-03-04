@@ -3,7 +3,15 @@
  *
  * Represents an encrypted Instagram OAuth token for a seller.
  * Tokens are stored separately from seller config for security isolation.
+ * Tracks token health status for proactive maintenance.
  */
+
+export type InstagramTokenStatus =
+  | 'active'
+  | 'expiring'
+  | 'expired'
+  | 'revoked'
+  | 'refresh_failed';
 
 export interface InstagramTokenProps {
   id: string;
@@ -14,6 +22,10 @@ export interface InstagramTokenProps {
   tokenType: string;
   expiresAt: Date;
   scopes: string[];
+  status: InstagramTokenStatus;
+  lastValidatedAt: Date | null;
+  refreshFailureCount: number;
+  lastError: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -37,6 +49,10 @@ export class InstagramToken {
   private _tokenType: string;
   private _expiresAt: Date;
   private _scopes: string[];
+  private _status: InstagramTokenStatus;
+  private _lastValidatedAt: Date | null;
+  private _refreshFailureCount: number;
+  private _lastError: string | null;
   public readonly createdAt: Date;
   private _updatedAt: Date;
 
@@ -49,6 +65,10 @@ export class InstagramToken {
     this._tokenType = props.tokenType;
     this._expiresAt = props.expiresAt;
     this._scopes = [...props.scopes];
+    this._status = props.status;
+    this._lastValidatedAt = props.lastValidatedAt;
+    this._refreshFailureCount = props.refreshFailureCount;
+    this._lastError = props.lastError;
     this.createdAt = props.createdAt;
     this._updatedAt = props.updatedAt;
   }
@@ -80,6 +100,10 @@ export class InstagramToken {
       tokenType: input.tokenType || 'bearer',
       expiresAt: input.expiresAt,
       scopes: input.scopes || [],
+      status: 'active',
+      lastValidatedAt: now,
+      refreshFailureCount: 0,
+      lastError: null,
       createdAt: now,
       updatedAt: now,
     });
@@ -113,6 +137,22 @@ export class InstagramToken {
     return [...this._scopes];
   }
 
+  get status(): InstagramTokenStatus {
+    return this._status;
+  }
+
+  get lastValidatedAt(): Date | null {
+    return this._lastValidatedAt;
+  }
+
+  get refreshFailureCount(): number {
+    return this._refreshFailureCount;
+  }
+
+  get lastError(): string | null {
+    return this._lastError;
+  }
+
   get updatedAt(): Date {
     return this._updatedAt;
   }
@@ -134,7 +174,17 @@ export class InstagramToken {
   }
 
   /**
-   * Update token after refresh
+   * Whether this token can be used for API calls
+   */
+  isUsable(): boolean {
+    return (
+      (this._status === 'active' || this._status === 'expiring') &&
+      !this.isExpired()
+    );
+  }
+
+  /**
+   * Update token after successful refresh
    */
   updateToken(
     newEncryptedToken: string,
@@ -146,7 +196,55 @@ export class InstagramToken {
     if (newScopes) {
       this._scopes = [...newScopes];
     }
+    this._status = 'active';
+    this._refreshFailureCount = 0;
+    this._lastError = null;
+    this._lastValidatedAt = new Date();
     this._updatedAt = new Date();
+  }
+
+  /**
+   * Mark token as successfully validated
+   */
+  markAsActive(): void {
+    this._status = 'active';
+    this._lastValidatedAt = new Date();
+    this._lastError = null;
+    this._refreshFailureCount = 0;
+    this._updatedAt = new Date();
+  }
+
+  /**
+   * Mark token as revoked (needs reconnection)
+   */
+  markAsRevoked(reason: string): void {
+    this._status = 'revoked';
+    this._lastError = reason;
+    this._updatedAt = new Date();
+  }
+
+  /**
+   * Mark token as expired
+   */
+  markAsExpired(): void {
+    this._status = 'expired';
+    this._updatedAt = new Date();
+  }
+
+  /**
+   * Record a refresh failure
+   */
+  markRefreshFailed(error: string): void {
+    this._refreshFailureCount += 1;
+    this._lastError = error;
+    this._updatedAt = new Date();
+
+    // After 3 failures, mark as revoked
+    if (this._refreshFailureCount >= 3) {
+      this._status = 'revoked';
+    } else {
+      this._status = 'refresh_failed';
+    }
   }
 
   /**
@@ -162,6 +260,10 @@ export class InstagramToken {
       tokenType: this._tokenType,
       expiresAt: this._expiresAt,
       scopes: [...this._scopes],
+      status: this._status,
+      lastValidatedAt: this._lastValidatedAt,
+      refreshFailureCount: this._refreshFailureCount,
+      lastError: this._lastError,
       createdAt: this.createdAt,
       updatedAt: this._updatedAt,
     };

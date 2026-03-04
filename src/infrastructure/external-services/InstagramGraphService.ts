@@ -7,6 +7,8 @@
  * - Media fetching
  */
 
+import { InstagramApiError } from '@/domain/value-objects/InstagramApiError';
+
 const INSTAGRAM_API_BASE = 'https://api.instagram.com';
 const GRAPH_API_BASE = 'https://graph.instagram.com';
 
@@ -55,6 +57,17 @@ export interface MediaListResponse {
     };
     next?: string;
   };
+}
+
+/**
+ * Parse an Instagram API error response and throw a typed InstagramApiError
+ */
+async function throwApiError(
+  response: Response,
+  context: string
+): Promise<never> {
+  const body = await response.json().catch(() => ({}));
+  throw InstagramApiError.fromResponse(body, response.status);
 }
 
 export class InstagramGraphService {
@@ -121,10 +134,7 @@ export class InstagramGraphService {
     });
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(
-        `Failed to exchange code: ${error.error_message || response.statusText}`
-      );
+      await throwApiError(response, 'exchange code for token');
     }
 
     return response.json();
@@ -148,10 +158,7 @@ export class InstagramGraphService {
     );
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(
-        `Failed to get long-lived token: ${error.error?.message || response.statusText}`
-      );
+      await throwApiError(response, 'get long-lived token');
     }
 
     return response.json();
@@ -174,10 +181,7 @@ export class InstagramGraphService {
     );
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(
-        `Failed to refresh token: ${error.error?.message || response.statusText}`
-      );
+      await throwApiError(response, 'refresh token');
     }
 
     return response.json();
@@ -198,10 +202,7 @@ export class InstagramGraphService {
     const response = await fetch(`${GRAPH_API_BASE}/me?${params.toString()}`);
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(
-        `Failed to get user profile: ${error.error?.message || response.statusText}`
-      );
+      await throwApiError(response, 'get user profile');
     }
 
     return response.json();
@@ -236,10 +237,7 @@ export class InstagramGraphService {
     );
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(
-        `Failed to get user media: ${error.error?.message || response.statusText}`
-      );
+      await throwApiError(response, 'get user media');
     }
 
     return response.json();
@@ -263,10 +261,7 @@ export class InstagramGraphService {
     );
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(
-        `Failed to get media: ${error.error?.message || response.statusText}`
-      );
+      await throwApiError(response, 'get media');
     }
 
     return response.json();

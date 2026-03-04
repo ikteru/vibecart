@@ -7,6 +7,7 @@
 
 import { InstagramGraphService } from '@/infrastructure/external-services/InstagramGraphService';
 import { InstagramToken } from '@/domain/entities/InstagramToken';
+import { InstagramApiError } from '@/domain/value-objects/InstagramApiError';
 import { encryptToken } from '@/infrastructure/utils/encryption';
 import type { InstagramTokenRepository } from '@/domain/repositories/InstagramTokenRepository';
 import type { SellerRepository } from '@/domain/repositories/SellerRepository';
@@ -128,6 +129,16 @@ export class CompleteInstagramAuth {
       };
     } catch (error) {
       console.error('Instagram auth error:', error);
+
+      if (error instanceof InstagramApiError) {
+        return {
+          success: false,
+          error: error.isRateLimited
+            ? 'Rate limited by Instagram. Please try again later.'
+            : error.message,
+        };
+      }
+
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to connect Instagram',

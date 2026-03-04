@@ -279,7 +279,15 @@
       "noRecentOrders": "لا يوجد نشاط حديث",
       "quickActions": "إجراءات سريعة",
       "newDrop": "إصدار جديد",
-      "recentActivity": "النشاط الأخير"
+      "recentActivity": "النشاط الأخير",
+      "instagramHealth": {
+        "expired": "انتهت صلاحية اتصال إنستغرام",
+        "revoked": "تم إلغاء الوصول إلى إنستغرام",
+        "expiringSoon": "اتصال إنستغرام ينتهي خلال {days} أيام",
+        "refreshFailed": "تم اكتشاف مشكلة في اتصال إنستغرام",
+        "reconnect": "إعادة ربط إنستغرام",
+        "dismiss": "تجاهل"
+      }
     },
     "orders": {
       "title": "الطلبات",
@@ -457,7 +465,20 @@
         "connectedAs": "متصل بـ @{username}",
         "connectedSuccess": "تم الاتصال بإنستغرام بنجاح",
         "disconnectedSuccess": "تم فصل إنستغرام",
-        "disconnectFailed": "فشل في فصل إنستغرام"
+        "disconnectFailed": "فشل في فصل إنستغرام",
+        "expiresIn": "ينتهي خلال {days} أيام",
+        "expired": "الاتصال منتهي",
+        "refreshRecommended": "يُنصح بالتجديد",
+        "revoked": "تم إلغاء الوصول",
+        "reconnectInstructions": "يجب تجديد الوصول إلى إنستغرام",
+        "reconnectGuide": {
+          "title": "إعادة ربط إنستغرام",
+          "step1": "اضغط على \"الاتصال بإنستغرام\" أدناه",
+          "step2": "سجل الدخول إلى حساب إنستغرام",
+          "step3": "اسمح لـ VibeCart بالوصول إلى محتواك",
+          "whyNeeded": "لماذا هذا مطلوب؟",
+          "explanation": "تنتهي صلاحية رموز إنستغرام بشكل دوري للأمان. إعادة الربط تجدد وصولك حتى نتمكن من عرض فيديوهاتك."
+        }
       },
       "shipping": {
         "title": "قواعد الشحن",
@@ -600,7 +621,13 @@
     "gotIt": "فهمت",
     "confirmDelete": "تأكيد الحذف",
     "deleteMessage": "هل أنت متأكد من حذف هذا العنصر؟ لا يمكن التراجع عن هذا الإجراء.",
-    "deleting": "جارٍ الحذف..."
+    "deleting": "جارٍ الحذف...",
+    "video": {
+      "unavailable": "الفيديو غير متاح",
+      "refreshing": "جارٍ تحديث الفيديو...",
+      "retry": "اضغط لإعادة المحاولة",
+      "loadError": "تعذر تحميل الفيديو"
+    }
   },
   "order": {
     "status": {
@@ -625,7 +652,14 @@
     "updateStockFailed": "فشل في تحديث المخزون",
     "sessionExpired": "انتهت الجلسة. يرجى تحديث الصفحة والمحاولة مرة أخرى.",
     "updateProductFailed": "فشل في تحديث المنتج",
-    "deleteProductFailed": "فشل في حذف المنتج"
+    "deleteProductFailed": "فشل في حذف المنتج",
+    "instagram": {
+      "tokenExpired": "انتهت صلاحية رمز إنستغرام. يرجى إعادة الاتصال.",
+      "tokenRevoked": "تم إلغاء الوصول إلى إنستغرام. يرجى إعادة الاتصال.",
+      "rateLimited": "تم تجاوز حد طلبات إنستغرام. حاول لاحقاً.",
+      "mediaNotFound": "محتوى إنستغرام غير موجود أو محذوف.",
+      "temporaryError": "إنستغرام غير متاح مؤقتاً. حاول مرة أخرى."
+    }
   },
   "shipping": {
     "pageTitle": "إعدادات الشحن",

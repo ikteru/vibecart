@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { ArrowLeft, Loader2, Save, Trash2, Sparkles } from 'lucide-react';
 import { DirectionalIcon } from '@/presentation/components/ui/DirectionalIcon';
+import { ProductVideo } from '@/presentation/components/video/ProductVideo';
 import type { ProductResponseDTO, UpdateProductDTO } from '@/application/dtos/ProductDTO';
 import type { ProductCategoryType } from '@/lib/constants';
 
@@ -141,7 +142,7 @@ export function ProductEditForm({ product, locale, updateAction, deleteAction }:
           <div className="flex gap-4 items-start">
             <div className="w-20 h-28 bg-zinc-900 rounded-lg overflow-hidden border border-zinc-800 shrink-0">
               {product.videoUrl ? (
-                <video src={product.videoUrl} className="w-full h-full object-cover" muted />
+                <ProductVideo productId={product.id} src={product.videoUrl} className="w-full h-full object-cover" muted />
               ) : (
                 <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-zinc-600 text-xs">
                   {t('seller.inventory.noVideo')}

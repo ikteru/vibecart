@@ -279,7 +279,15 @@
       "noRecentOrders": "Pas d'activité récente",
       "quickActions": "Actions rapides",
       "newDrop": "Nouveau drop",
-      "recentActivity": "Activité récente"
+      "recentActivity": "Activité récente",
+      "instagramHealth": {
+        "expired": "Votre connexion Instagram a expiré",
+        "revoked": "Votre accès Instagram a été révoqué",
+        "expiringSoon": "Votre connexion Instagram expire dans {days} jours",
+        "refreshFailed": "Problème de connexion Instagram détecté",
+        "reconnect": "Reconnecter Instagram",
+        "dismiss": "Ignorer"
+      }
     },
     "orders": {
       "title": "Commandes",
@@ -457,7 +465,20 @@
         "connectedAs": "Connecté en tant que @{username}",
         "connectedSuccess": "Instagram connecté avec succès",
         "disconnectedSuccess": "Instagram déconnecté",
-        "disconnectFailed": "Échec de la déconnexion d'Instagram"
+        "disconnectFailed": "Échec de la déconnexion d'Instagram",
+        "expiresIn": "Expire dans {days} jours",
+        "expired": "Connexion expirée",
+        "refreshRecommended": "Actualisation recommandée",
+        "revoked": "Accès révoqué",
+        "reconnectInstructions": "Votre accès Instagram doit être renouvelé",
+        "reconnectGuide": {
+          "title": "Reconnecter Instagram",
+          "step1": "Cliquez sur \"Connecter avec Instagram\" ci-dessous",
+          "step2": "Connectez-vous à votre compte Instagram",
+          "step3": "Autorisez VibeCart à accéder à votre contenu",
+          "whyNeeded": "Pourquoi est-ce nécessaire ?",
+          "explanation": "Les jetons Instagram expirent périodiquement pour la sécurité. La reconnexion renouvelle votre accès pour continuer à afficher vos vidéos."
+        }
       },
       "shipping": {
         "title": "Règles de livraison",
@@ -600,7 +621,13 @@
     "gotIt": "Compris",
     "confirmDelete": "Confirmer la suppression",
     "deleteMessage": "Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.",
-    "deleting": "Suppression..."
+    "deleting": "Suppression...",
+    "video": {
+      "unavailable": "Vidéo non disponible",
+      "refreshing": "Actualisation de la vidéo...",
+      "retry": "Appuyez pour réessayer",
+      "loadError": "Impossible de charger la vidéo"
+    }
   },
   "order": {
     "status": {
@@ -625,7 +652,14 @@
     "updateStockFailed": "Échec de la mise à jour du stock",
     "sessionExpired": "Session expirée. Veuillez rafraîchir la page et réessayer.",
     "updateProductFailed": "Échec de la mise à jour du produit",
-    "deleteProductFailed": "Échec de la suppression du produit"
+    "deleteProductFailed": "Échec de la suppression du produit",
+    "instagram": {
+      "tokenExpired": "Le jeton Instagram a expiré. Veuillez reconnecter.",
+      "tokenRevoked": "L'accès Instagram a été révoqué. Veuillez reconnecter.",
+      "rateLimited": "Limite de requêtes Instagram atteinte. Réessayez plus tard.",
+      "mediaNotFound": "Contenu Instagram introuvable ou supprimé.",
+      "temporaryError": "Instagram est temporairement indisponible. Réessayez."
+    }
   },
   "shipping": {
     "pageTitle": "Paramètres de livraison",

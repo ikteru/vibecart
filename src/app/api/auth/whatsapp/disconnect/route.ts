@@ -33,9 +33,9 @@ export async function POST() {
       );
     }
 
-    // 3. Use admin client for write operations
+    // 3. Use admin client for write operations (auth'd client for reads, admin for writes)
     const adminClient = createAdminClient();
-    const { whatsAppTokenRepository, sellerRepository } = createRepositories(adminClient);
+    const { whatsAppTokenRepository, sellerRepository } = createRepositories(supabase, adminClient);
 
     // 4. Execute disconnect
     const useCase = new DisconnectWhatsApp(whatsAppTokenRepository, sellerRepository);

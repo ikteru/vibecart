@@ -6,6 +6,7 @@
  */
 
 import { InstagramGraphService } from '@/infrastructure/external-services/InstagramGraphService';
+import { InstagramApiError } from '@/domain/value-objects/InstagramApiError';
 import { decryptToken, encryptToken } from '@/infrastructure/utils/encryption';
 import type { InstagramTokenRepository } from '@/domain/repositories/InstagramTokenRepository';
 import type { InstagramMediaListDTO, InstagramMediaDTO } from '@/application/dtos/InstagramDTO';
@@ -20,6 +21,7 @@ interface FetchInstagramMediaOutput {
   success: boolean;
   data?: InstagramMediaListDTO;
   error?: string;
+  errorType?: string;
   needsReconnect?: boolean;
 }
 
@@ -45,11 +47,14 @@ export class FetchInstagramMedia {
         };
       }
 
-      // 2. Check if token is expired
-      if (token.isExpired()) {
+      // 2. Check if token is usable (active/expiring and not expired)
+      if (!token.isUsable()) {
         return {
           success: false,
-          error: 'Instagram token expired. Please reconnect.',
+          error: token.status === 'revoked'
+            ? 'Instagram access was revoked. Please reconnect.'
+            : 'Instagram token expired. Please reconnect.',
+          errorType: token.status,
           needsReconnect: true,
         };
       }
@@ -62,19 +67,27 @@ export class FetchInstagramMedia {
           const refreshed = await this.instagramService.refreshToken(accessToken);
           accessToken = refreshed.access_token;
 
-          // Update stored token
           const newExpiresAt = new Date();
           newExpiresAt.setSeconds(newExpiresAt.getSeconds() + refreshed.expires_in);
 
-          token.updateToken(
-            encryptToken(accessToken),
-            newExpiresAt
-          );
-
+          token.updateToken(encryptToken(accessToken), newExpiresAt);
           await this.instagramTokenRepository.save(token);
         } catch (refreshError) {
+          // If refresh fails with auth error, mark token accordingly
+          if (refreshError instanceof InstagramApiError && refreshError.requiresReconnect) {
+            token.markAsRevoked(refreshError.message);
+            await this.instagramTokenRepository.save(token);
+            return {
+              success: false,
+              error: 'Instagram access was revoked. Please reconnect.',
+              errorType: refreshError.errorType,
+              needsReconnect: true,
+            };
+          }
+          // Record refresh failure but continue with existing token
+          token.markRefreshFailed(refreshError instanceof Error ? refreshError.message : 'Unknown refresh error');
+          await this.instagramTokenRepository.save(token);
           console.warn('Token refresh failed, using existing token:', refreshError);
-          // Continue with existing token
         }
       }
 
@@ -84,7 +97,13 @@ export class FetchInstagramMedia {
         after: input.after,
       });
 
-      // 5. Transform to DTOs
+      // 5. Mark token as validated on success
+      if (token.status !== 'active') {
+        token.markAsActive();
+        await this.instagramTokenRepository.save(token);
+      }
+
+      // 6. Transform to DTOs
       const media: InstagramMediaDTO[] = mediaResponse.data.map((item) => ({
         id: item.id,
         mediaType: item.media_type,
@@ -106,17 +125,48 @@ export class FetchInstagramMedia {
     } catch (error) {
       console.error('Fetch Instagram media error:', error);
 
-      // Check if it's an auth error
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      const isAuthError =
-        errorMessage.includes('Invalid OAuth') ||
-        errorMessage.includes('expired') ||
-        errorMessage.includes('token');
+      // Handle typed Instagram API errors
+      if (error instanceof InstagramApiError) {
+        if (error.requiresReconnect) {
+          // Mark token as revoked so we don't keep trying
+          try {
+            const token = await this.instagramTokenRepository.findBySellerId(input.sellerId);
+            if (token) {
+              token.markAsRevoked(error.message);
+              await this.instagramTokenRepository.save(token);
+            }
+          } catch (saveError) {
+            console.error('Failed to mark token as revoked:', saveError);
+          }
+
+          return {
+            success: false,
+            error: 'Instagram authorization invalid. Please reconnect.',
+            errorType: error.errorType,
+            needsReconnect: true,
+          };
+        }
+
+        if (error.isRateLimited) {
+          return {
+            success: false,
+            error: 'Instagram rate limit reached. Please try again later.',
+            errorType: error.errorType,
+          };
+        }
+
+        if (error.isTransient) {
+          return {
+            success: false,
+            error: 'Instagram is temporarily unavailable. Please try again.',
+            errorType: error.errorType,
+          };
+        }
+      }
 
       return {
         success: false,
-        error: isAuthError ? 'Instagram authorization invalid. Please reconnect.' : errorMessage,
-        needsReconnect: isAuthError,
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }

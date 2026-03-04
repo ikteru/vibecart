@@ -32,9 +32,9 @@ export async function POST() {
       );
     }
 
-    // 3. Use admin client for write operations
+    // 3. Use admin client for write operations (auth'd client for reads, admin for writes)
     const adminClient = createAdminClient();
-    const { instagramTokenRepository, sellerRepository } = createRepositories(adminClient);
+    const { instagramTokenRepository, sellerRepository } = createRepositories(supabase, adminClient);
 
     // 4. Disconnect Instagram
     const useCase = new DisconnectInstagram(instagramTokenRepository, sellerRepository);

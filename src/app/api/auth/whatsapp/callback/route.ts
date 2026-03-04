@@ -64,9 +64,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(errorUrl);
     }
 
-    // 4. Use admin client for write operations
+    // 4. Use admin client for write operations (auth'd client for reads, admin for writes)
     const adminClient = createAdminClient();
-    const { whatsAppTokenRepository, sellerRepository } = createRepositories(adminClient);
+    const { whatsAppTokenRepository, sellerRepository } = createRepositories(supabase, adminClient);
 
     // 5. Complete the OAuth flow
     const useCase = new CompleteWhatsAppAuth(whatsAppTokenRepository, sellerRepository);

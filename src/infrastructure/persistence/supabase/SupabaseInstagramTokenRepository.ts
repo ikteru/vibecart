@@ -6,7 +6,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { InstagramTokenRepository } from '@/domain/repositories/InstagramTokenRepository';
-import { InstagramToken } from '@/domain/entities/InstagramToken';
+import { InstagramToken, type InstagramTokenStatus } from '@/domain/entities/InstagramToken';
 import type { InstagramTokenRow } from './types';
 
 export class SupabaseInstagramTokenRepository implements InstagramTokenRepository {
@@ -69,12 +69,27 @@ export class SupabaseInstagramTokenRepository implements InstagramTokenRepositor
     const { data, error } = await this.supabase
       .from(this.tableName)
       .select('*')
+      .in('status', ['active', 'expiring'])
       .lte('expires_at', threshold.toISOString())
       .gt('expires_at', new Date().toISOString())
       .order('expires_at', { ascending: true });
 
     if (error) {
       throw new Error(`Failed to find expiring tokens: ${error.message}`);
+    }
+
+    return (data as InstagramTokenRow[]).map((row) => this.toDomain(row));
+  }
+
+  async findByStatus(status: InstagramTokenStatus): Promise<InstagramToken[]> {
+    const { data, error } = await this.supabase
+      .from(this.tableName)
+      .select('*')
+      .eq('status', status)
+      .order('updated_at', { ascending: false });
+
+    if (error) {
+      throw new Error(`Failed to find tokens by status: ${error.message}`);
     }
 
     return (data as InstagramTokenRow[]).map((row) => this.toDomain(row));
@@ -90,6 +105,10 @@ export class SupabaseInstagramTokenRepository implements InstagramTokenRepositor
       tokenType: row.token_type,
       expiresAt: new Date(row.expires_at),
       scopes: row.scopes || [],
+      status: (row.status as InstagramTokenStatus) || 'active',
+      lastValidatedAt: row.last_validated_at ? new Date(row.last_validated_at) : null,
+      refreshFailureCount: row.refresh_failure_count ?? 0,
+      lastError: row.last_error ?? null,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
     });
@@ -106,6 +125,10 @@ export class SupabaseInstagramTokenRepository implements InstagramTokenRepositor
       token_type: props.tokenType,
       expires_at: props.expiresAt.toISOString(),
       scopes: props.scopes,
+      status: props.status,
+      last_validated_at: props.lastValidatedAt?.toISOString() ?? null,
+      refresh_failure_count: props.refreshFailureCount,
+      last_error: props.lastError,
       created_at: props.createdAt.toISOString(),
       updated_at: props.updatedAt.toISOString(),
     };

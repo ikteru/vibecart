@@ -133,10 +133,8 @@ export async function middleware(request: NextRequest) {
         );
       }
 
-      // Store result to add headers to successful response
-      const response = await handleNonAPIRoutes(request, pathname);
-      
-      // Add rate limit headers
+      // Pass through with rate limit headers
+      const response = NextResponse.next();
       const headers = createRateLimitHeaders(result);
       Object.entries(headers).forEach(([key, value]) => {
         response.headers.set(key, value);
@@ -145,8 +143,8 @@ export async function middleware(request: NextRequest) {
       return response;
     }
 
-    // No rate limiting for this endpoint (e.g., health checks)
-    return handleNonAPIRoutes(request, pathname);
+    // No rate limiting for this endpoint (e.g., health checks) — pass through
+    return NextResponse.next();
   }
 
   // Skip middleware for static files

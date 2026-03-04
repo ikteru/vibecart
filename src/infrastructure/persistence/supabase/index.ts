@@ -51,7 +51,7 @@ export type {
 export function createRepositories(supabase: SupabaseClient, adminClient?: SupabaseClient) {
   return {
     productRepository: new SupabaseProductRepository(supabase),
-    sellerRepository: new SupabaseSellerRepository(supabase),
+    sellerRepository: new SupabaseSellerRepository(supabase, adminClient),
     orderRepository: new SupabaseOrderRepository(supabase),
     activityLogRepository: new SupabaseActivityLogRepository(supabase),
     instagramTokenRepository: new SupabaseInstagramTokenRepository(supabase),

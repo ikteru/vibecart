@@ -279,7 +279,15 @@
       "noRecentOrders": "ما كاين حتى نشاط جديد",
       "quickActions": "الإجراءات السريعة",
       "newDrop": "دروب جديد",
-      "recentActivity": "النشاط الأخير"
+      "recentActivity": "النشاط الأخير",
+      "instagramHealth": {
+        "expired": "الاتصال ديال إنستا سالا مدتو",
+        "revoked": "الوصول ديال إنستا تحذف",
+        "expiringSoon": "الاتصال ديال إنستا غادي يسالي ف {days} يام",
+        "refreshFailed": "كاين مشكل فالاتصال ديال إنستا",
+        "reconnect": "عاود ربط إنستا",
+        "dismiss": "تجاهل"
+      }
     },
     "orders": {
       "title": "الطلبات",
@@ -457,7 +465,20 @@
         "connectedAs": "مربوط بـ @{username}",
         "connectedSuccess": "تربط إنستا بنجاح",
         "disconnectedSuccess": "تفصل إنستا",
-        "disconnectFailed": "ما قدرناش نفصلو إنستا"
+        "disconnectFailed": "ما قدرناش نفصلو إنستا",
+        "expiresIn": "كيسالي ف {days} يام",
+        "expired": "الاتصال سالا",
+        "refreshRecommended": "خاصك تجدد",
+        "revoked": "الوصول تحذف",
+        "reconnectInstructions": "الوصول ديال إنستا خاصو يتجدد",
+        "reconnectGuide": {
+          "title": "عاود ربط إنستا",
+          "step1": "كليكي على \"ربط مع إنستا\" لتحت",
+          "step2": "دخل لحساب إنستا ديالك",
+          "step3": "عطي الإذن لـ VibeCart باش يوصل للمحتوى ديالك",
+          "whyNeeded": "علاش خاص هادشي؟",
+          "explanation": "التوكن ديال إنستا كيسالي بشكل دوري للأمان. عاود الربط باش نقدرو نبقاو نوريو الفيديوات ديالك."
+        }
       },
       "shipping": {
         "title": "قواعد التوصيل",
@@ -600,7 +621,13 @@
     "gotIt": "واخا",
     "confirmDelete": "تأكيد الحذف",
     "deleteMessage": "واش متأكد بغيتي تحذف هاد العنصر؟ ما يمكنش ترجع من هاد القرار.",
-    "deleting": "كيتحذف..."
+    "deleting": "كيتحذف...",
+    "video": {
+      "unavailable": "الفيديو ما كاينش",
+      "refreshing": "كيتجدد الفيديو...",
+      "retry": "كليكي باش تعاود",
+      "loadError": "ما قدرناش نحملو الفيديو"
+    }
   },
   "order": {
     "status": {
@@ -625,7 +652,14 @@
     "updateStockFailed": "ما قدرناش نحدثو المخزون",
     "sessionExpired": "الجلسة سالات. رافريشي الصفحة وعاود.",
     "updateProductFailed": "ما قدرناش نحدثو المنتوج",
-    "deleteProductFailed": "ما قدرناش نحذفو المنتوج"
+    "deleteProductFailed": "ما قدرناش نحذفو المنتوج",
+    "instagram": {
+      "tokenExpired": "توكن إنستا سالا. عاود الربط.",
+      "tokenRevoked": "الوصول ديال إنستا تحذف. عاود الربط.",
+      "rateLimited": "وصلنا للحد ديال إنستا. عاود من بعد.",
+      "mediaNotFound": "المحتوى ديال إنستا ما لقيناش ولا تحذف.",
+      "temporaryError": "إنستا ما خدامش دابا. عاود من بعد."
+    }
   },
   "shipping": {
     "pageTitle": "إعدادات الشحن",

@@ -279,7 +279,15 @@
       "noRecentOrders": "No recent orders yet",
       "quickActions": "Quick Actions",
       "newDrop": "New Drop",
-      "recentActivity": "Recent Activity"
+      "recentActivity": "Recent Activity",
+      "instagramHealth": {
+        "expired": "Your Instagram connection has expired",
+        "revoked": "Your Instagram access was revoked",
+        "expiringSoon": "Your Instagram connection expires in {days} days",
+        "refreshFailed": "Instagram connection issue detected",
+        "reconnect": "Reconnect Instagram",
+        "dismiss": "Dismiss"
+      }
     },
     "orders": {
       "title": "Orders",
@@ -457,7 +465,20 @@
         "connectedAs": "Connected as @{username}",
         "connectedSuccess": "Instagram connected successfully",
         "disconnectedSuccess": "Instagram disconnected",
-        "disconnectFailed": "Failed to disconnect Instagram"
+        "disconnectFailed": "Failed to disconnect Instagram",
+        "expiresIn": "Expires in {days} days",
+        "expired": "Connection expired",
+        "refreshRecommended": "Refresh recommended",
+        "revoked": "Access revoked",
+        "reconnectInstructions": "Your Instagram access needs to be renewed",
+        "reconnectGuide": {
+          "title": "Reconnect Instagram",
+          "step1": "Click \"Connect with Instagram\" below",
+          "step2": "Log in to your Instagram account",
+          "step3": "Authorize VibeCart to access your content",
+          "whyNeeded": "Why is this needed?",
+          "explanation": "Instagram tokens expire periodically for security. Reconnecting refreshes your access so we can continue showing your videos."
+        }
       },
       "shipping": {
         "title": "Shipping Rules",
@@ -600,7 +621,13 @@
     "gotIt": "Got It",
     "confirmDelete": "Confirm Delete",
     "deleteMessage": "Are you sure you want to delete this item? This action cannot be undone.",
-    "deleting": "Deleting..."
+    "deleting": "Deleting...",
+    "video": {
+      "unavailable": "Video unavailable",
+      "refreshing": "Refreshing video...",
+      "retry": "Tap to retry",
+      "loadError": "Could not load video"
+    }
   },
   "order": {
     "status": {
@@ -625,7 +652,14 @@
     "updateStockFailed": "Failed to update stock",
     "sessionExpired": "Session expired. Please refresh the page and try again.",
     "updateProductFailed": "Failed to update product",
-    "deleteProductFailed": "Failed to delete product"
+    "deleteProductFailed": "Failed to delete product",
+    "instagram": {
+      "tokenExpired": "Instagram token expired. Please reconnect.",
+      "tokenRevoked": "Instagram access was revoked. Please reconnect.",
+      "rateLimited": "Instagram rate limit reached. Try again later.",
+      "mediaNotFound": "Instagram media not found or deleted.",
+      "temporaryError": "Instagram is temporarily unavailable. Try again."
+    }
   },
   "shipping": {
     "pageTitle": "Shipping Settings",

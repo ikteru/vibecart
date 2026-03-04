@@ -28,6 +28,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
+import { InstagramReconnectGuide } from '@/presentation/components/seller/InstagramReconnectGuide';
 import type { SellerResponseDTO, UpdateSellerDTO } from '@/application/dtos/SellerDTO';
 import type { ShippingRule } from '@/domain/entities/Seller';
 
@@ -68,6 +69,11 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
   const [comingSoonFeature, setComingSoonFeature] = useState('');
   const [instagramMessage, setInstagramMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [whatsappMessage, setWhatsappMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [instagramHealth, setInstagramHealth] = useState<{
+    status: string;
+    daysRemaining?: number;
+    needsReconnect?: boolean;
+  } | null>(null);
 
   // Handle Instagram OAuth callback messages
   useEffect(() => {
@@ -151,6 +157,16 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
       rules: seller.shopConfig.shipping?.rules || [],
     },
   });
+
+  // Fetch Instagram health when connected
+  useEffect(() => {
+    if (config.instagram.isConnected) {
+      fetch('/api/instagram/health')
+        .then((res) => res.ok ? res.json() : null)
+        .then((data) => { if (data) setInstagramHealth(data); })
+        .catch(() => {});
+    }
+  }, [config.instagram.isConnected]);
 
   const handleConnectInstagram = () => {
     setIsConnectingInstagram(true);
@@ -537,19 +553,42 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
             </div>
           )}
 
-          {!config.instagram.isConnected ? (
-            <button
-              onClick={handleConnectInstagram}
-              disabled={isConnectingInstagram}
-              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 text-white text-xs font-bold py-3 rounded-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
-            >
-              {isConnectingInstagram ? (
-                <Loader2 size={14} className="animate-spin" />
-              ) : (
-                <Instagram size={14} />
-              )}
-              {t('seller.settings.instagram.connectWithInstagram')}
-            </button>
+          {/* Token health warning */}
+          {instagramHealth && instagramHealth.status !== 'healthy' && instagramHealth.status !== 'disconnected' && (
+            <div className={`flex items-center gap-2 p-2 rounded-lg text-[11px] ${
+              instagramHealth.status === 'expired' || instagramHealth.status === 'revoked'
+                ? 'bg-red-500/10 border border-red-500/20 text-red-400'
+                : 'bg-amber-500/10 border border-amber-500/20 text-amber-400'
+            }`}>
+              <AlertCircle size={12} className="shrink-0" />
+              <span>
+                {instagramHealth.status === 'expired' && t('seller.settings.instagram.expired')}
+                {instagramHealth.status === 'revoked' && t('seller.settings.instagram.revoked')}
+                {instagramHealth.status === 'expiring' && t('seller.settings.instagram.expiresIn', { days: instagramHealth.daysRemaining ?? 0 })}
+                {instagramHealth.status === 'refresh_failed' && t('seller.settings.instagram.refreshRecommended')}
+              </span>
+            </div>
+          )}
+
+          {!config.instagram.isConnected || instagramHealth?.needsReconnect ? (
+            <>
+              <button
+                onClick={handleConnectInstagram}
+                disabled={isConnectingInstagram}
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 text-white text-xs font-bold py-3 rounded-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
+              >
+                {isConnectingInstagram ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : (
+                  <Instagram size={14} />
+                )}
+                {instagramHealth?.needsReconnect
+                  ? t('seller.settings.instagram.reconnect')
+                  : t('seller.settings.instagram.connectWithInstagram')
+                }
+              </button>
+              {instagramHealth?.needsReconnect && <InstagramReconnectGuide />}
+            </>
           ) : (
             <div className="bg-black/40 rounded-lg p-3 flex items-center justify-between border border-white/5">
               <div className="flex items-center gap-2">

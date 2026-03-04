@@ -6,6 +6,7 @@ import { Volume2, VolumeX, ArrowLeft, ShoppingBag, AlertCircle } from 'lucide-re
 import { DirectionalIcon } from '../ui/DirectionalIcon';
 import { SwipeButton } from '../ui/SwipeButton';
 import { CheckoutDrawer } from '../checkout/CheckoutDrawer';
+import { ProductVideo } from './ProductVideo';
 import type { Product } from '@/domain/entities/Product';
 
 // Simplified ShopConfiguration for VideoFeed (can be expanded later)
@@ -143,20 +144,6 @@ function VideoCard({
   onBuy,
 }: VideoCardProps) {
   const t = useTranslations();
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  // Auto-play/pause based on visibility
-  useEffect(() => {
-    if (videoRef.current) {
-      if (isActive) {
-        videoRef.current.play().catch(() => {
-          // Autoplay blocked by browser - expected behavior, no action needed
-        });
-      } else {
-        videoRef.current.pause();
-      }
-    }
-  }, [isActive]);
 
   const price = product.price;
   const discountPrice = product.discountPrice;
@@ -170,9 +157,10 @@ function VideoCard({
     >
       {/* Video Container - corners match button roundness */}
       <div className="relative flex-1 w-full rounded-3xl overflow-hidden shadow-[0_0_40px_-10px_rgba(255,255,255,0.15)] border border-zinc-800/50 bg-zinc-900">
-        <video
-          ref={videoRef}
-          src={product.videoUrl || undefined}
+        <ProductVideo
+          productId={product.id}
+          src={product.videoUrl}
+          isActive={isActive}
           className="absolute inset-0 w-full h-full object-cover"
           loop
           playsInline

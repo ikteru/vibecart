@@ -4,6 +4,7 @@ import React, { useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Plus, Edit2 } from 'lucide-react';
+import { ProductVideo } from '../video/ProductVideo';
 import type { ProductResponseDTO } from '@/application/dtos/ProductDTO';
 
 interface InventoryListProps {
@@ -83,7 +84,8 @@ export function InventoryList({ initialProducts, locale, updateStockAction }: In
             >
               <div className="w-16 h-20 bg-black rounded-lg overflow-hidden shrink-0 relative">
                 {product.videoUrl ? (
-                  <video
+                  <ProductVideo
+                    productId={product.id}
                     src={product.videoUrl}
                     className="w-full h-full object-cover opacity-80"
                     muted

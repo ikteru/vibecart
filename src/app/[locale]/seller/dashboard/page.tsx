@@ -6,6 +6,7 @@ import { createClient } from '@/infrastructure/auth/supabase-server';
 import { createRepositories, SupabaseOrderRepository } from '@/infrastructure/persistence/supabase';
 import { GetOrderStats } from '@/application/use-cases/orders/GetOrderStats';
 import { GetSellerOrders } from '@/application/use-cases/orders/GetSellerOrders';
+import { InstagramHealthBanner } from '@/presentation/components/seller/InstagramHealthBanner';
 
 interface DashboardPageProps {
   params: Promise<{
@@ -48,6 +49,9 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
 
   return (
     <div className="animate-fade-in pb-24">
+      {/* Instagram Health Banner */}
+      <InstagramHealthBanner />
+
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-white">

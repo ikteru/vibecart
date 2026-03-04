@@ -4,7 +4,7 @@
  * Defines the contract for Instagram token persistence operations.
  */
 
-import { InstagramToken } from '../entities/InstagramToken';
+import { InstagramToken, type InstagramTokenStatus } from '../entities/InstagramToken';
 
 export interface InstagramTokenRepository {
   /**
@@ -29,4 +29,9 @@ export interface InstagramTokenRepository {
    * Used for proactive token refresh
    */
   findExpiringTokens(daysUntilExpiry: number): Promise<InstagramToken[]>;
+
+  /**
+   * Find tokens by status (e.g., for background maintenance jobs)
+   */
+  findByStatus(status: InstagramTokenStatus): Promise<InstagramToken[]>;
 }

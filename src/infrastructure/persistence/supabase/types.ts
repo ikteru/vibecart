@@ -115,6 +115,10 @@ export interface InstagramTokenRow {
   token_type: string;
   expires_at: string;
   scopes: string[];
+  status: string;
+  last_validated_at: string | null;
+  refresh_failure_count: number;
+  last_error: string | null;
   created_at: string;
   updated_at: string;
 }
