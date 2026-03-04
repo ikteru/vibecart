@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { getTranslations } from 'next-intl/server';
 import { TrendingUp, ShoppingBag, Plus, Sparkles } from 'lucide-react';
 import { getCurrentSeller } from '@/lib/auth/getCurrentSeller';
@@ -7,6 +8,7 @@ import { createRepositories, SupabaseOrderRepository } from '@/infrastructure/pe
 import { GetOrderStats } from '@/application/use-cases/orders/GetOrderStats';
 import { GetSellerOrders } from '@/application/use-cases/orders/GetSellerOrders';
 import { InstagramHealthBanner } from '@/presentation/components/seller/InstagramHealthBanner';
+import { DashboardClientSection } from './DashboardClientSection';
 
 interface DashboardPageProps {
   params: Promise<{
@@ -43,6 +45,20 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     limit: 5,
   });
 
+  // Fetch active product count and draft products for onboarding UI
+  const { productRepository } = createRepositories(supabase);
+  const activeProducts = await productRepository.findBySellerId(seller.id, { isActive: true });
+  const activeProductCount = activeProducts.length;
+
+  const draftProducts = await productRepository.findBySellerId(seller.id, { isActive: false });
+  const draftsForClient = draftProducts.map((p) => ({
+    id: p.id,
+    title: p.title,
+    price: p.price.amount,
+    category: p.category.value,
+    videoUrl: p.videoUrl || '',
+  }));
+
   // Convert cents to display amount
   const totalRevenue = Math.round(stats.totalRevenue / 100);
   const pendingOrderCount = stats.pendingOrders;
@@ -51,6 +67,15 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     <div className="animate-fade-in pb-24">
       {/* Instagram Health Banner */}
       <InstagramHealthBanner />
+
+      {/* Onboarding & Quick Setup Components */}
+      <Suspense fallback={null}>
+        <DashboardClientSection
+          seller={seller}
+          productCount={activeProductCount}
+          drafts={draftsForClient}
+        />
+      </Suspense>
 
       {/* Header */}
       <div className="mb-6">

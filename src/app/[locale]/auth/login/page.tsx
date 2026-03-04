@@ -5,7 +5,7 @@ import { useSearchParams, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/presentation/providers/AuthProvider';
-import { Phone, Mail, Chrome, ArrowLeft, Loader2 } from 'lucide-react';
+import { Phone, Mail, Chrome, ArrowLeft, Loader2, Instagram } from 'lucide-react';
 import { DirectionalIcon } from '@/presentation/components/ui/DirectionalIcon';
 
 type AuthMethod = 'select' | 'phone' | 'email' | 'otp';
@@ -22,8 +22,11 @@ function LoginContent() {
 
   const [authMethod, setAuthMethod] = useState<AuthMethod>('select');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(() => {
+    return searchParams.get('instagram_error') || null;
+  });
   const [showComingSoon, setShowComingSoon] = useState(false);
+  const [isConnectingInstagram, setIsConnectingInstagram] = useState(false);
 
   // Phone auth state
   const [phone, setPhone] = useState('');
@@ -98,6 +101,11 @@ function LoginContent() {
     }
   };
 
+  const handleInstagramLogin = () => {
+    setIsConnectingInstagram(true);
+    window.location.href = '/api/auth/instagram/login';
+  };
+
   const handleComingSoonClick = () => {
     setShowComingSoon(true);
     setTimeout(() => setShowComingSoon(false), 3000);
@@ -125,6 +133,26 @@ function LoginContent() {
         {/* Auth Options */}
         {authMethod === 'select' && (
           <div className="space-y-4">
+            {/* Instagram Login - Primary CTA */}
+            <button
+              onClick={handleInstagramLogin}
+              disabled={isConnectingInstagram}
+              className="flex w-full items-center gap-4 rounded-xl bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 px-6 py-4 text-lg font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
+            >
+              {isConnectingInstagram ? (
+                <Loader2 className="h-6 w-6 animate-spin" />
+              ) : (
+                <Instagram className="h-6 w-6" />
+              )}
+              {t('auth.continueWithInstagram')}
+            </button>
+
+            <div className="flex items-center gap-3 py-1">
+              <div className="flex-1 h-px bg-zinc-800" />
+              <span className="text-xs text-zinc-600">{t('auth.orContinueWith')}</span>
+              <div className="flex-1 h-px bg-zinc-800" />
+            </div>
+
             {/* Phone OTP - Coming Soon */}
             <button
               onClick={handleComingSoonClick}
@@ -132,7 +160,7 @@ function LoginContent() {
             >
               <Phone className="h-6 w-6" />
               {t('auth.continueWithPhone')}
-              <span className="ml-auto text-xs text-green-200">{t('common.comingSoon')}</span>
+              <span className="ms-auto text-xs text-green-200">{t('common.comingSoon')}</span>
             </button>
 
             {/* Email/Password */}

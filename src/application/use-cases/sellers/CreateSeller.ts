@@ -50,7 +50,7 @@ export class CreateSeller {
         userId: input.userId,
         shopName: input.shopName,
         handle: input.handle,
-        whatsappNumber: input.whatsappNumber,
+        whatsappNumber: input.whatsappNumber || undefined,
         shopConfig: input.shopConfig,
       });
 

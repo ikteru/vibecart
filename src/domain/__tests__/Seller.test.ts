@@ -19,7 +19,7 @@ describe('Seller Entity', () => {
       expect(seller.userId).toBe('user-123');
       expect(seller.shopName).toBe('Moroccan Treasures');
       expect(seller.handle).toBe('moroccan-treasures');
-      expect(seller.whatsappNumber.value).toBe('212612345678');
+      expect(seller.whatsappNumber!.value).toBe('212612345678');
       expect(seller.shopConfig).toEqual({});
     });
 
@@ -107,9 +107,9 @@ describe('Seller Entity', () => {
       const seller2 = SellerFactory.create({ whatsappNumber: '+212612345678' });
       const seller3 = SellerFactory.create({ whatsappNumber: '212612345678' });
 
-      expect(seller1.whatsappNumber.value).toBe('212612345678');
-      expect(seller2.whatsappNumber.value).toBe('212612345678');
-      expect(seller3.whatsappNumber.value).toBe('212612345678');
+      expect(seller1.whatsappNumber!.value).toBe('212612345678');
+      expect(seller2.whatsappNumber!.value).toBe('212612345678');
+      expect(seller3.whatsappNumber!.value).toBe('212612345678');
     });
   });
 
@@ -200,7 +200,7 @@ describe('Seller Entity', () => {
       const seller = SellerFactory.create({ whatsappNumber: '+212612345678' });
       seller.updateProfile({ whatsappNumber: '+212687654321' });
 
-      expect(seller.whatsappNumber.value).toBe('212687654321');
+      expect(seller.whatsappNumber!.value).toBe('212687654321');
     });
 
     it('should throw error for empty shop name', () => {
@@ -316,7 +316,7 @@ describe('Seller Entity', () => {
       expect(persisted.userId).toBe('user-id');
       expect(persisted.shopName).toBe('Test Shop');
       expect(persisted.handle).toBe('testshop');
-      expect(persisted.whatsappNumber.value).toBe('212612345678');
+      expect(persisted.whatsappNumber!.value).toBe('212612345678');
       expect(persisted.shopConfig.heroText).toBe('Welcome');
       expect(persisted.shopConfig.accentColor).toBe('#ffffff');
       expect(persisted.createdAt).toBe(now);

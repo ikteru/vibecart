@@ -29,6 +29,8 @@
     "continueWithPhone": "Continue with WhatsApp",
     "continueWithEmail": "Continue with Email",
     "continueWithGoogle": "Continue with Google",
+    "continueWithInstagram": "Continue with Instagram",
+    "instagramLoginError": "Instagram login failed. Please try again.",
     "sendCode": "Send Code",
     "sendOtp": "Send Code",
     "verify": "Verify",
@@ -280,6 +282,43 @@
       "quickActions": "Quick Actions",
       "newDrop": "New Drop",
       "recentActivity": "Recent Activity",
+      "welcome": {
+        "title": "Your shop is live!",
+        "subtitle": "Share your link and start selling",
+        "shareNow": "Share Now",
+        "addProducts": "Add Products"
+      },
+      "shareLink": {
+        "title": "Your Shop Link",
+        "copied": "Link copied!",
+        "shareWhatsApp": "Share on WhatsApp",
+        "shareInstagram": "Share on Instagram"
+      },
+      "whatsappPrompt": {
+        "title": "Add your WhatsApp number",
+        "description": "Customers need your WhatsApp to place orders",
+        "save": "Save",
+        "dismiss": "Later"
+      },
+      "drafts": {
+        "title": "Your Instagram Reels",
+        "importReels": "Import Reels",
+        "publishAll": "Publish All",
+        "publish": "Publish",
+        "setPrice": "Set price",
+        "setTitle": "Set title",
+        "noDrafts": "No draft products yet",
+        "importing": "Importing reels...",
+        "imported": "{count} reels imported as drafts"
+      },
+      "checklist": {
+        "title": "Setup Progress",
+        "connectInstagram": "Connect Instagram",
+        "addWhatsApp": "Add WhatsApp number",
+        "publishProduct": "Publish your first product",
+        "shareLink": "Share your shop link",
+        "complete": "All done! You're ready to sell"
+      },
       "instagramHealth": {
         "expired": "Your Instagram connection has expired",
         "revoked": "Your Instagram access was revoked",

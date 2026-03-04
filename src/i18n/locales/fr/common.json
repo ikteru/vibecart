@@ -29,6 +29,8 @@
     "continueWithPhone": "Continuer avec WhatsApp",
     "continueWithEmail": "Continuer avec E-mail",
     "continueWithGoogle": "Continuer avec Google",
+    "continueWithInstagram": "Continuer avec Instagram",
+    "instagramLoginError": "Échec de la connexion Instagram. Veuillez réessayer.",
     "sendCode": "Envoyer le code",
     "sendOtp": "Envoyer le code",
     "verify": "Vérifier",
@@ -280,6 +282,43 @@
       "quickActions": "Actions rapides",
       "newDrop": "Nouveau drop",
       "recentActivity": "Activité récente",
+      "welcome": {
+        "title": "Votre boutique est en ligne !",
+        "subtitle": "Partagez votre lien et commencez à vendre",
+        "shareNow": "Partager maintenant",
+        "addProducts": "Ajouter des produits"
+      },
+      "shareLink": {
+        "title": "Lien de votre boutique",
+        "copied": "Lien copié !",
+        "shareWhatsApp": "Partager sur WhatsApp",
+        "shareInstagram": "Partager sur Instagram"
+      },
+      "whatsappPrompt": {
+        "title": "Ajoutez votre numéro WhatsApp",
+        "description": "Les clients ont besoin de WhatsApp pour passer commande",
+        "save": "Enregistrer",
+        "dismiss": "Plus tard"
+      },
+      "drafts": {
+        "title": "Vos Reels Instagram",
+        "importReels": "Importer les Reels",
+        "publishAll": "Tout publier",
+        "publish": "Publier",
+        "setPrice": "Définir le prix",
+        "setTitle": "Définir le titre",
+        "noDrafts": "Pas encore de brouillons",
+        "importing": "Import des reels en cours...",
+        "imported": "{count} reels importés comme brouillons"
+      },
+      "checklist": {
+        "title": "Progression de la configuration",
+        "connectInstagram": "Connecter Instagram",
+        "addWhatsApp": "Ajouter un numéro WhatsApp",
+        "publishProduct": "Publier votre premier produit",
+        "shareLink": "Partager le lien de votre boutique",
+        "complete": "C'est fait ! Vous êtes prêt à vendre"
+      },
       "instagramHealth": {
         "expired": "Votre connexion Instagram a expiré",
         "revoked": "Votre accès Instagram a été révoqué",

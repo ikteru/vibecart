@@ -29,6 +29,8 @@
     "continueWithPhone": "تابع بالواتساب",
     "continueWithEmail": "تابع بالبريد الإلكتروني",
     "continueWithGoogle": "تابع بجوجل",
+    "continueWithInstagram": "تابع بإنستغرام",
+    "instagramLoginError": "فشل تسجيل الدخول عبر إنستغرام. حاول مرة أخرى.",
     "sendCode": "إرسال الرمز",
     "sendOtp": "إرسال الرمز",
     "verify": "تأكيد",
@@ -280,6 +282,43 @@
       "quickActions": "إجراءات سريعة",
       "newDrop": "إصدار جديد",
       "recentActivity": "النشاط الأخير",
+      "welcome": {
+        "title": "متجرك أصبح متاحاً!",
+        "subtitle": "شارك رابطك وابدأ البيع",
+        "shareNow": "شارك الآن",
+        "addProducts": "أضف منتجات"
+      },
+      "shareLink": {
+        "title": "رابط متجرك",
+        "copied": "تم نسخ الرابط!",
+        "shareWhatsApp": "مشاركة على واتساب",
+        "shareInstagram": "مشاركة على إنستغرام"
+      },
+      "whatsappPrompt": {
+        "title": "أضف رقم واتساب",
+        "description": "يحتاج العملاء واتساب لتقديم الطلبات",
+        "save": "حفظ",
+        "dismiss": "لاحقاً"
+      },
+      "drafts": {
+        "title": "ريلز إنستغرام الخاصة بك",
+        "importReels": "استيراد الريلز",
+        "publishAll": "نشر الكل",
+        "publish": "نشر",
+        "setPrice": "حدد السعر",
+        "setTitle": "حدد العنوان",
+        "noDrafts": "لا توجد مسودات بعد",
+        "importing": "جاري استيراد الريلز...",
+        "imported": "تم استيراد {count} ريلز كمسودات"
+      },
+      "checklist": {
+        "title": "تقدم الإعداد",
+        "connectInstagram": "ربط إنستغرام",
+        "addWhatsApp": "إضافة رقم واتساب",
+        "publishProduct": "نشر أول منتج",
+        "shareLink": "مشاركة رابط المتجر",
+        "complete": "تم الانتهاء! أنت جاهز للبيع"
+      },
       "instagramHealth": {
         "expired": "انتهت صلاحية اتصال إنستغرام",
         "revoked": "تم إلغاء الوصول إلى إنستغرام",

@@ -101,10 +101,10 @@ export class InstagramGraphService {
    * @param state - CSRF protection token (store in cookie/session)
    * @returns URL to redirect user to for authorization
    */
-  getAuthorizationUrl(state: string): string {
+  getAuthorizationUrl(state: string, redirectUri?: string): string {
     const params = new URLSearchParams({
       client_id: this.appId,
-      redirect_uri: this.redirectUri,
+      redirect_uri: redirectUri || this.redirectUri,
       scope: 'instagram_business_basic,instagram_business_content_publish',
       response_type: 'code',
       state,
@@ -119,12 +119,12 @@ export class InstagramGraphService {
    * @param code - Authorization code from OAuth callback
    * @returns Short-lived token (valid ~1 hour)
    */
-  async exchangeCodeForToken(code: string): Promise<TokenResponse> {
+  async exchangeCodeForToken(code: string, redirectUri?: string): Promise<TokenResponse> {
     const params = new URLSearchParams({
       client_id: this.appId,
       client_secret: this.appSecret,
       grant_type: 'authorization_code',
-      redirect_uri: this.redirectUri,
+      redirect_uri: redirectUri || this.redirectUri,
       code,
     });
 

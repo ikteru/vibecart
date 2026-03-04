@@ -10,9 +10,9 @@ export interface SellerResponseDTO {
   userId: string;
   shopName: string;
   handle: string;
-  whatsappNumber: string;
-  whatsappDisplayNumber: string;
-  whatsappUrl: string;
+  whatsappNumber: string | null;
+  whatsappDisplayNumber: string | null;
+  whatsappUrl: string | null;
   shopConfig: ShopConfig;
   shopPath: string;
   createdAt: string;
@@ -28,8 +28,8 @@ export interface PublicSellerDTO {
   id: string;
   shopName: string;
   handle: string;
-  whatsappDisplayNumber: string;
-  whatsappUrl: string;
+  whatsappDisplayNumber: string | null;
+  whatsappUrl: string | null;
   shopConfig: ShopConfig;
   shopPath: string;
 }
@@ -43,7 +43,7 @@ export interface CreateSellerDTO {
   userId: string;
   shopName: string;
   handle: string;
-  whatsappNumber: string;
+  whatsappNumber?: string;
   shopConfig?: ShopConfig;
 }
 

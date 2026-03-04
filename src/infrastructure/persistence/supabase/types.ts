@@ -9,7 +9,7 @@ export interface SellerRow {
   user_id: string;
   shop_name: string;
   handle: string;
-  whatsapp_number: string;
+  whatsapp_number: string | null;
   shop_config: Record<string, unknown>;
   created_at: string;
   updated_at: string;

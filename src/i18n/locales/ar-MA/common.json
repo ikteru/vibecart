@@ -29,6 +29,8 @@
     "continueWithPhone": "كمل بالواتساب",
     "continueWithEmail": "كمل بالإيميل",
     "continueWithGoogle": "كمل بڭوڭل",
+    "continueWithInstagram": "كمل بإنستاگرام",
+    "instagramLoginError": "ما نجحش الدخول بإنستا. عاود من بعد.",
     "sendCode": "صيفط الكود",
     "sendOtp": "صيفط الكود",
     "verify": "تأكد",
@@ -280,6 +282,43 @@
       "quickActions": "الإجراءات السريعة",
       "newDrop": "دروب جديد",
       "recentActivity": "النشاط الأخير",
+      "welcome": {
+        "title": "الدكان ديالك ولا لايف!",
+        "subtitle": "بارطاجي اللينك ديالك وبدا تبيع",
+        "shareNow": "بارطاجي دابا",
+        "addProducts": "زيد منتجات"
+      },
+      "shareLink": {
+        "title": "اللينك ديال الدكان",
+        "copied": "اللينك تكوپيا!",
+        "shareWhatsApp": "بارطاجي فواتساپ",
+        "shareInstagram": "بارطاجي فإنستا"
+      },
+      "whatsappPrompt": {
+        "title": "زيد رقم واتساپ ديالك",
+        "description": "الزبناء خاصهم واتساپ باش يديرو الطلبات",
+        "save": "حفظ",
+        "dismiss": "من بعد"
+      },
+      "drafts": {
+        "title": "الريلز ديالك من إنستا",
+        "importReels": "إمپورطي الريلز",
+        "publishAll": "نشر الكل",
+        "publish": "نشر",
+        "setPrice": "حط الثمن",
+        "setTitle": "حط العنوان",
+        "noDrafts": "مازال ما كاين حتى مسودة",
+        "importing": "كنإمپورطيو الريلز...",
+        "imported": "{count} ريلز تإمپورطاو كمسودات"
+      },
+      "checklist": {
+        "title": "تقدم الإعداد",
+        "connectInstagram": "ربط إنستاگرام",
+        "addWhatsApp": "زيد رقم واتساپ",
+        "publishProduct": "نشر أول منتج",
+        "shareLink": "بارطاجي اللينك ديال الدكان",
+        "complete": "كلشي تم! راك جاهز تبيع"
+      },
       "instagramHealth": {
         "expired": "الاتصال ديال إنستا سالا مدتو",
         "revoked": "الوصول ديال إنستا تحذف",

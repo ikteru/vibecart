@@ -135,7 +135,7 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
   const [config, setConfig] = useState({
     whatsapp: {
       enabled: true,
-      businessNumber: seller.whatsappDisplayNumber,
+      businessNumber: seller.whatsappDisplayNumber || '',
     },
     whatsappBusiness: {
       isConnected: seller.shopConfig.whatsappBusiness?.isConnected || false,
@@ -404,7 +404,7 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
             </label>
             <input
               type="tel"
-              value={seller.whatsappDisplayNumber}
+              value={seller.whatsappDisplayNumber || ''}
               readOnly
               className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-400 cursor-not-allowed"
             />

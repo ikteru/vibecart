@@ -101,7 +101,7 @@ export interface SellerProps {
   userId: string;
   shopName: string;
   handle: string;
-  whatsappNumber: PhoneNumber;
+  whatsappNumber: PhoneNumber | null;
   shopConfig: ShopConfig;
   createdAt: Date;
   updatedAt: Date;
@@ -111,7 +111,7 @@ export interface CreateSellerInput {
   userId: string;
   shopName: string;
   handle: string;
-  whatsappNumber: string;
+  whatsappNumber?: string;
   shopConfig?: ShopConfig;
 }
 
@@ -120,7 +120,7 @@ export class Seller {
   public readonly userId: string;
   private _shopName: string;
   private _handle: string;
-  private _whatsappNumber: PhoneNumber;
+  private _whatsappNumber: PhoneNumber | null;
   private _shopConfig: ShopConfig;
   public readonly createdAt: Date;
   private _updatedAt: Date;
@@ -163,7 +163,7 @@ export class Seller {
       userId: input.userId,
       shopName: input.shopName.trim(),
       handle: normalizedHandle,
-      whatsappNumber: PhoneNumber.create(input.whatsappNumber),
+      whatsappNumber: input.whatsappNumber ? PhoneNumber.create(input.whatsappNumber) : null,
       shopConfig: input.shopConfig || {},
       createdAt: now,
       updatedAt: now,
@@ -186,7 +186,7 @@ export class Seller {
     return this._handle;
   }
 
-  get whatsappNumber(): PhoneNumber {
+  get whatsappNumber(): PhoneNumber | null {
     return this._whatsappNumber;
   }
 
@@ -232,8 +232,8 @@ export class Seller {
   /**
    * Get WhatsApp URL
    */
-  getWhatsAppUrl(message?: string): string {
-    return this._whatsappNumber.toWhatsAppUrl(message);
+  getWhatsAppUrl(message?: string): string | null {
+    return this._whatsappNumber?.toWhatsAppUrl(message) ?? null;
   }
 
   // Mutations
