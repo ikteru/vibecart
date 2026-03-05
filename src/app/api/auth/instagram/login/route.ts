@@ -14,13 +14,8 @@ const OAUTH_STATE_COOKIE = 'instagram_login_state';
  */
 export async function GET(request: NextRequest) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
-    if (!baseUrl) {
-      return NextResponse.json(
-        { error: 'App URL not configured' },
-        { status: 500 }
-      );
-    }
+    // Derive base URL from the incoming request (works on any domain: ngrok, Vercel, custom domain)
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `${request.nextUrl.protocol}//${request.nextUrl.host}`;
 
     const loginCallbackUri = `${baseUrl}/api/auth/instagram/login/callback`;
 
@@ -39,6 +34,9 @@ export async function GET(request: NextRequest) {
     const state = Buffer.from(JSON.stringify(stateData)).toString('base64url');
 
     const authorizationUrl = instagramService.getAuthorizationUrl(state, loginCallbackUri);
+
+    console.log('[Instagram Login] redirect_uri:', loginCallbackUri);
+    console.log('[Instagram Login] full authorization URL:', authorizationUrl);
 
     // Store state in HTTP-only cookie
     const cookieStore = await cookies();
