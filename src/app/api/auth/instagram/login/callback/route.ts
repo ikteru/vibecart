@@ -150,18 +150,6 @@ export async function GET(request: NextRequest) {
     let justCreatedSeller = false;
 
     if (!seller) {
-      // Beta limit: if coming from beta signup, check seller count
-      if (stateData.from === 'beta') {
-        const { count: sellerCount } = await adminClient
-          .from('sellers')
-          .select('*', { count: 'exact', head: true });
-        if (sellerCount !== null && sellerCount >= 50) {
-          const betaFullUrl = new URL(`${baseUrl}/${DEFAULT_LOCALE}`);
-          betaFullUrl.searchParams.set('beta', 'full');
-          return NextResponse.redirect(betaFullUrl);
-        }
-      }
-
       const createSellerUseCase = new CreateSellerFromInstagram(sellerRepository);
       const sellerResult = await createSellerUseCase.execute({
         userId,

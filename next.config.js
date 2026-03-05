@@ -4,9 +4,6 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Docker production build
-  output: 'standalone',
-
   // Enable gzip compression
   compress: true,
 
@@ -21,7 +18,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self'; connect-src 'self' https: http://localhost:*; media-src 'self' https://*.fbcdn.net https://*.cdninstagram.com; object-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self'; connect-src 'self' https://*.supabase.co https://graph.instagram.com https://graph.facebook.com https://*.upstash.io; media-src 'self' https://*.fbcdn.net https://*.cdninstagram.com; object-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';",
           },
           {
             key: 'Strict-Transport-Security',
@@ -63,14 +60,24 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'storage.googleapis.com',
       },
+      {
+        protocol: 'https',
+        hostname: '*.cdninstagram.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.fbcdn.net',
+      },
     ],
   },
 
   // Allow ngrok dev origins (avoids cross-origin warnings + enables server actions)
-  allowedDevOrigins: [
-    '*.ngrok-free.dev',
-    '*.ngrok.io',
-  ],
+  ...(process.env.NODE_ENV === 'development' && {
+    allowedDevOrigins: [
+      '*.ngrok-free.dev',
+      '*.ngrok.io',
+    ],
+  }),
 
   // Experimental settings
   experimental: {

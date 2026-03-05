@@ -1,48 +1,58 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
 import { locales, defaultLocale } from '@/i18n/config';
-import { RateLimiter } from '@/infrastructure/utils/rateLimiter';
 
-// Rate limiters for different endpoint types
-const rateLimiters = {
-  /** Auth endpoints: 5 requests per minute (strict) */
-  auth: new RateLimiter({ windowSeconds: 60, maxRequests: 5 }),
-  /** Webhook endpoints: 100 requests per minute */
-  webhook: new RateLimiter({ windowSeconds: 60, maxRequests: 100 }),
-  /** General API endpoints: 60 requests per minute */
-  default: new RateLimiter({ windowSeconds: 60, maxRequests: 60 }),
-};
+// Upstash Redis rate limiters (distributed, works on serverless)
+// Only initialize if env vars are present (graceful fallback in dev)
+const redis =
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+    ? new Redis({
+        url: process.env.UPSTASH_REDIS_REST_URL,
+        token: process.env.UPSTASH_REDIS_REST_TOKEN,
+      })
+    : null;
+
+const rateLimiters = redis
+  ? {
+      /** Auth endpoints: 5 requests per minute (strict) */
+      auth: new Ratelimit({
+        redis,
+        limiter: Ratelimit.slidingWindow(5, '60 s'),
+        prefix: 'rl:auth',
+      }),
+      /** Webhook endpoints: 100 requests per minute */
+      webhook: new Ratelimit({
+        redis,
+        limiter: Ratelimit.slidingWindow(100, '60 s'),
+        prefix: 'rl:webhook',
+      }),
+      /** General API endpoints: 60 requests per minute */
+      default: new Ratelimit({
+        redis,
+        limiter: Ratelimit.slidingWindow(60, '60 s'),
+        prefix: 'rl:default',
+      }),
+    }
+  : null;
 
 /**
  * Extract client IP from request
- * Checks various headers commonly set by proxies and load balancers
  */
 function getClientIP(request: NextRequest): string {
-  // Check for forwarded IP (when behind proxy/load balancer)
   const forwarded = request.headers.get('x-forwarded-for');
-  if (forwarded) {
-    return forwarded.split(',')[0].trim();
-  }
+  if (forwarded) return forwarded.split(',')[0].trim();
 
-  // Check for real IP header
   const realIP = request.headers.get('x-real-ip');
-  if (realIP) {
-    return realIP;
-  }
+  if (realIP) return realIP;
 
-  // Check for Cloudflare connecting IP
   const cfConnectingIP = request.headers.get('cf-connecting-ip');
-  if (cfConnectingIP) {
-    return cfConnectingIP;
-  }
+  if (cfConnectingIP) return cfConnectingIP;
 
-  // Fallback to socket remote address
-  if (request.ip) {
-    return request.ip;
-  }
+  if (request.ip) return request.ip;
 
-  // Last resort: use a hash of user agent
   const userAgent = request.headers.get('user-agent') || 'unknown';
   return `ua:${userAgent.slice(0, 50)}`;
 }
@@ -57,50 +67,22 @@ function isHealthCheck(pathname: string): boolean {
 /**
  * Get the appropriate rate limiter for the pathname
  */
-function getRateLimiter(pathname: string): RateLimiter | null {
-  // Skip health checks
-  if (isHealthCheck(pathname)) {
-    return null;
-  }
+function getRateLimiter(pathname: string): Ratelimit | null {
+  if (!rateLimiters) return null;
+  if (isHealthCheck(pathname)) return null;
 
-  // Auth endpoints: /api/auth/*
-  if (pathname.startsWith('/api/auth/')) {
-    return rateLimiters.auth;
-  }
-
-  // Webhook endpoints: /api/webhooks/*
-  if (pathname.startsWith('/api/webhooks/')) {
-    return rateLimiters.webhook;
-  }
-
-  // All other API endpoints
-  if (pathname.startsWith('/api/')) {
-    return rateLimiters.default;
-  }
+  if (pathname.startsWith('/api/auth/')) return rateLimiters.auth;
+  if (pathname.startsWith('/api/webhooks/')) return rateLimiters.webhook;
+  if (pathname.startsWith('/api/')) return rateLimiters.default;
 
   return null;
-}
-
-/**
- * Create rate limit headers from result
- */
-function createRateLimitHeaders(result: {
-  limit: number;
-  remaining: number;
-  resetTime: Date;
-}): Record<string, string> {
-  return {
-    'X-RateLimit-Limit': result.limit.toString(),
-    'X-RateLimit-Remaining': Math.max(0, result.remaining).toString(),
-    'X-RateLimit-Reset': Math.floor(result.resetTime.getTime() / 1000).toString(),
-  };
 }
 
 /**
  * Middleware for:
  * 1. i18n locale routing
  * 2. Authentication protection for seller routes
- * 3. API rate limiting
+ * 3. API rate limiting (via Upstash Redis)
  */
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -111,10 +93,10 @@ export async function middleware(request: NextRequest) {
 
     if (rateLimiter) {
       const clientIP = getClientIP(request);
-      const result = rateLimiter.check(clientIP);
+      const { success, limit, remaining, reset } = await rateLimiter.limit(clientIP);
 
-      if (!result.allowed) {
-        const retryAfter = Math.ceil((result.resetTime.getTime() - Date.now()) / 1000);
+      if (!success) {
+        const retryAfter = Math.ceil((reset - Date.now()) / 1000);
 
         return NextResponse.json(
           {
@@ -125,7 +107,9 @@ export async function middleware(request: NextRequest) {
           {
             status: 429,
             headers: {
-              ...createRateLimitHeaders(result),
+              'X-RateLimit-Limit': limit.toString(),
+              'X-RateLimit-Remaining': '0',
+              'X-RateLimit-Reset': Math.floor(reset / 1000).toString(),
               'Retry-After': retryAfter.toString(),
               'Content-Type': 'application/json',
             },
@@ -133,13 +117,10 @@ export async function middleware(request: NextRequest) {
         );
       }
 
-      // Pass through with rate limit headers
       const response = NextResponse.next();
-      const headers = createRateLimitHeaders(result);
-      Object.entries(headers).forEach(([key, value]) => {
-        response.headers.set(key, value);
-      });
-
+      response.headers.set('X-RateLimit-Limit', limit.toString());
+      response.headers.set('X-RateLimit-Remaining', remaining.toString());
+      response.headers.set('X-RateLimit-Reset', Math.floor(reset / 1000).toString());
       return response;
     }
 
