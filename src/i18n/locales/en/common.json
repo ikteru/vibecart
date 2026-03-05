@@ -86,32 +86,98 @@
   },
   "landing": {
     "hero": {
-      "title": "Sell with video",
-      "subtitle": "Turn your Instagram into a shop",
-      "cta": "Start Selling"
+      "title": "Your Shop in Your Pocket",
+      "subtitle": "Turn your Instagram reels into money — completely free",
+      "cta": "Join the Beta — Free",
+      "scrollHint": "See how it works"
     },
-    "features": {
-      "title": "Everything You Need to Sell",
-      "subtitle": "Powerful tools designed for modern commerce",
-      "video": "Video-first shopping",
-      "whatsapp": "WhatsApp checkout",
-      "instagram": "Instagram integration"
+    "waitlist": {
+      "progress": "{taken} / 50 spots taken",
+      "spotsLeft": "{count} spots left",
+      "beFirst": "Be among the first",
+      "first50": "First 50 sellers — free forever"
     },
     "howItWorks": {
-      "title": "How It Works",
-      "subtitle": "Start selling in three simple steps"
+      "title": "3 Steps. That's It.",
+      "step1": {
+        "title": "Connect Instagram",
+        "desc": "Link your account in one click"
+      },
+      "step2": {
+        "title": "Share Your Link",
+        "desc": "Send it to your customers on WhatsApp"
+      },
+      "step3": {
+        "title": "Get Orders",
+        "desc": "Orders come straight to your WhatsApp"
+      }
     },
-    "testimonials": {
-      "title": "Loved by Sellers",
-      "subtitle": "See what our community is saying"
+    "transform": {
+      "title": "Your Insta = Your Shop",
+      "subtitle": "Your existing content becomes your product catalog",
+      "before": "Your Instagram",
+      "after": "Your Shop",
+      "price": "Price",
+      "order": "Order"
     },
-    "cta": {
-      "title": "Ready to Start Selling?",
-      "subtitle": "Join thousands of sellers already growing their business with VibeCart."
+    "whatsappStory": {
+      "title": "How an Order Works",
+      "customer": "Customer",
+      "seller": "You",
+      "system": "VibeCart",
+      "msg1": "I saw this product on your Insta, is it available?",
+      "msg2": "Yes\\! Here's my shop link:",
+      "msg3": "Ordered\\! Cash on delivery please",
+      "msg4": "Order #1234 confirmed — Cash on delivery",
+      "msg5": "Thanks\\! It'll arrive tomorrow inshallah",
+      "typing": "typing..."
     },
-    "roles": {
-      "seller": "I'm a Seller",
-      "buyer": "I'm Shopping"
+    "cod": {
+      "title": "Pay When It Arrives",
+      "subtitle": "No bank card needed. No hassle.",
+      "desc": "Your customers pay cash when they receive the product — just like they're used to"
+    },
+    "preview": {
+      "title": "See Your Shop",
+      "placeholder": "@your_handle",
+      "shopUrl": "vibecart.ma/shop/",
+      "yourShop": "Shop of",
+      "products": "Products",
+      "followers": "Followers"
+    },
+    "signup": {
+      "title": "First 50 — Free Forever",
+      "subtitle": "Be among the first and get exclusive perks",
+      "instagramCta": "Join Beta with Instagram",
+      "connectingInstagram": "Connecting to Instagram...",
+      "betaFull": "Beta is full! Join the waitlist and we'll let you know when more spots open up.",
+      "benefits": {
+        "free": "0 MAD — Forever",
+        "freeDesc": "No hidden fees ever",
+        "support": "Direct Support",
+        "supportDesc": "WhatsApp group with the team",
+        "features": "Exclusive Features",
+        "featuresDesc": "First to try new features",
+        "founding": "Founding Member",
+        "foundingDesc": "Your name on the founders list"
+      },
+      "success": {
+        "title": "Congrats\\!",
+        "subtitle": "Your shop is ready. Let's set it up!",
+        "goToDashboard": "Go to My Shop",
+        "share": "Share with friends"
+      }
+    },
+    "footer": {
+      "madeIn": "Made with love in Morocco",
+      "tagline": "Video-native commerce",
+      "legal": "Legal",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service"
+    },
+    "sticky": {
+      "cta": "Join the Beta",
+      "spotsLeft": "{count} spots left"
     }
   },
   "product": {
@@ -267,7 +333,12 @@
   "seller": {
     "dashboard": {
       "title": "Dashboard",
-      "welcome": "Welcome, {name}",
+      "welcome": {
+        "title": "Your shop is live!",
+        "subtitle": "Share your link and start selling",
+        "shareNow": "Share Now",
+        "addProducts": "Add Products"
+      },
       "hello": "Hello, {name}",
       "subtitle": "Here's what's happening today.",
       "todayOrders": "Today's Orders",
@@ -282,12 +353,6 @@
       "quickActions": "Quick Actions",
       "newDrop": "New Drop",
       "recentActivity": "Recent Activity",
-      "welcome": {
-        "title": "Your shop is live!",
-        "subtitle": "Share your link and start selling",
-        "shareNow": "Share Now",
-        "addProducts": "Add Products"
-      },
       "shareLink": {
         "title": "Your Shop Link",
         "copied": "Link copied!",
@@ -846,7 +911,21 @@
     "or": "or",
     "noTemplates": "No templates yet",
     "noFilterTemplates": "No {filter} templates",
-    "preview": "Preview",
+    "preview": {
+      "enterBodyText": "Enter body text...",
+      "label": "Preview",
+      "customer": "Customer",
+      "online": "online",
+      "exampleTime": "12:34 PM",
+      "defaultButton": "Button",
+      "exampleValuesHint": "Preview uses example values:",
+      "exampleCustomerName": "Ahmed",
+      "exampleOrderNumber": "ORD-A1B2",
+      "exampleAmount": "450 MAD",
+      "exampleTracking": "MA123456",
+      "exampleShopName": "My Shop",
+      "exampleItemsCount": "3"
+    },
     "saveDraft": "Save Draft",
     "submitToMeta": "Submit to Meta",
     "deleteConfirm": "Are you sure you want to delete this template?",
@@ -936,21 +1015,6 @@
       "saveFailed": "Failed to save template",
       "submitFailed": "Failed to submit template",
       "deleteFailed": "Failed to delete template"
-    },
-    "preview": {
-      "enterBodyText": "Enter body text...",
-      "label": "Preview",
-      "customer": "Customer",
-      "online": "online",
-      "exampleTime": "12:34 PM",
-      "defaultButton": "Button",
-      "exampleValuesHint": "Preview uses example values:",
-      "exampleCustomerName": "Ahmed",
-      "exampleOrderNumber": "ORD-A1B2",
-      "exampleAmount": "450 MAD",
-      "exampleTracking": "MA123456",
-      "exampleShopName": "My Shop",
-      "exampleItemsCount": "3"
     },
     "button": {
       "created": "Created!",

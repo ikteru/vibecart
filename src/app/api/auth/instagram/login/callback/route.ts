@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
     cookieStore.delete(OAUTH_STATE_COOKIE);
 
     // 2. Verify state data
-    let stateData: { purpose: string; nonce: string; timestamp: number };
+    let stateData: { purpose: string; nonce: string; timestamp: number; from?: string };
     try {
       stateData = JSON.parse(Buffer.from(state, 'base64url').toString('utf8'));
     } catch {
@@ -150,6 +150,18 @@ export async function GET(request: NextRequest) {
     let justCreatedSeller = false;
 
     if (!seller) {
+      // Beta limit: if coming from beta signup, check seller count
+      if (stateData.from === 'beta') {
+        const { count: sellerCount } = await adminClient
+          .from('sellers')
+          .select('*', { count: 'exact', head: true });
+        if (sellerCount !== null && sellerCount >= 50) {
+          const betaFullUrl = new URL(`${baseUrl}/${DEFAULT_LOCALE}`);
+          betaFullUrl.searchParams.set('beta', 'full');
+          return NextResponse.redirect(betaFullUrl);
+        }
+      }
+
       const createSellerUseCase = new CreateSellerFromInstagram(sellerRepository);
       const sellerResult = await createSellerUseCase.execute({
         userId,
@@ -213,7 +225,13 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // 10. Redirect to dashboard
+    // 10. Redirect — beta signup success or dashboard
+    if (stateData.from === 'beta' && (isNewUser || justCreatedSeller)) {
+      const successUrl = new URL(`${baseUrl}/${DEFAULT_LOCALE}`);
+      successUrl.searchParams.set('signup', 'success');
+      return NextResponse.redirect(successUrl);
+    }
+
     const redirectUrl = new URL(dashboardUrl);
     if (isNewUser || justCreatedSeller) {
       redirectUrl.searchParams.set('welcome', 'true');

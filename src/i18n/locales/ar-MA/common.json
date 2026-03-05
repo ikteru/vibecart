@@ -86,32 +86,98 @@
   },
   "landing": {
     "hero": {
-      "title": "بيع بالڤيديو",
-      "subtitle": "حول الإنستا ديالك لحانوت",
-      "cta": "بدا البيع"
+      "title": "حانوتك فجيبك",
+      "subtitle": "حول الريلز ديالك لفلوس — بلا ما تخلص والو",
+      "cta": "سجل ف البيتا — مجانا",
+      "scrollHint": "شوف كيفاش"
     },
-    "features": {
-      "title": "كلشي اللي خاصك باش تبيع",
-      "subtitle": "أدوات قوية مصممة للتجارة الحديثة",
-      "video": "التسوق بالڤيديو",
-      "whatsapp": "الطلب بالواتساب",
-      "instagram": "ربط مع إنستا"
+    "waitlist": {
+      "progress": "{taken} / 50 بلاصة مخدات",
+      "spotsLeft": "باقي {count} بلاصة",
+      "beFirst": "كون من اللوائل",
+      "first50": "أول 50 بياع — مجانا للأبد"
     },
     "howItWorks": {
-      "title": "كيفاش خدام",
-      "subtitle": "بدا البيع فثلاث خطوات بسيطة"
+      "title": "3 خطوات وصافي",
+      "step1": {
+        "title": "ربط إنستا",
+        "desc": "كونيكتي الحساب ديالك فكليك واحد"
+      },
+      "step2": {
+        "title": "شارك اللينك",
+        "desc": "صيفطو للكليان ديالك فالواتساب"
+      },
+      "step3": {
+        "title": "استقبل الطلبات",
+        "desc": "الطلبات كتجيك مباشرة فالواتساب"
+      }
     },
-    "testimonials": {
-      "title": "البياعين كيحبوه",
-      "subtitle": "شوف أشنو كيقولو الناس"
+    "transform": {
+      "title": "الإنستا ديالك = الحانوت ديالك",
+      "subtitle": "المحتوى اللي عندك ولّا كاطالوغ ديال المنتجات",
+      "before": "الإنستا ديالك",
+      "after": "الحانوت ديالك",
+      "price": "الثمن",
+      "order": "طلب"
     },
-    "cta": {
-      "title": "واجد تبدا تبيع؟",
-      "subtitle": "انضم لآلاف البياعين اللي كيكبرو البزنس ديالهم مع ڤايب كارت."
+    "whatsappStory": {
+      "title": "كيفاش كتمشي الطلبية",
+      "customer": "كليان",
+      "seller": "نتا",
+      "system": "ڤايب كارت",
+      "msg1": "شفت هاد المنتج فإنستا، واش كاين؟",
+      "msg2": "أيه أختي كاين\\! هاك اللينك ديال الحانوت:",
+      "msg3": "طلبت\\! الدفع عند التوصيل",
+      "msg4": "تم تأكيد الطلبية #1234 — الدفع عند التوصيل ✓",
+      "msg5": "شكرا\\! غادي يوصلك غدا إن شاء الله",
+      "typing": "كيكتب..."
     },
-    "roles": {
-      "seller": "أنا بياع",
-      "buyer": "أنا كنتسوق"
+    "cod": {
+      "title": "خلّص ملي يوصل",
+      "subtitle": "بلا كارط بنكية. بلا صداع.",
+      "desc": "الكليان ديالك كيخلصو كاش ملي يوصلهم المنتج — بحال ما تعودو عليه"
+    },
+    "preview": {
+      "title": "شوف الحانوت ديالك",
+      "placeholder": "@الحساب_ديال_إنستا",
+      "shopUrl": "vibecart.ma/shop/",
+      "yourShop": "الحانوت ديال",
+      "products": "المنتجات",
+      "followers": "متابعين"
+    },
+    "signup": {
+      "title": "أول 50 — مجانا للأبد",
+      "subtitle": "كون من اللوائل واستافد من ميزات حصرية",
+      "instagramCta": "سجل ف البيتا بإنستا",
+      "connectingInstagram": "كنكونيكتيو مع إنستا...",
+      "betaFull": "البيتا عمرات! سجل فقائمة الانتظار باش نعلموك ملي نزيدو بلايص.",
+      "benefits": {
+        "free": "0 درهم — للأبد",
+        "freeDesc": "بلا أي مصاريف خفية",
+        "support": "Support مباشر",
+        "supportDesc": "ڭروب واتساب مع الفريق",
+        "features": "ميزات حصرية",
+        "featuresDesc": "أول ناس اللي يجربو الجديد",
+        "founding": "عضو مؤسس",
+        "foundingDesc": "إسمك فقائمة المؤسسين"
+      },
+      "success": {
+        "title": "مبروك\\!",
+        "subtitle": "الحانوت ديالك جاهز. يالاه نخدموه!",
+        "goToDashboard": "دخل للحانوت ديالي",
+        "share": "شارك مع صحابك"
+      }
+    },
+    "footer": {
+      "madeIn": "صنع بالحب فالمغرب 🇲🇦",
+      "tagline": "التجارة بالڤيديو",
+      "legal": "قانوني",
+      "privacy": "سياسة الخصوصية",
+      "terms": "شروط الاستخدام"
+    },
+    "sticky": {
+      "cta": "سجل ف البيتا",
+      "spotsLeft": "باقي {count} بلاصة"
     }
   },
   "product": {
@@ -267,7 +333,12 @@
   "seller": {
     "dashboard": {
       "title": "لوحة التحكم",
-      "welcome": "مرحبا، {name}",
+      "welcome": {
+        "title": "الدكان ديالك ولا لايف!",
+        "subtitle": "بارطاجي اللينك ديالك وبدا تبيع",
+        "shareNow": "بارطاجي دابا",
+        "addProducts": "زيد منتجات"
+      },
       "hello": "أهلا، {name}",
       "subtitle": "هاشنو كاين اليوم.",
       "todayOrders": "طلبات اليوم",
@@ -282,12 +353,6 @@
       "quickActions": "الإجراءات السريعة",
       "newDrop": "دروب جديد",
       "recentActivity": "النشاط الأخير",
-      "welcome": {
-        "title": "الدكان ديالك ولا لايف!",
-        "subtitle": "بارطاجي اللينك ديالك وبدا تبيع",
-        "shareNow": "بارطاجي دابا",
-        "addProducts": "زيد منتجات"
-      },
       "shareLink": {
         "title": "اللينك ديال الدكان",
         "copied": "اللينك تكوپيا!",
@@ -846,7 +911,21 @@
     "or": "ولا",
     "noTemplates": "ما كاينين قوالب بعدا",
     "noFilterTemplates": "ما كاينين قوالب {filter}",
-    "preview": "شوف",
+    "preview": {
+      "enterBodyText": "دخل نص الرسالة...",
+      "label": "معاينة",
+      "customer": "زبون",
+      "online": "أونلاين",
+      "exampleTime": "12:34",
+      "defaultButton": "زر",
+      "exampleValuesHint": "المعاينة كتستعمل قيم مثال:",
+      "exampleCustomerName": "أحمد",
+      "exampleOrderNumber": "ORD-A1B2",
+      "exampleAmount": "450 د.م.",
+      "exampleTracking": "MA123456",
+      "exampleShopName": "الحانوت ديالي",
+      "exampleItemsCount": "3"
+    },
     "saveDraft": "حفظ كمسودة",
     "submitToMeta": "صيفط لميتا",
     "deleteConfirm": "واش بصح بغيتي تمسح هاد القالب؟",
@@ -936,21 +1015,6 @@
       "saveFailed": "ما قدرناش نحفظو القالب",
       "submitFailed": "ما قدرناش نصيفطو القالب",
       "deleteFailed": "ما قدرناش نمسحو القالب"
-    },
-    "preview": {
-      "enterBodyText": "دخل نص الرسالة...",
-      "label": "معاينة",
-      "customer": "زبون",
-      "online": "أونلاين",
-      "exampleTime": "12:34",
-      "defaultButton": "زر",
-      "exampleValuesHint": "المعاينة كتستعمل قيم مثال:",
-      "exampleCustomerName": "أحمد",
-      "exampleOrderNumber": "ORD-A1B2",
-      "exampleAmount": "450 د.م.",
-      "exampleTracking": "MA123456",
-      "exampleShopName": "الحانوت ديالي",
-      "exampleItemsCount": "3"
     },
     "button": {
       "created": "تخلق!",

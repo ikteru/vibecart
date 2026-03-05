@@ -86,32 +86,98 @@
   },
   "landing": {
     "hero": {
-      "title": "Vendez en vidéo",
-      "subtitle": "Transformez votre Instagram en boutique",
-      "cta": "Commencer à vendre"
+      "title": "Ta boutique dans ta poche",
+      "subtitle": "Transforme tes reels en argent — gratuitement",
+      "cta": "Rejoins la beta — Gratuit",
+      "scrollHint": "Voir comment"
     },
-    "features": {
-      "title": "Tout ce qu'il vous faut pour vendre",
-      "subtitle": "Des outils puissants conçus pour le commerce moderne",
-      "video": "Shopping en vidéo",
-      "whatsapp": "Paiement WhatsApp",
-      "instagram": "Intégration Instagram"
+    "waitlist": {
+      "progress": "{taken} / 50 places prises",
+      "spotsLeft": "{count} places restantes",
+      "beFirst": "Sois parmi les premiers",
+      "first50": "Les 50 premiers vendeurs — gratuit pour toujours"
     },
     "howItWorks": {
-      "title": "Comment ça marche",
-      "subtitle": "Commencez à vendre en trois étapes simples"
+      "title": "3 etapes. C'est tout.",
+      "step1": {
+        "title": "Connecte Instagram",
+        "desc": "Lie ton compte en un clic"
+      },
+      "step2": {
+        "title": "Partage ton lien",
+        "desc": "Envoie-le a tes clients sur WhatsApp"
+      },
+      "step3": {
+        "title": "Recois les commandes",
+        "desc": "Les commandes arrivent direct sur WhatsApp"
+      }
     },
-    "testimonials": {
-      "title": "Adoré par les vendeurs",
-      "subtitle": "Découvrez ce que dit notre communauté"
+    "transform": {
+      "title": "Ton Insta = Ta boutique",
+      "subtitle": "Ton contenu existant devient ton catalogue produits",
+      "before": "Ton Instagram",
+      "after": "Ta boutique",
+      "price": "Prix",
+      "order": "Commander"
     },
-    "cta": {
-      "title": "Prêt à commencer à vendre ?",
-      "subtitle": "Rejoignez des milliers de vendeurs qui développent leur activité avec VibeCart."
+    "whatsappStory": {
+      "title": "Comment une commande se passe",
+      "customer": "Client",
+      "seller": "Toi",
+      "system": "VibeCart",
+      "msg1": "J'ai vu ce produit sur ton Insta, c'est dispo?",
+      "msg2": "Oui\\! Voila le lien de ma boutique:",
+      "msg3": "Commande\\! Paiement a la livraison svp",
+      "msg4": "Commande #1234 confirmee — Paiement a la livraison",
+      "msg5": "Merci\\! Ca arrive demain inshallah",
+      "typing": "ecrit..."
     },
-    "roles": {
-      "seller": "Je suis vendeur",
-      "buyer": "Je fais du shopping"
+    "cod": {
+      "title": "Paye quand ca arrive",
+      "subtitle": "Pas de carte bancaire. Pas de prise de tete.",
+      "desc": "Tes clients paient en cash a la reception — comme d'habitude"
+    },
+    "preview": {
+      "title": "Vois ta boutique",
+      "placeholder": "@ton_compte",
+      "shopUrl": "vibecart.ma/shop/",
+      "yourShop": "Boutique de",
+      "products": "Produits",
+      "followers": "Abonnes"
+    },
+    "signup": {
+      "title": "Les 50 premiers — Gratuit pour toujours",
+      "subtitle": "Sois parmi les premiers et profite d'avantages exclusifs",
+      "instagramCta": "Rejoindre la beta avec Instagram",
+      "connectingInstagram": "Connexion a Instagram...",
+      "betaFull": "La beta est complete ! Inscris-toi sur la liste d'attente, on te previent des qu'il y a de la place.",
+      "benefits": {
+        "free": "0 MAD — Pour toujours",
+        "freeDesc": "Aucun frais cache",
+        "support": "Support direct",
+        "supportDesc": "Groupe WhatsApp avec l'equipe",
+        "features": "Fonctionnalites exclusives",
+        "featuresDesc": "Premier a tester les nouveautes",
+        "founding": "Membre fondateur",
+        "foundingDesc": "Ton nom sur la liste des fondateurs"
+      },
+      "success": {
+        "title": "Felicitations\\!",
+        "subtitle": "Ta boutique est prete. On la configure !",
+        "goToDashboard": "Aller a ma boutique",
+        "share": "Partage avec tes amis"
+      }
+    },
+    "footer": {
+      "madeIn": "Fait avec amour au Maroc",
+      "tagline": "Le commerce par video",
+      "legal": "Legal",
+      "privacy": "Politique de confidentialite",
+      "terms": "Conditions d'utilisation"
+    },
+    "sticky": {
+      "cta": "Rejoins la beta",
+      "spotsLeft": "{count} places restantes"
     }
   },
   "product": {
@@ -267,7 +333,12 @@
   "seller": {
     "dashboard": {
       "title": "Tableau de bord",
-      "welcome": "Bienvenue, {name}",
+      "welcome": {
+        "title": "Votre boutique est en ligne !",
+        "subtitle": "Partagez votre lien et commencez à vendre",
+        "shareNow": "Partager maintenant",
+        "addProducts": "Ajouter des produits"
+      },
       "hello": "Bonjour, {name}",
       "subtitle": "Voici ce qui se passe aujourd'hui.",
       "todayOrders": "Commandes du jour",
@@ -282,12 +353,6 @@
       "quickActions": "Actions rapides",
       "newDrop": "Nouveau drop",
       "recentActivity": "Activité récente",
-      "welcome": {
-        "title": "Votre boutique est en ligne !",
-        "subtitle": "Partagez votre lien et commencez à vendre",
-        "shareNow": "Partager maintenant",
-        "addProducts": "Ajouter des produits"
-      },
       "shareLink": {
         "title": "Lien de votre boutique",
         "copied": "Lien copié !",
@@ -829,7 +894,21 @@
     "or": "ou",
     "noTemplates": "Aucun modèle pour l'instant",
     "noFilterTemplates": "Aucun modèle {filter}",
-    "preview": "Aperçu",
+    "preview": {
+      "enterBodyText": "Entrez le corps du message...",
+      "label": "Aperçu",
+      "customer": "Client",
+      "online": "en ligne",
+      "exampleTime": "12:34",
+      "defaultButton": "Bouton",
+      "exampleValuesHint": "L'aperçu utilise des valeurs d'exemple :",
+      "exampleCustomerName": "Ahmed",
+      "exampleOrderNumber": "ORD-A1B2",
+      "exampleAmount": "450 MAD",
+      "exampleTracking": "MA123456",
+      "exampleShopName": "Ma Boutique",
+      "exampleItemsCount": "3"
+    },
     "saveDraft": "Enregistrer le brouillon",
     "submitToMeta": "Soumettre à Meta",
     "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce modèle ?",
@@ -919,21 +998,6 @@
       "saveFailed": "Échec de l'enregistrement du modèle",
       "submitFailed": "Échec de la soumission du modèle",
       "deleteFailed": "Échec de la suppression du modèle"
-    },
-    "preview": {
-      "enterBodyText": "Entrez le corps du message...",
-      "label": "Aperçu",
-      "customer": "Client",
-      "online": "en ligne",
-      "exampleTime": "12:34",
-      "defaultButton": "Bouton",
-      "exampleValuesHint": "L'aperçu utilise des valeurs d'exemple :",
-      "exampleCustomerName": "Ahmed",
-      "exampleOrderNumber": "ORD-A1B2",
-      "exampleAmount": "450 MAD",
-      "exampleTracking": "MA123456",
-      "exampleShopName": "Ma Boutique",
-      "exampleItemsCount": "3"
     },
     "button": {
       "created": "Créé !",

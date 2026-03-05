@@ -86,32 +86,98 @@
   },
   "landing": {
     "hero": {
-      "title": "بيع بالفيديو",
-      "subtitle": "حوّل إنستغرام إلى متجر",
-      "cta": "ابدأ البيع"
+      "title": "متجرك في جيبك",
+      "subtitle": "حوّل ريلز إنستاغرام إلى أموال — مجاناً تماماً",
+      "cta": "سجّل في البيتا — مجاناً",
+      "scrollHint": "شاهد كيف يعمل"
     },
-    "features": {
-      "title": "كل ما تحتاجه للبيع",
-      "subtitle": "أدوات قوية مصممة للتجارة الحديثة",
-      "video": "التسوق بالفيديو",
-      "whatsapp": "الدفع بالواتساب",
-      "instagram": "ربط مع إنستغرام"
+    "waitlist": {
+      "progress": "{taken} / 50 مكان مأخوذ",
+      "spotsLeft": "{count} مكان متبقي",
+      "beFirst": "كن من الأوائل",
+      "first50": "أول 50 بائع — مجاناً للأبد"
     },
     "howItWorks": {
-      "title": "كيف يعمل",
-      "subtitle": "ابدأ البيع في ثلاث خطوات بسيطة"
+      "title": "3 خطوات فقط",
+      "step1": {
+        "title": "ربط إنستاغرام",
+        "desc": "اربط حسابك بنقرة واحدة"
+      },
+      "step2": {
+        "title": "شارك الرابط",
+        "desc": "أرسله لعملائك عبر واتساب"
+      },
+      "step3": {
+        "title": "استقبل الطلبات",
+        "desc": "الطلبات تصلك مباشرة على واتساب"
+      }
     },
-    "testimonials": {
-      "title": "يحبه البائعون",
-      "subtitle": "شاهد ما يقوله مجتمعنا"
+    "transform": {
+      "title": "إنستاغرام = متجرك",
+      "subtitle": "المحتوى الموجود لديك يصبح كتالوج منتجاتك",
+      "before": "إنستاغرام الخاص بك",
+      "after": "متجرك",
+      "price": "السعر",
+      "order": "اطلب"
     },
-    "cta": {
-      "title": "مستعد للبدء بالبيع؟",
-      "subtitle": "انضم إلى آلاف البائعين الذين ينمّون أعمالهم مع فايب كارت."
+    "whatsappStory": {
+      "title": "كيف تتم الطلبية",
+      "customer": "العميل",
+      "seller": "أنت",
+      "system": "ڤايب كارت",
+      "msg1": "شاهدت هذا المنتج على إنستاغرام، هل متوفر؟",
+      "msg2": "نعم\\! إليك رابط المتجر:",
+      "msg3": "طلبت\\! الدفع عند الاستلام من فضلك",
+      "msg4": "تم تأكيد الطلب #1234 — الدفع عند الاستلام ✓",
+      "msg5": "شكراً\\! سيصلك غداً إن شاء الله",
+      "typing": "يكتب..."
     },
-    "roles": {
-      "seller": "أنا بائع",
-      "buyer": "أنا أتسوق"
+    "cod": {
+      "title": "ادفع عند الاستلام",
+      "subtitle": "بدون بطاقة بنكية. بدون تعقيد.",
+      "desc": "عملاؤك يدفعون نقداً عند استلام المنتج — كما اعتادوا"
+    },
+    "preview": {
+      "title": "شاهد متجرك",
+      "placeholder": "@حسابك_على_إنستا",
+      "shopUrl": "vibecart.ma/shop/",
+      "yourShop": "متجر",
+      "products": "المنتجات",
+      "followers": "المتابعين"
+    },
+    "signup": {
+      "title": "أول 50 — مجاناً للأبد",
+      "subtitle": "كن من الأوائل واحصل على مزايا حصرية",
+      "instagramCta": "سجّل في البيتا بإنستاغرام",
+      "connectingInstagram": "جاري الاتصال بإنستاغرام...",
+      "betaFull": "البيتا ممتلئة! سجل في قائمة الانتظار وسنعلمك عند توفر أماكن جديدة.",
+      "benefits": {
+        "free": "0 درهم — للأبد",
+        "freeDesc": "بدون أي رسوم خفية",
+        "support": "دعم مباشر",
+        "supportDesc": "مجموعة واتساب مع الفريق",
+        "features": "ميزات حصرية",
+        "featuresDesc": "أول من يجرب الجديد",
+        "founding": "عضو مؤسس",
+        "foundingDesc": "اسمك في قائمة المؤسسين"
+      },
+      "success": {
+        "title": "مبروك\\!",
+        "subtitle": "متجرك جاهز. هيا نجهزه!",
+        "goToDashboard": "اذهب إلى متجري",
+        "share": "شارك مع أصدقائك"
+      }
+    },
+    "footer": {
+      "madeIn": "صنع بحب في المغرب 🇲🇦",
+      "tagline": "التجارة بالفيديو",
+      "legal": "قانوني",
+      "privacy": "سياسة الخصوصية",
+      "terms": "شروط الاستخدام"
+    },
+    "sticky": {
+      "cta": "سجّل في البيتا",
+      "spotsLeft": "{count} مكان متبقي"
     }
   },
   "product": {
@@ -267,7 +333,12 @@
   "seller": {
     "dashboard": {
       "title": "لوحة التحكم",
-      "welcome": "مرحباً، {name}",
+      "welcome": {
+        "title": "متجرك أصبح متاحاً!",
+        "subtitle": "شارك رابطك وابدأ البيع",
+        "shareNow": "شارك الآن",
+        "addProducts": "أضف منتجات"
+      },
       "hello": "أهلاً، {name}",
       "subtitle": "إليك ما يحدث اليوم.",
       "todayOrders": "طلبات اليوم",
@@ -282,12 +353,6 @@
       "quickActions": "إجراءات سريعة",
       "newDrop": "إصدار جديد",
       "recentActivity": "النشاط الأخير",
-      "welcome": {
-        "title": "متجرك أصبح متاحاً!",
-        "subtitle": "شارك رابطك وابدأ البيع",
-        "shareNow": "شارك الآن",
-        "addProducts": "أضف منتجات"
-      },
       "shareLink": {
         "title": "رابط متجرك",
         "copied": "تم نسخ الرابط!",
@@ -829,7 +894,21 @@
     "or": "أو",
     "noTemplates": "لا توجد قوالب بعد",
     "noFilterTemplates": "لا توجد قوالب {filter}",
-    "preview": "معاينة",
+    "preview": {
+      "enterBodyText": "أدخل نص الرسالة...",
+      "label": "معاينة",
+      "customer": "العميل",
+      "online": "متصل",
+      "exampleTime": "12:34 م",
+      "defaultButton": "زر",
+      "exampleValuesHint": "المعاينة تستخدم قيم مثال:",
+      "exampleCustomerName": "أحمد",
+      "exampleOrderNumber": "ORD-A1B2",
+      "exampleAmount": "450 د.م.",
+      "exampleTracking": "MA123456",
+      "exampleShopName": "متجري",
+      "exampleItemsCount": "3"
+    },
     "saveDraft": "حفظ كمسودة",
     "submitToMeta": "إرسال إلى ميتا",
     "deleteConfirm": "هل أنت متأكد من حذف هذا القالب؟",
@@ -919,21 +998,6 @@
       "saveFailed": "فشل في حفظ القالب",
       "submitFailed": "فشل في إرسال القالب",
       "deleteFailed": "فشل في حذف القالب"
-    },
-    "preview": {
-      "enterBodyText": "أدخل نص الرسالة...",
-      "label": "معاينة",
-      "customer": "العميل",
-      "online": "متصل",
-      "exampleTime": "12:34 م",
-      "defaultButton": "زر",
-      "exampleValuesHint": "المعاينة تستخدم قيم مثال:",
-      "exampleCustomerName": "أحمد",
-      "exampleOrderNumber": "ORD-A1B2",
-      "exampleAmount": "450 د.م.",
-      "exampleTracking": "MA123456",
-      "exampleShopName": "متجري",
-      "exampleItemsCount": "3"
     },
     "button": {
       "created": "تم الإنشاء!",

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 import { InstagramGraphService } from '@/infrastructure/external-services/InstagramGraphService';
 import { randomBytes } from 'crypto';
@@ -11,7 +12,7 @@ const OAUTH_STATE_COOKIE = 'instagram_login_state';
  * Initiates Instagram OAuth for login/signup (no auth required).
  * Redirects to Instagram authorization page.
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
     if (!baseUrl) {
@@ -25,11 +26,15 @@ export async function GET() {
 
     const instagramService = new InstagramGraphService();
 
+    // Read optional "from" param (e.g., "beta") to pass through OAuth flow
+    const from = request.nextUrl.searchParams.get('from');
+
     // Generate state for CSRF protection (no sellerId — this is a login flow)
     const stateData = {
       purpose: 'login',
       nonce: randomBytes(16).toString('hex'),
       timestamp: Date.now(),
+      ...(from && { from }),
     };
     const state = Buffer.from(JSON.stringify(stateData)).toString('base64url');
 
