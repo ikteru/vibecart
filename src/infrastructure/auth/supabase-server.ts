@@ -25,7 +25,7 @@ export async function createClient() {
 
   return createServerClient(
     supabaseUrl,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder',
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 'placeholder',
     {
       cookies: {
         getAll() {
@@ -70,10 +70,10 @@ export async function createClient() {
  */
 export function createAdminClient() {
   const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const serviceRoleKey = process.env.SUPABASE_SECRET_KEY;
 
   if (!serviceRoleKey) {
-    throw new Error('SUPABASE_SERVICE_ROLE_KEY is not set');
+    throw new Error('SUPABASE_SECRET_KEY is not set');
   }
 
   return createSupabaseClient(supabaseUrl, serviceRoleKey, {
