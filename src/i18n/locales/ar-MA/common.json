@@ -493,6 +493,22 @@
         "messageTemplates": "قوالب الرسائل",
         "customizeNotifications": "خصص إشعارات الطلبات"
       },
+      "messaging": {
+        "channelType": {
+          "platform": "رقم VibeCart المشترك",
+          "seller": "الرقم ديالك"
+        },
+        "sharedNumberNote": "كيتصيفطو الرسائل من رقم VibeCart",
+        "ownNumberNote": "كيتصيفطو الرسائل من رقم الواتساب ديالك",
+        "connectOwnNumber": "استعمل رقم الواتساب ديالك",
+        "disconnectOwnNumber": "رجع للرقم المشترك",
+        "statusSent": "تصيفط",
+        "statusDelivered": "وصل",
+        "statusRead": "تقرا",
+        "statusFailed": "ما مشاش",
+        "deliveryStats": "إحصائيات التوصيل",
+        "noMessages": "مازال ما تصيفطات حتى رسالة"
+      },
       "instagram": {
         "title": "إنستاغرام",
         "connect": "ربط إنستا",

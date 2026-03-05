@@ -66,6 +66,12 @@ const nextConfig = {
     ],
   },
 
+  // Allow ngrok dev origins (avoids cross-origin warnings + enables server actions)
+  allowedDevOrigins: [
+    '*.ngrok-free.dev',
+    '*.ngrok.io',
+  ],
+
   // Experimental settings
   experimental: {
     serverActions: {

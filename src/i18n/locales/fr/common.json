@@ -493,6 +493,22 @@
         "messageTemplates": "Modèles de messages",
         "customizeNotifications": "Personnaliser les notifications de commandes"
       },
+      "messaging": {
+        "channelType": {
+          "platform": "Numéro partagé VibeCart",
+          "seller": "Votre propre numéro"
+        },
+        "sharedNumberNote": "Les messages sont envoyés depuis le numéro VibeCart",
+        "ownNumberNote": "Les messages sont envoyés depuis votre numéro WhatsApp",
+        "connectOwnNumber": "Utiliser votre propre numéro WhatsApp",
+        "disconnectOwnNumber": "Revenir au numéro partagé",
+        "statusSent": "Envoyé",
+        "statusDelivered": "Livré",
+        "statusRead": "Lu",
+        "statusFailed": "Échoué",
+        "deliveryStats": "Statistiques de livraison",
+        "noMessages": "Aucun message envoyé"
+      },
       "instagram": {
         "title": "Instagram",
         "connect": "Connecter Instagram",

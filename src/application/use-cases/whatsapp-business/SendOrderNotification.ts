@@ -2,17 +2,23 @@
  * Send Order Notification Use Case
  *
  * Sends WhatsApp template messages for order status updates.
- * Uses seller-assigned custom templates when available,
- * falling back to system default templates otherwise.
+ * Supports two paths:
+ * - Weslat broker (default): Routes through Weslat's message queue for reliable delivery
+ * - Direct Meta API (legacy): Calls Meta Graph API directly per seller token
+ *
+ * Controlled by USE_WESLAT_BROKER env var.
  */
 
 import { WhatsAppCloudApiService, TemplateComponent } from '@/infrastructure/external-services/WhatsAppCloudApiService';
+import { WeslatBrokerService } from '@/infrastructure/external-services/WeslatBrokerService';
+import { ResolveMessagingChannel } from './ResolveMessagingChannel';
 import { WhatsAppMessage } from '@/domain/entities/WhatsAppMessage';
 import { decryptWhatsAppToken } from '@/infrastructure/utils/encryption';
 import type { WhatsAppTokenRepository } from '@/domain/repositories/WhatsAppTokenRepository';
 import type { WhatsAppMessageRepository } from '@/domain/repositories/WhatsAppMessageRepository';
 import type { OrderRepository } from '@/domain/repositories/OrderRepository';
 import type { TemplateEventBindingRepository } from '@/domain/repositories/TemplateEventBindingRepository';
+import type { SellerWeslatChannelRepository } from '@/domain/repositories/SellerWeslatChannelRepository';
 import type { NotificationEventType } from '@/domain/entities/TemplateEventBinding';
 
 export type NotificationType = NotificationEventType;
@@ -39,6 +45,8 @@ const SYSTEM_TEMPLATE_NAMES: Record<NotificationType, string> = {
 
 export class SendOrderNotification {
   private whatsAppService: WhatsAppCloudApiService;
+  private weslatBroker: WeslatBrokerService;
+  private resolveChannel: ResolveMessagingChannel;
   private whatsAppTokenRepository: WhatsAppTokenRepository;
   private whatsAppMessageRepository: WhatsAppMessageRepository;
   private orderRepository: OrderRepository;
@@ -48,50 +56,143 @@ export class SendOrderNotification {
     whatsAppTokenRepository: WhatsAppTokenRepository,
     whatsAppMessageRepository: WhatsAppMessageRepository,
     orderRepository: OrderRepository,
-    templateEventBindingRepository?: TemplateEventBindingRepository
+    templateEventBindingRepository?: TemplateEventBindingRepository,
+    sellerWeslatChannelRepository?: SellerWeslatChannelRepository
   ) {
     this.whatsAppService = new WhatsAppCloudApiService();
+    this.weslatBroker = new WeslatBrokerService();
+    this.resolveChannel = new ResolveMessagingChannel(sellerWeslatChannelRepository);
     this.whatsAppTokenRepository = whatsAppTokenRepository;
     this.whatsAppMessageRepository = whatsAppMessageRepository;
     this.orderRepository = orderRepository;
     this.templateEventBindingRepository = templateEventBindingRepository;
   }
 
+  private get useWeslat(): boolean {
+    return process.env.USE_WESLAT_BROKER === 'true';
+  }
+
   async execute(input: SendOrderNotificationInput): Promise<SendOrderNotificationOutput> {
+    if (this.useWeslat) {
+      return this.executeViaWeslat(input);
+    }
+    return this.executeDirectMeta(input);
+  }
+
+  /**
+   * Send notification via Weslat broker (new path).
+   * Works for all sellers — uses shared platform number by default,
+   * or seller's own number if they've connected one.
+   */
+  private async executeViaWeslat(input: SendOrderNotificationInput): Promise<SendOrderNotificationOutput> {
     try {
       // 1. Get order details
       const order = await this.orderRepository.findById(input.orderId);
       if (!order) {
-        return {
-          success: false,
-          error: 'Order not found',
-        };
+        return { success: false, error: 'Order not found' };
+      }
+
+      // 2. Resolve which channel to use (platform shared or seller's own)
+      const channel = await this.resolveChannel.execute(order.sellerId);
+
+      // 3. Get customer phone in E.164 format
+      const customerPhone = order.customerPhone.toWhatsAppFormat();
+
+      // 4. Resolve template name and params
+      let templateName: string;
+      let templateParams: string[];
+
+      const customTemplate = await this.getSellerAssignedTemplate(
+        order.sellerId,
+        input.notificationType
+      );
+
+      if (customTemplate) {
+        templateName = customTemplate.templateName;
+        templateParams = this.extractTemplateParams(customTemplate.components, order);
+      } else {
+        templateName = SYSTEM_TEMPLATE_NAMES[input.notificationType];
+        const components = this.buildDefaultTemplateComponents(input.notificationType, order);
+        templateParams = this.flattenComponentsToParams(components);
+      }
+
+      // 5. Create local message record
+      const message = WhatsAppMessage.create({
+        sellerId: order.sellerId,
+        orderId: order.id,
+        recipientPhone: customerPhone,
+        templateName,
+        messageType: 'template',
+        messageContent: {
+          notificationType: input.notificationType,
+          channelType: channel.type,
+        },
+      });
+
+      await this.whatsAppMessageRepository.create(message);
+
+      // 6. Send via Weslat
+      const result = await this.weslatBroker.sendMessage({
+        apiKey: channel.weslatApiKey,
+        templateName,
+        recipient: customerPhone,
+        templateParams,
+        metadata: {
+          vibecart_order_id: order.id,
+          vibecart_seller_id: order.sellerId,
+          vibecart_notification_type: input.notificationType,
+          vibecart_message_id: message.id,
+        },
+      });
+
+      // 7. Update message with Weslat message ID (WA message ID comes later via callback)
+      await this.whatsAppMessageRepository.updateStatus(message.id, 'PENDING', {
+        whatsappMessageId: `weslat:${result.messageId}`,
+        timestamp: new Date(),
+      });
+
+      return {
+        success: true,
+        messageId: result.messageId,
+      };
+    } catch (error) {
+      console.error('Send order notification (Weslat) error:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to send notification',
+      };
+    }
+  }
+
+  /**
+   * Send notification directly via Meta Cloud API (legacy path).
+   * Requires seller to have connected their own WhatsApp Business account.
+   */
+  private async executeDirectMeta(input: SendOrderNotificationInput): Promise<SendOrderNotificationOutput> {
+    try {
+      // 1. Get order details
+      const order = await this.orderRepository.findById(input.orderId);
+      if (!order) {
+        return { success: false, error: 'Order not found' };
       }
 
       // 2. Get seller's WhatsApp token
       const token = await this.whatsAppTokenRepository.findBySellerId(order.sellerId);
       if (!token || !token.isActive) {
-        return {
-          success: false,
-          error: 'WhatsApp Business not connected for this seller',
-        };
+        return { success: false, error: 'WhatsApp Business not connected for this seller' };
       }
 
-      // Check if token is expired
       if (token.isExpired()) {
-        return {
-          success: false,
-          error: 'WhatsApp token has expired. Please reconnect.',
-        };
+        return { success: false, error: 'WhatsApp token has expired. Please reconnect.' };
       }
 
       // 3. Decrypt access token
       const accessToken = decryptWhatsAppToken(token.accessTokenEncrypted);
 
-      // 4. Get customer phone in WhatsApp format (212XXXXXXXXX)
+      // 4. Get customer phone
       const customerPhone = order.customerPhone.toWhatsAppFormat();
 
-      // 5. Get template - check for seller's custom template first, then fall back to system default
+      // 5. Get template
       let templateName: string;
       let languageCode: string;
       let components: TemplateComponent[];
@@ -102,61 +203,44 @@ export class SendOrderNotification {
       );
 
       if (customTemplate) {
-        // Use seller's custom template
         templateName = customTemplate.templateName;
         languageCode = customTemplate.templateLanguage;
         components = this.buildCustomTemplateComponents(customTemplate.components, order);
       } else {
-        // Fall back to system default template
         templateName = SYSTEM_TEMPLATE_NAMES[input.notificationType];
         languageCode = 'ar';
         components = this.buildDefaultTemplateComponents(input.notificationType, order);
       }
 
-      // 6. Create message record before sending
+      // 6. Create message record
       const message = WhatsAppMessage.create({
         sellerId: order.sellerId,
         orderId: order.id,
         recipientPhone: customerPhone,
         templateName,
         messageType: 'template',
-        messageContent: {
-          notificationType: input.notificationType,
-          components,
-        },
+        messageContent: { notificationType: input.notificationType, components },
       });
 
       await this.whatsAppMessageRepository.create(message);
 
-      // 7. Send the message
+      // 7. Send
       const response = await this.whatsAppService.sendTemplateMessage(
-        token.phoneNumberId,
-        accessToken,
-        customerPhone,
-        templateName,
-        languageCode,
-        components
+        token.phoneNumberId, accessToken, customerPhone,
+        templateName, languageCode, components
       );
 
-      // 8. Update message with WhatsApp message ID
+      // 8. Update status
       const whatsappMessageId = response.messages[0]?.id;
       if (whatsappMessageId) {
         await this.whatsAppMessageRepository.updateStatus(message.id, 'SENT', {
-          whatsappMessageId,
-          timestamp: new Date(),
+          whatsappMessageId, timestamp: new Date(),
         });
       }
 
-      return {
-        success: true,
-        messageId: whatsappMessageId,
-      };
+      return { success: true, messageId: whatsappMessageId };
     } catch (error) {
       console.error('Send order notification error:', error);
-
-      // Try to mark the message as failed if we have the message ID
-      // This would require tracking the message ID before send attempt
-
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to send notification',
@@ -166,7 +250,6 @@ export class SendOrderNotification {
 
   /**
    * Get seller's assigned template for a notification event.
-   * Returns null if no custom template is assigned or template is not approved.
    */
   private async getSellerAssignedTemplate(
     sellerId: string,
@@ -197,8 +280,51 @@ export class SendOrderNotification {
   }
 
   /**
+   * Flatten TemplateComponent[] into a flat string[] for Weslat's API.
+   */
+  private flattenComponentsToParams(components: TemplateComponent[]): string[] {
+    const params: string[] = [];
+    for (const comp of components) {
+      if (comp.parameters) {
+        for (const param of comp.parameters) {
+          params.push(param.text || '');
+        }
+      }
+    }
+    return params;
+  }
+
+  /**
+   * Extract template params from a custom template's components for Weslat.
+   */
+  private extractTemplateParams(
+    templateComponents: unknown[],
+    order: { orderNumber: string; customerName: string; trackingNumber?: string | null; total?: { amount: number; currency: string } }
+  ): string[] {
+    const variableValues: Record<string, string> = {
+      '1': order.customerName,
+      '2': order.orderNumber,
+      '3': order.total ? `${order.total.amount} ${order.total.currency}` : '0 MAD',
+      '4': order.trackingNumber || 'N/A',
+      '5': '',
+      '6': '1',
+    };
+
+    const params: string[] = [];
+    for (const comp of templateComponents as Array<{ type: string; text?: string }>) {
+      if (comp.type === 'BODY' && comp.text) {
+        const pattern = /\{\{(\d+)\}\}/g;
+        let match;
+        while ((match = pattern.exec(comp.text)) !== null) {
+          params.push(variableValues[match[1]] || '');
+        }
+      }
+    }
+    return params;
+  }
+
+  /**
    * Build template components from a custom template's component definition.
-   * Maps order data to the template's variable placeholders.
    */
   private buildCustomTemplateComponents(
     templateComponents: unknown[],
@@ -206,20 +332,17 @@ export class SendOrderNotification {
   ): TemplateComponent[] {
     const components: TemplateComponent[] = [];
 
-    // Build variable values map
-    // Standard variable mapping: {{1}} = customer_name, {{2}} = order_number, etc.
     const variableValues: Record<string, string> = {
       '1': order.customerName,
       '2': order.orderNumber,
       '3': order.total ? `${order.total.amount} ${order.total.currency}` : '0 MAD',
       '4': order.trackingNumber || 'N/A',
-      '5': '', // shop_name would need to be passed in
-      '6': '1', // items_count would need to be calculated
+      '5': '',
+      '6': '1',
     };
 
     for (const comp of templateComponents as Array<{ type: string; text?: string }>) {
       if (comp.type === 'BODY' && comp.text) {
-        // Extract variables from the template text and build parameters
         const pattern = /\{\{(\d+)\}\}/g;
         const parameters: Array<{ type: 'text'; text: string }> = [];
         let match;
@@ -233,10 +356,7 @@ export class SendOrderNotification {
         }
 
         if (parameters.length > 0) {
-          components.push({
-            type: 'body',
-            parameters,
-          });
+          components.push({ type: 'body', parameters });
         }
       }
     }
@@ -255,7 +375,6 @@ export class SendOrderNotification {
 
     switch (notificationType) {
       case 'ORDER_PENDING_CONFIRMATION':
-        // Template: "مرحباً {{1}}! تم استلام طلبك رقم {{2}}. المجموع: {{3}} درهم. للتأكيد، أرسل 1. للإلغاء، أرسل 0"
         components.push({
           type: 'body',
           parameters: [
@@ -267,7 +386,6 @@ export class SendOrderNotification {
         break;
 
       case 'ORDER_CONFIRMED':
-        // Template: "مرحباً {{1}}! تم تأكيد طلبك رقم {{2}}. سنقوم بشحنه قريباً."
         components.push({
           type: 'body',
           parameters: [
@@ -278,7 +396,6 @@ export class SendOrderNotification {
         break;
 
       case 'ORDER_SHIPPED':
-        // Template: "طلبك رقم {{1}} في الطريق! رقم التتبع: {{2}}"
         components.push({
           type: 'body',
           parameters: [
@@ -289,7 +406,6 @@ export class SendOrderNotification {
         break;
 
       case 'ORDER_DELIVERED':
-        // Template: "تم توصيل طلبك رقم {{1}}. شكراً لتسوقك معنا!"
         components.push({
           type: 'body',
           parameters: [
@@ -299,7 +415,6 @@ export class SendOrderNotification {
         break;
 
       case 'ORDER_CANCELLED':
-        // Template: "تم إلغاء طلبك رقم {{1}}. إذا كان لديك أي استفسار، راسلنا."
         components.push({
           type: 'body',
           parameters: [
@@ -335,7 +450,6 @@ export class SendOrderNotification {
       const accessToken = decryptWhatsAppToken(token.accessTokenEncrypted);
       const customerPhone = order.customerPhone.toWhatsAppFormat();
 
-      // Build text message in Arabic
       const textMessage = `مرحباً ${order.customerName}!
 
 تم استلام طلبك رقم ${order.orderNumber}
@@ -344,7 +458,6 @@ export class SendOrderNotification {
 للتأكيد، أرسل 1
 للإلغاء، أرسل 0`;
 
-      // Create message record
       const message = WhatsAppMessage.create({
         sellerId: order.sellerId,
         orderId: order.id,
@@ -358,19 +471,14 @@ export class SendOrderNotification {
 
       await this.whatsAppMessageRepository.create(message);
 
-      // Send text message
       const response = await this.whatsAppService.sendTextMessage(
-        token.phoneNumberId,
-        accessToken,
-        customerPhone,
-        textMessage
+        token.phoneNumberId, accessToken, customerPhone, textMessage
       );
 
       const whatsappMessageId = response.messages[0]?.id;
       if (whatsappMessageId) {
         await this.whatsAppMessageRepository.updateStatus(message.id, 'SENT', {
-          whatsappMessageId,
-          timestamp: new Date(),
+          whatsappMessageId, timestamp: new Date(),
         });
       }
 

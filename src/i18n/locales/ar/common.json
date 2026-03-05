@@ -493,6 +493,22 @@
         "messageTemplates": "قوالب الرسائل",
         "customizeNotifications": "تخصيص إشعارات الطلبات"
       },
+      "messaging": {
+        "channelType": {
+          "platform": "رقم VibeCart المشترك",
+          "seller": "رقمك الخاص"
+        },
+        "sharedNumberNote": "يتم إرسال الرسائل من رقم VibeCart",
+        "ownNumberNote": "يتم إرسال الرسائل من رقم واتساب الخاص بك",
+        "connectOwnNumber": "استخدم رقم واتساب الخاص بك",
+        "disconnectOwnNumber": "العودة للرقم المشترك",
+        "statusSent": "تم الإرسال",
+        "statusDelivered": "تم التوصيل",
+        "statusRead": "تمت القراءة",
+        "statusFailed": "فشل",
+        "deliveryStats": "إحصائيات التوصيل",
+        "noMessages": "لم يتم إرسال أي رسائل بعد"
+      },
       "instagram": {
         "title": "إنستغرام",
         "connect": "ربط إنستغرام",

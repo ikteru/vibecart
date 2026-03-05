@@ -8,6 +8,7 @@ import { DirectionalIcon } from '@/presentation/components/ui/DirectionalIcon';
 import type { ProductCategoryType } from '@/lib/constants';
 import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
 import type { InstagramMediaDTO } from '@/application/dtos/InstagramDTO';
+import { createProduct } from '../actions';
 
 interface InstagramMedia {
   id: string;
@@ -174,28 +175,21 @@ export default function NewProductPage() {
     setPublishError(null);
 
     try {
-      const response = await fetch('/api/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: formData.title,
-          description: formData.description || `Product: ${formData.title}`,
-          price: parseFloat(formData.price),
-          discountPrice: formData.discountPrice ? parseFloat(formData.discountPrice) : undefined,
-          promotionLabel: formData.promotionLabel || undefined,
-          stock: parseInt(formData.stock, 10) || 1,
-          videoUrl: selectedMedia?.url || undefined,
-          instagramMediaId: selectedMedia?.id || undefined,
-          category: formData.category,
-          variants: formData.selectedVariants.length > 0 ? formData.selectedVariants : undefined,
-        }),
+      const result = await createProduct({
+        title: formData.title,
+        description: formData.description || `Product: ${formData.title}`,
+        price: parseFloat(formData.price),
+        discountPrice: formData.discountPrice ? parseFloat(formData.discountPrice) : undefined,
+        promotionLabel: formData.promotionLabel || undefined,
+        stock: parseInt(formData.stock, 10) || 1,
+        videoUrl: selectedMedia?.url || undefined,
+        instagramMediaId: selectedMedia?.id || undefined,
+        category: formData.category,
+        variants: formData.selectedVariants.length > 0 ? formData.selectedVariants : undefined,
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to create product');
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to create product');
       }
 
       router.push(`/${locale}/seller/inventory`);
