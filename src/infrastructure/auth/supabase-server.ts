@@ -13,9 +13,10 @@ export async function createClient() {
   const cookieStore = await cookies();
 
   // Use internal Docker URL for server-side API calls
-  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  // Fallback to placeholder during build-time prerendering (env vars not available on Vercel build)
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
   // Use public URL for cookie name matching (browser sets cookies with public URL hostname)
-  const publicUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const publicUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
 
   // Extract hostnames to handle cookie name remapping between environments
   const serverHost = new URL(supabaseUrl).hostname;
@@ -24,7 +25,7 @@ export async function createClient() {
 
   return createServerClient(
     supabaseUrl,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder',
     {
       cookies: {
         getAll() {
@@ -68,7 +69,7 @@ export async function createClient() {
  * IMPORTANT: Always verify authorization in the application layer before using this client
  */
 export function createAdminClient() {
-  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!serviceRoleKey) {
