@@ -236,13 +236,7 @@ export default async function PrivacyPage() {
         </h2>
         <div className="space-y-4 text-zinc-300">
           <p>
-            {t('sections.cookies.text1')}{" "}
-            <a
-              href="cookies"
-              className="text-primary-400 hover:text-primary-300"
-            >
-              {t('sections.cookies.link')}
-            </a>.
+            {t('sections.cookies.text1')}
           </p>
         </div>
       </section>
@@ -289,7 +283,7 @@ export default async function PrivacyPage() {
         </p>
         <div className="mt-4 space-y-2 text-zinc-300">
           <p>
-            {t('sections.contact.email')}{" "}
+            <strong>Email:</strong>{" "}
             <a
               href="mailto:dpo@vibecart.ma"
               className="text-primary-400 hover:text-primary-300"
@@ -298,7 +292,7 @@ export default async function PrivacyPage() {
             </a>
           </p>
           <p>
-            {t('sections.contact.address')}
+            <strong>Address:</strong> VibeCart SARL, Morocco
           </p>
         </div>
       </section>
