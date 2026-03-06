@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { FileText, Shield, Cookie } from 'lucide-react';
+import { FileText, Shield, Cookie, Trash2 } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 
 interface LegalLayoutProps {
   children: React.ReactNode;
@@ -16,28 +17,32 @@ export const metadata: Metadata = {
 
 export default async function LegalLayout({ children, params }: LegalLayoutProps) {
   const { locale } = await params;
+  const t = await getTranslations('legal');
 
-  // t('legal.nav.terms')
-  // t('legal.nav.privacy')
-  // t('legal.nav.cookies')
   const navItems = [
     {
       href: `/${locale}/legal/terms`,
-      label: 'Terms of Service',
+      label: t('nav.terms'),
       icon: FileText,
       key: 'terms',
     },
     {
       href: `/${locale}/legal/privacy`,
-      label: 'Privacy Policy',
+      label: t('nav.privacy'),
       icon: Shield,
       key: 'privacy',
     },
     {
       href: `/${locale}/legal/cookies`,
-      label: 'Cookie Policy',
+      label: t('nav.cookies'),
       icon: Cookie,
       key: 'cookies',
+    },
+    {
+      href: `/${locale}/legal/data-deletion`,
+      label: t('nav.dataDeletion'),
+      icon: Trash2,
+      key: 'data-deletion',
     },
   ];
 
@@ -71,8 +76,7 @@ export default async function LegalLayout({ children, params }: LegalLayoutProps
             href={`/${locale}`}
             className="inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-zinc-300"
           >
-            {/* t('legal.backToHome') */}
-            ← Back to VibeCart
+            {t('backToHome')}
           </Link>
         </div>
       </div>

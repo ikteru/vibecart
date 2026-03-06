@@ -1011,6 +1011,345 @@
       "info": "Ces modèles sont optimisés pour l'approbation Meta. Appuyez sur \"Utiliser ce modèle\" pour créer un brouillon, puis soumettez à Meta pour approbation."
     }
   },
+  "legal": {
+    "backToHome": "← Retour à VibeCart",
+    "nav": {
+      "terms": "Conditions d'utilisation",
+      "privacy": "Politique de confidentialité",
+      "cookies": "Politique de cookies",
+      "dataDeletion": "Suppression des données"
+    },
+    "privacy": {
+      "metadata": {
+        "title": "Politique de confidentialité",
+        "description": "Politique de confidentialité de VibeCart - Protection des données conforme à la CNDP pour les vendeurs marocains"
+      },
+      "title": "Politique de confidentialité",
+      "lastUpdated": "Dernière mise à jour : {date}",
+      "introduction": "Chez VibeCart, nous prenons votre vie privée au sérieux. Cette politique de confidentialité explique comment nous collectons, utilisons, stockons et protégeons vos données personnelles conformément à la loi marocaine 09-08 relative à la protection des personnes physiques à l'égard du traitement des données à caractère personnel (réglementations CNDP).",
+      "cndp": {
+        "title": "Avis de conformité CNDP",
+        "description": "VibeCart s'engage à protéger vos données personnelles conformément à la loi 09-08 et aux réglementations de la Commission Nationale de contrôle de la Protection des Données à caractère Personnel (CNDP) au Maroc."
+      },
+      "sections": {
+        "controller": {
+          "title": "1. Responsable du traitement",
+          "text1": "VibeCart SARL opère en tant que responsable du traitement des données personnelles traitées via notre plateforme. Notre siège social est au Maroc.",
+          "contact": "Contact protection des données :"
+        },
+        "dataCollected": {
+          "title": "2. Données personnelles collectées",
+          "intro": "Nous collectons les catégories suivantes de données personnelles :",
+          "seller": {
+            "title": "Pour les vendeurs :",
+            "bullet1": "Identité : Nom complet, nom commercial, identifiant boutique",
+            "bullet2": "Contact : Numéro de téléphone, adresse e-mail, numéro WhatsApp",
+            "bullet3": "Entreprise : Adresse professionnelle, identification fiscale (ICE/IF)",
+            "bullet4": "Contenu : Vidéos produits, images, descriptions et branding de la boutique",
+            "bullet5": "Compte : Identifiants de connexion, adresse IP, informations sur l'appareil"
+          },
+          "customer": {
+            "title": "Pour les clients (via commandes WhatsApp) :",
+            "bullet1": "Contact : Nom, numéro de téléphone, messages WhatsApp",
+            "bullet2": "Livraison : Adresse de livraison, ville, code postal",
+            "bullet3": "Commande : Sélection de produits, historique des commandes, préférences"
+          }
+        },
+        "usage": {
+          "title": "3. Comment nous utilisons vos données",
+          "intro": "Nous traitons vos données personnelles aux fins suivantes :",
+          "bullet1": "Fourniture et maintenance de la plateforme VibeCart",
+          "bullet2": "Traitement et gestion des commandes entre vendeurs et clients",
+          "bullet3": "Envoi de notifications de commande via l'API WhatsApp Business",
+          "bullet4": "Authentification des utilisateurs et sécurisation des comptes",
+          "bullet5": "Amélioration des fonctionnalités et de l'expérience utilisateur",
+          "bullet6": "Respect des obligations légales et réglementaires",
+          "bullet7": "Prévention de la fraude et sécurité de la plateforme"
+        },
+        "storage": {
+          "title": "4. Stockage et sécurité des données",
+          "intro": "Nous stockons vos données de manière sécurisée selon les pratiques standard de l'industrie :",
+          "bullet1": "Les données sont stockées sur l'infrastructure Supabase avec chiffrement au repos et en transit",
+          "bullet2": "Les serveurs sont situés dans des régions conformes aux exigences marocaines de protection des données",
+          "bullet3": "L'accès est restreint au personnel autorisé uniquement",
+          "bullet4": "Audits de sécurité réguliers et évaluations des vulnérabilités"
+        },
+        "whatsapp": {
+          "title": "5. Partage de données via l'API WhatsApp Business",
+          "intro": "VibeCart utilise l'API WhatsApp Business pour faciliter la communication :",
+          "bullet1": "Les numéros de téléphone des clients sont partagés avec WhatsApp pour la livraison des messages",
+          "bullet2": "Les détails des commandes sont transmis pour générer les messages de confirmation",
+          "bullet3": "WhatsApp traite les données conformément à sa politique de confidentialité",
+          "bullet4": "Les clients peuvent se désinscrire des communications WhatsApp à tout moment",
+          "note": "Pour plus d'informations, veuillez consulter la politique de confidentialité de WhatsApp."
+        },
+        "rights": {
+          "title": "6. Vos droits en matière de protection des données",
+          "intro": "En vertu de la loi marocaine 09-08 et des réglementations CNDP, vous disposez des droits suivants :",
+          "bullet1": "Droit d'accès : Demander une copie de vos données personnelles",
+          "bullet2": "Droit de rectification : Corriger des données inexactes ou incomplètes",
+          "bullet3": "Droit à l'effacement : Demander la suppression de vos données personnelles",
+          "bullet4": "Droit à la limitation : Limiter la manière dont nous traitons vos données",
+          "bullet5": "Droit d'opposition : S'opposer à certains types de traitement",
+          "bullet6": "Droit à la portabilité : Recevoir vos données dans un format structuré",
+          "exercise": "Pour exercer vos droits, contactez-nous à : privacy@vibecart.ma ou soumettez une demande via les paramètres de votre compte."
+        },
+        "retention": {
+          "title": "7. Politique de conservation des données",
+          "intro": "Nous conservons vos données personnelles pour les durées suivantes :",
+          "bullet1": "Données de compte : Conservées tant que votre compte est actif ; supprimées dans les 30 jours suivant la fermeture du compte (sauf obligations légales nécessitant une conservation plus longue)",
+          "bullet2": "Données de commande : Conservées pendant 10 ans conformément au droit fiscal et commercial marocain",
+          "bullet3": "Messages WhatsApp : Conservés pendant 90 jours, puis automatiquement supprimés",
+          "bullet4": "Données analytiques : Anonymisées après 12 mois"
+        },
+        "sharing": {
+          "title": "8. Partage de données et tiers",
+          "intro": "Nous partageons vos données uniquement dans les circonstances suivantes :",
+          "bullet1": "Avec les vendeurs/clients : Les informations de commande nécessaires sont partagées pour compléter les transactions",
+          "bullet2": "Fournisseurs de services : Supabase (hébergement), WhatsApp (messagerie) et autres fournisseurs essentiels",
+          "bullet3": "Exigences légales : Lorsque requis par la loi marocaine ou par ordonnance judiciaire",
+          "bullet4": "Transferts d'entreprise : En cas de fusion, acquisition ou vente (avec notification aux utilisateurs)",
+          "note": "Nous ne vendons pas vos données personnelles à des tiers à des fins marketing."
+        },
+        "cookies": {
+          "title": "9. Cookies et suivi",
+          "text1": "Nous utilisons des cookies et des technologies similaires pour améliorer votre expérience. Pour des informations détaillées, veuillez consulter notre politique de cookies."
+        },
+        "transfers": {
+          "title": "10. Transferts internationaux de données",
+          "text1": "Bien que nos opérations principales soient au Maroc, certaines données peuvent être traitées par des fournisseurs de services dans d'autres pays. Nous assurons une protection adéquate par des clauses contractuelles types et en sélectionnant des fournisseurs engagés dans la protection des données."
+        },
+        "complaints": {
+          "title": "11. Déposer une plainte",
+          "text1": "Si vous estimez que vos droits en matière de protection des données ont été violés, vous avez le droit de déposer une plainte auprès de :",
+          "cndp": "Commission Nationale de contrôle de la Protection des Données à caractère Personnel (CNDP)",
+          "address": "5, Angle Allal El Fassi & Rue Arzez, Souissi, Rabat, Maroc"
+        },
+        "contact": {
+          "title": "Nous contacter",
+          "text1": "Pour toute question relative à la confidentialité ou pour exercer vos droits de protection des données, veuillez contacter notre Délégué à la Protection des Données :"
+        }
+      }
+    },
+    "terms": {
+      "metadata": {
+        "title": "Conditions d'utilisation",
+        "description": "Conditions d'utilisation de VibeCart - Plateforme de commerce vidéo pour les vendeurs marocains"
+      },
+      "title": "Conditions d'utilisation",
+      "lastUpdated": "Dernière mise à jour : {date}",
+      "introduction": "Bienvenue sur VibeCart. Ces conditions d'utilisation régissent votre utilisation de notre plateforme de commerce vidéo conçue spécifiquement pour les vendeurs marocains. En accédant ou en utilisant VibeCart, vous acceptez d'être lié par ces conditions.",
+      "sections": {
+        "platform": {
+          "title": "1. Présentation de la plateforme",
+          "description": "VibeCart est une plateforme de commerce vidéo qui permet aux vendeurs marocains de présenter et vendre leurs produits via du contenu vidéo. Notre plateforme s'intègre avec l'API WhatsApp Business et Instagram pour simplifier le processus d'achat.",
+          "bullet1": "La plateforme est spécifiquement conçue pour les vendeurs basés au Maroc",
+          "bullet2": "Toutes les transactions sont effectuées en Dirham marocain (MAD)",
+          "bullet3": "Les langues principales incluent la Darija marocaine (ar-MA), l'arabe classique, le français et l'anglais"
+        },
+        "sellerResponsibilities": {
+          "title": "2. Responsabilités du vendeur",
+          "intro": "En tant que vendeur sur VibeCart, vous êtes seul responsable de :",
+          "bullet1": "L'exactitude des descriptions de produits, des prix et de la disponibilité",
+          "bullet2": "La qualité, la sécurité et la légalité des produits proposés à la vente",
+          "bullet3": "L'exécution des commandes, l'emballage et l'expédition aux clients",
+          "bullet4": "La conformité avec toutes les lois et réglementations marocaines applicables",
+          "bullet5": "La gestion des retours, remboursements et litiges clients",
+          "bullet6": "Le maintien de registres d'inventaire précis"
+        },
+        "payment": {
+          "title": "3. Modèle de paiement à la livraison (COD)",
+          "intro": "VibeCart fonctionne principalement sur un modèle de paiement à la livraison (COD) :",
+          "bullet1": "Les clients passent commande via la plateforme et paient à la livraison",
+          "bullet2": "Les vendeurs sont responsables de définir des attentes de livraison claires",
+          "bullet3": "VibeCart ne traite pas les paiements et ne détient pas de fonds pour le compte des vendeurs",
+          "bullet4": "Tout litige de paiement doit être résolu directement entre le vendeur et le client",
+          "note": "Remarque : Les vendeurs doivent mettre en place des mesures pour minimiser les annulations de commandes COD et les fausses commandes, car celles-ci impactent directement les opérations commerciales."
+        },
+        "integration": {
+          "title": "4. Intégration WhatsApp et Instagram",
+          "intro": "VibeCart s'intègre avec des services tiers pour améliorer votre expérience de vente :",
+          "bullet1": "Intégration de l'API WhatsApp Business pour les notifications de commande et la communication client",
+          "bullet2": "Intégration Instagram pour importer du contenu produit et élargir la portée",
+          "bullet3": "Vous devez respecter les conditions d'utilisation de WhatsApp Business et d'Instagram",
+          "bullet4": "VibeCart n'est pas responsable des changements ou interruptions des services tiers"
+        },
+        "content": {
+          "title": "5. Contenu généré par les utilisateurs",
+          "intro": "En téléchargeant du contenu sur VibeCart, vous :",
+          "bullet1": "Conservez la propriété de votre contenu original",
+          "bullet2": "Accordez à VibeCart une licence non exclusive pour afficher et promouvoir votre contenu sur la plateforme",
+          "bullet3": "Confirmez avoir le droit d'utiliser toute musique, image ou autre média dans vos vidéos",
+          "bullet4": "Acceptez de ne pas télécharger de contenu qui enfreint les droits de tiers ou viole la loi marocaine"
+        },
+        "termination": {
+          "title": "6. Résiliation de compte",
+          "intro": "VibeCart se réserve le droit de suspendre ou de résilier des comptes pour :",
+          "bullet1": "Violation de ces conditions d'utilisation",
+          "bullet2": "Vente de produits interdits ou illégaux",
+          "bullet3": "Activité frauduleuse ou fausse déclaration",
+          "bullet4": "Retours clients constamment négatifs ou taux de litiges élevé",
+          "bullet5": "Périodes d'inactivité prolongées (12+ mois)",
+          "notice": "Dans la mesure du possible, nous fournirons un préavis avant la résiliation et la possibilité de remédier aux violations."
+        },
+        "liability": {
+          "title": "7. Limitation de responsabilité",
+          "text1": "VibeCart fournit la plateforme « en l'état » et ne garantit pas un accès continu et ininterrompu. Nous ne sommes pas responsables de :",
+          "bullet1": "Litiges entre vendeurs et clients",
+          "bullet2": "Qualité, sécurité ou problèmes de livraison des produits",
+          "bullet3": "Perte d'activité ou de revenus",
+          "bullet4": "Problèmes techniques hors de notre contrôle raisonnable"
+        },
+        "governingLaw": {
+          "title": "8. Droit applicable",
+          "text1": "Ces conditions d'utilisation sont régies et interprétées conformément aux lois du Royaume du Maroc. Tout litige découlant de ces conditions sera soumis à la juridiction exclusive des tribunaux du Maroc.",
+          "text2": "Pour les vendeurs opérant en dehors du Maroc, vous acceptez que votre utilisation de VibeCart constitue une acceptation de la juridiction marocaine pour toute question liée à la plateforme."
+        },
+        "changes": {
+          "title": "9. Modifications des conditions",
+          "text1": "Nous pouvons mettre à jour ces conditions d'utilisation de temps à autre. Nous informerons les utilisateurs des changements significatifs par e-mail ou notifications sur la plateforme. L'utilisation continue de VibeCart après les modifications constitue l'acceptation des conditions mises à jour."
+        },
+        "contact": {
+          "title": "Nous contacter",
+          "text1": "Si vous avez des questions concernant ces conditions d'utilisation, veuillez nous contacter à :"
+        }
+      }
+    },
+    "cookies": {
+      "metadata": {
+        "title": "Politique de cookies",
+        "description": "Politique de cookies de VibeCart - Comprendre comment nous utilisons les cookies sur notre plateforme"
+      },
+      "title": "Politique de cookies",
+      "lastUpdated": "Dernière mise à jour : {date}",
+      "introduction": "Cette politique de cookies explique comment VibeCart utilise les cookies et technologies similaires pour vous reconnaître lorsque vous visitez notre plateforme. Elle explique ce que sont ces technologies et pourquoi nous les utilisons, ainsi que vos droits de contrôle sur leur utilisation.",
+      "sections": {
+        "whatAre": {
+          "title": "1. Qu'est-ce que les cookies ?",
+          "text1": "Les cookies sont de petits fichiers de données placés sur votre ordinateur ou appareil mobile lorsque vous visitez un site web. Ils sont largement utilisés par les propriétaires de sites web pour faire fonctionner leurs sites plus efficacement et fournir des informations de reporting.",
+          "text2": "Les cookies que nous plaçons sont appelés « cookies propriétaires ». Les cookies placés par des tiers sont appelés « cookies tiers ». Les cookies tiers permettent des fonctionnalités tierces sur ou via le site web."
+        },
+        "howWeUse": {
+          "title": "2. Comment nous utilisons les cookies",
+          "intro": "Nous utilisons des cookies pour plusieurs raisons :",
+          "bullet1": "Pour activer certaines fonctions de la plateforme",
+          "bullet2": "Pour fournir des analyses et comprendre comment vous interagissez avec notre plateforme",
+          "bullet3": "Pour stocker vos préférences et paramètres",
+          "bullet4": "Pour améliorer la sécurité de notre plateforme"
+        },
+        "types": {
+          "title": "3. Types de cookies que nous utilisons",
+          "table": {
+            "cookieName": "Nom du cookie",
+            "purpose": "Objectif",
+            "duration": "Durée"
+          },
+          "essential": {
+            "badge": "1",
+            "title": "Cookies essentiels",
+            "description": "Ces cookies sont strictement nécessaires pour vous fournir les services disponibles sur notre plateforme et pour utiliser certaines de ses fonctionnalités, comme l'accès aux zones sécurisées. Sans ces cookies, certains services que vous avez demandés ne peuvent pas être fournis.",
+            "cookies": {
+              "accessToken": { "name": "sb-access-token", "purpose": "Session d'authentification", "duration": "Session" },
+              "refreshToken": { "name": "sb-refresh-token", "purpose": "Rafraîchissement d'authentification", "duration": "7 jours" },
+              "locale": { "name": "locale", "purpose": "Préférence de langue", "duration": "1 an" },
+              "theme": { "name": "theme", "purpose": "Préférence mode sombre/clair", "duration": "1 an" }
+            }
+          },
+          "analytics": {
+            "badge": "2",
+            "title": "Cookies analytiques",
+            "description": "Ces cookies nous aident à comprendre comment les visiteurs interagissent avec notre plateforme en collectant et rapportant des informations de manière anonyme. Cela nous aide à améliorer notre plateforme et à fournir une meilleure expérience utilisateur.",
+            "note": "Remarque : Nous utilisons actuellement des analyses minimales. Si nous implémentons des analyses tierces (comme Google Analytics), nous mettrons à jour cette politique et demanderons votre consentement lorsque requis.",
+            "cookies": {
+              "session": { "name": "_vc_session", "purpose": "Analyses de session", "duration": "30 minutes" },
+              "visitor": { "name": "_vc_visitor", "purpose": "Suivi des visiteurs uniques", "duration": "1 an" },
+              "events": { "name": "_vc_events", "purpose": "Suivi des événements (clics, vues)", "duration": "Session" }
+            }
+          },
+          "functionality": {
+            "badge": "3",
+            "title": "Cookies de fonctionnalité",
+            "description": "Ces cookies nous permettent de mémoriser les choix que vous faites lorsque vous utilisez notre plateforme, comme la mémorisation de vos identifiants de connexion ou de votre préférence de langue. Ils fournissent des fonctionnalités améliorées et plus personnalisées.",
+            "cookies": {
+              "preferences": { "name": "vc_preferences", "purpose": "Préférences utilisateur", "duration": "1 an" },
+              "recentViews": { "name": "vc_recent_views", "purpose": "Produits consultés récemment", "duration": "7 jours" }
+            }
+          }
+        },
+        "thirdParty": {
+          "title": "4. Cookies tiers",
+          "intro": "En plus de nos propres cookies, nous pouvons utiliser des cookies tiers pour :",
+          "bullet1": "Supabase : Pour les services d'authentification et de base de données",
+          "bullet2": "WhatsApp : Pour l'intégration WhatsApp Business (si activée)",
+          "bullet3": "Processeurs de paiement : Si/quand les fonctionnalités de paiement en ligne seront ajoutées",
+          "note": "Ces tiers peuvent utiliser des cookies, des balises web et des technologies similaires pour collecter des informations sur votre utilisation de notre plateforme. Nous ne contrôlons pas les technologies de suivi de ces tiers ni la manière dont elles peuvent être utilisées."
+        },
+        "management": {
+          "title": "5. Comment gérer les cookies",
+          "intro": "Vous avez le droit de décider d'accepter ou de refuser les cookies. Vous pouvez exercer vos préférences en matière de cookies de la manière suivante :",
+          "browser": {
+            "title": "Paramètres du navigateur",
+            "text1": "La plupart des navigateurs web vous permettent de contrôler les cookies via leurs paramètres. Vous pouvez généralement trouver ces paramètres dans le menu « Options » ou « Préférences » de votre navigateur."
+          },
+          "consequences": {
+            "title": "Conséquences de la désactivation des cookies",
+            "text1": "Si vous choisissez de refuser les cookies, vous pouvez toujours utiliser notre plateforme, mais votre accès à certaines fonctionnalités et zones peut être restreint. Plus précisément :",
+            "bullet1": "Vous pourriez ne pas pouvoir vous connecter ou maintenir une session",
+            "bullet2": "Vos préférences de langue pourraient ne pas être sauvegardées",
+            "bullet3": "Certaines fonctionnalités personnalisées pourraient ne pas fonctionner correctement"
+          }
+        },
+        "consent": {
+          "title": "6. Consentement aux cookies",
+          "text1": "Lors de votre première visite sur notre plateforme, nous vous demanderons votre consentement pour utiliser des cookies non essentiels. Vous pouvez modifier vos préférences à tout moment en cliquant sur le lien des paramètres de cookies dans le pied de page de notre site.",
+          "text2": "Les cookies essentiels (ceux nécessaires au fonctionnement de la plateforme) sont toujours actifs et ne peuvent pas être désactivés via notre outil de préférences de cookies."
+        },
+        "updates": {
+          "title": "7. Mises à jour de cette politique",
+          "text1": "Nous pouvons mettre à jour cette politique de cookies de temps à autre pour refléter les changements dans les cookies que nous utilisons ou pour d'autres raisons opérationnelles, légales ou réglementaires. Nous vous informerons de tout changement significatif en publiant la nouvelle politique sur cette page avec une date de révision mise à jour.",
+          "text2": "Nous vous encourageons à consulter périodiquement cette page pour les dernières informations sur nos pratiques en matière de cookies."
+        },
+        "contact": {
+          "title": "Nous contacter",
+          "text1": "Si vous avez des questions sur notre utilisation des cookies ou d'autres technologies, veuillez nous contacter à :"
+        }
+      }
+    },
+    "dataDeletion": {
+      "title": "Instructions de suppression des données",
+      "lastUpdated": "Dernière mise à jour : {date}",
+      "introduction": "Si vous souhaitez supprimer vos données de VibeCart, vous pouvez le faire en utilisant l'une des méthodes ci-dessous. Nous traiterons votre demande dans les 30 jours.",
+      "option1": {
+        "title": "Option 1 : Supprimer depuis Instagram",
+        "description": "Vous pouvez révoquer l'accès de VibeCart à vos données en supprimant les autorisations directement depuis Instagram :",
+        "step1": "Ouvrez votre application Instagram et allez dans Paramètres",
+        "step2": "Naviguez vers Sécurité → Applications et sites web",
+        "step3": "Trouvez VibeCart dans l'onglet Actif",
+        "step4": "Appuyez sur Supprimer",
+        "note": "Cela révoquera notre accès à vos données Instagram. Votre compte VibeCart et les données associées seront automatiquement supprimés dans les 30 jours."
+      },
+      "option2": {
+        "title": "Option 2 : Nous contacter",
+        "description": "Envoyez un e-mail à privacy@codelya.ma avec l'objet « Demande de suppression de données » et incluez :",
+        "bullet1": "Votre nom d'utilisateur Instagram",
+        "bullet2": "L'adresse e-mail associée à votre compte (le cas échéant)"
+      },
+      "whatWeDelete": {
+        "title": "Données que nous supprimons",
+        "description": "À réception de votre demande, nous supprimerons définitivement :",
+        "bullet1": "Votre profil vendeur et la configuration de votre boutique",
+        "bullet2": "Vos listes de produits et images téléchargées",
+        "bullet3": "Vos tokens d'accès Instagram (chiffrés)",
+        "bullet4": "Votre historique de commandes et interactions clients",
+        "bullet5": "Toute autre donnée personnelle associée à votre compte",
+        "note": "Certaines données anonymisées et agrégées peuvent être conservées à des fins d'analyse, conformément à la loi applicable."
+      },
+      "processingTime": {
+        "title": "Délai de traitement",
+        "description": "Les demandes de suppression de données sont traitées dans les 30 jours. Vous recevrez un e-mail de confirmation une fois vos données supprimées."
+      }
+    }
+  },
   "language": {
     "name": {
       "english": "English",
