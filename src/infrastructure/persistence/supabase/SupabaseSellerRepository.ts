@@ -96,21 +96,24 @@ export class SupabaseSellerRepository implements SellerRepository {
       .single();
 
     if (existing) {
-      // Verify auth context matches the seller's user_id
-      const {
-        data: { user: authUser },
-      } = await this.supabase.auth.getUser();
+      // When admin client is provided, caller has already verified authorization
+      // (e.g., Instagram login callback verifies user via admin API)
+      // When no admin client, verify auth context matches the seller's user_id
+      if (!this.adminClient) {
+        const {
+          data: { user: authUser },
+        } = await this.supabase.auth.getUser();
 
-      if (!authUser) {
-        throw new Error('Failed to save seller: Not authenticated');
+        if (!authUser) {
+          throw new Error('Failed to save seller: Not authenticated');
+        }
+
+        if (authUser.id !== existing.user_id) {
+          throw new Error('Failed to save seller: Not authorized to update this seller');
+        }
       }
 
-      if (authUser.id !== existing.user_id) {
-        throw new Error('Failed to save seller: Not authorized to update this seller');
-      }
-
-      // Use admin client for update if available (bypasses RLS since we verified auth above)
-      // This is necessary because server actions may not pass JWT properly for RLS
+      // Use admin client for update if available (bypasses RLS since auth verified above)
       const updateClient = this.adminClient || this.supabase;
 
       // Update existing seller
