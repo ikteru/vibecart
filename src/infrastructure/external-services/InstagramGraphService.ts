@@ -154,9 +154,10 @@ export class InstagramGraphService {
       access_token: shortLivedToken,
     });
 
-    const response = await fetch(
-      `${GRAPH_API_BASE}/access_token?${params.toString()}`
-    );
+    const response = await fetch(`${GRAPH_API_BASE}/access_token`, {
+      method: 'POST',
+      body: params,
+    });
 
     if (!response.ok) {
       await throwApiError(response, 'get long-lived token');
@@ -177,9 +178,10 @@ export class InstagramGraphService {
       access_token: token,
     });
 
-    const response = await fetch(
-      `${GRAPH_API_BASE}/refresh_access_token?${params.toString()}`
-    );
+    const response = await fetch(`${GRAPH_API_BASE}/refresh_access_token`, {
+      method: 'POST',
+      body: params,
+    });
 
     if (!response.ok) {
       await throwApiError(response, 'refresh token');
