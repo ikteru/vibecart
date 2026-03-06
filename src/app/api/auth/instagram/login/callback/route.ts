@@ -85,12 +85,23 @@ export async function GET(request: NextRequest) {
     const instagramService = new InstagramGraphService();
 
     const shortLivedToken = await instagramService.exchangeCodeForToken(code, loginCallbackUri);
-    const longLivedToken = await instagramService.getLongLivedToken(shortLivedToken.access_token);
-    const profile = await instagramService.getUserProfile(longLivedToken.access_token);
+
+    // Try to get long-lived token; fall back to short-lived if permissions not yet approved
+    let accessToken = shortLivedToken.access_token;
+    let tokenExpiresIn = 3600; // short-lived: ~1 hour
+    try {
+      const longLivedToken = await instagramService.getLongLivedToken(shortLivedToken.access_token);
+      accessToken = longLivedToken.access_token;
+      tokenExpiresIn = longLivedToken.expires_in;
+    } catch (tokenError) {
+      console.warn('Long-lived token exchange failed (likely pending App Review), using short-lived token:', tokenError);
+    }
+
+    const profile = await instagramService.getUserProfile(accessToken);
 
     // 4. Calculate token expiration
     const expiresAt = new Date();
-    expiresAt.setSeconds(expiresAt.getSeconds() + longLivedToken.expires_in);
+    expiresAt.setSeconds(expiresAt.getSeconds() + tokenExpiresIn);
 
     // 5. Find or create Supabase user
     const adminClient = createAdminClient();
@@ -187,13 +198,13 @@ export async function GET(request: NextRequest) {
     }
 
     // 8. Store encrypted Instagram token
-    const encryptedToken = encryptToken(longLivedToken.access_token);
+    const encryptedToken = encryptToken(accessToken);
     const instagramToken = InstagramToken.create({
       sellerId: seller.id,
       instagramUserId: profile.id,
       instagramUsername: profile.username,
       accessTokenEncrypted: encryptedToken,
-      tokenType: longLivedToken.token_type,
+      tokenType: 'bearer',
       expiresAt,
       scopes: ['instagram_business_basic', 'instagram_business_content_publish'],
     });
