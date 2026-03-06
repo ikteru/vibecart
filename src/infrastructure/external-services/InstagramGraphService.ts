@@ -9,6 +9,7 @@
 
 import { InstagramApiError } from '@/domain/value-objects/InstagramApiError';
 
+const INSTAGRAM_AUTH_BASE = 'https://www.instagram.com';
 const INSTAGRAM_API_BASE = 'https://api.instagram.com';
 const GRAPH_API_BASE = 'https://graph.instagram.com';
 
@@ -110,7 +111,7 @@ export class InstagramGraphService {
       state,
     });
 
-    return `${INSTAGRAM_API_BASE}/oauth/authorize?${params.toString()}`;
+    return `${INSTAGRAM_AUTH_BASE}/oauth/authorize?${params.toString()}`;
   }
 
   /**
