@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import crypto from 'crypto';
+import { logger } from '@/infrastructure/utils/logger';
 
 /**
  * Instagram Webhook Handler
@@ -24,11 +25,11 @@ export async function GET(request: NextRequest) {
   const verifyToken = process.env.INSTAGRAM_WEBHOOK_VERIFY_TOKEN;
 
   if (mode === 'subscribe' && token === verifyToken) {
-    console.log('[Instagram Webhook] Verification successful');
+    logger.info('Instagram webhook verification successful', { context: 'instagram-webhook' });
     return new NextResponse(challenge, { status: 200 });
   }
 
-  console.warn('[Instagram Webhook] Verification failed', { mode, tokenMatch: token === verifyToken });
+  logger.warn('Instagram webhook verification failed', { context: 'instagram-webhook', mode, tokenMatch: token === verifyToken });
   return NextResponse.json({ error: 'Verification failed' }, { status: 403 });
 }
 
@@ -47,24 +48,61 @@ export async function POST(request: NextRequest) {
         .digest('hex');
 
       if (signature !== expectedSignature) {
-        console.error('[Instagram Webhook] Invalid signature');
+        logger.error('Instagram webhook invalid signature', { context: 'instagram-webhook' });
         return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
       }
     }
 
     const body = JSON.parse(rawBody);
 
-    // Log the event type for debugging (no sensitive data)
-    console.log('[Instagram Webhook] Received event:', body.object, 'entries:', body.entry?.length || 0);
+    // Route events based on entry[].changes[].field
+    const entries = body.entry || [];
+    for (const entry of entries) {
+      const changes = entry.changes || [];
+      for (const change of changes) {
+        const field = change.field;
+        logger.info('Instagram webhook event received', {
+          context: 'instagram-webhook',
+          object: body.object,
+          field,
+          entryId: entry.id,
+        });
 
-    // TODO: Process webhook events (comments, messages, mentions, etc.)
-    // For now, just acknowledge receipt
-    // Future: route to appropriate handlers based on body.entry[].changes[].field
+        switch (field) {
+          case 'comments':
+            logger.debug('Comment event', { context: 'instagram-webhook', mediaId: change.value?.media_id });
+            break;
+          case 'mentions':
+            logger.debug('Mention event', { context: 'instagram-webhook', mediaId: change.value?.media_id });
+            break;
+          case 'messages':
+            logger.debug('Message event', { context: 'instagram-webhook' });
+            break;
+          case 'story_insights':
+            logger.debug('Story insights event', { context: 'instagram-webhook' });
+            break;
+          default:
+            logger.debug('Unhandled webhook field', { context: 'instagram-webhook', field });
+        }
+      }
+
+      // Handle entries without changes (e.g., direct messaging format)
+      if (changes.length === 0 && entry.messaging) {
+        logger.info('Instagram messaging event', {
+          context: 'instagram-webhook',
+          entryId: entry.id,
+          messageCount: entry.messaging?.length || 0,
+        });
+      }
+    }
 
     // Always return 200 to acknowledge receipt
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('[Instagram Webhook] Error:', error instanceof Error ? error.message : 'Unknown error');
+    logger.error('Instagram webhook error', {
+      context: 'instagram-webhook',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
 
     if (error instanceof SyntaxError) {
       return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });

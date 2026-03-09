@@ -6,6 +6,7 @@
 
 import type { InstagramTokenRepository } from '@/domain/repositories/InstagramTokenRepository';
 import type { SellerRepository } from '@/domain/repositories/SellerRepository';
+import { logger } from '@/infrastructure/utils/logger';
 
 interface DisconnectInstagramInput {
   sellerId: string;
@@ -58,7 +59,7 @@ export class DisconnectInstagram {
         success: true,
       };
     } catch (error) {
-      console.error('Disconnect Instagram error:', error);
+      logger.error('Disconnect Instagram error', { context: 'instagram-disconnect', sellerId: input.sellerId, error: error instanceof Error ? error.message : 'Unknown' });
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to disconnect Instagram',

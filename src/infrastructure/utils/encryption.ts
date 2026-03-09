@@ -7,11 +7,24 @@
 
 import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
 
+export type EncryptionKeyType = 'instagram' | 'whatsapp';
+
+/**
+ * Error thrown when token decryption fails (wrong key, corrupted data, key rotation)
+ */
+export class TokenDecryptionError extends Error {
+  public readonly keyType: EncryptionKeyType;
+
+  constructor(message: string, keyType: EncryptionKeyType) {
+    super(message);
+    this.name = 'TokenDecryptionError';
+    this.keyType = keyType;
+  }
+}
+
 const ALGORITHM = 'aes-256-gcm';
 const IV_LENGTH = 16; // 128 bits
 const AUTH_TAG_LENGTH = 16; // 128 bits
-
-export type EncryptionKeyType = 'instagram' | 'whatsapp';
 
 const KEY_ENV_VARS: Record<EncryptionKeyType, string> = {
   instagram: 'INSTAGRAM_TOKEN_ENCRYPTION_KEY',
@@ -108,23 +121,32 @@ function encryptWithKey(token: string, keyType: EncryptionKeyType): string {
  * Generic decrypt function with configurable key type
  */
 function decryptWithKey(encryptedToken: string, keyType: EncryptionKeyType): string {
-  const key = getEncryptionKey(keyType);
-  const combined = Buffer.from(encryptedToken, 'base64');
+  try {
+    const key = getEncryptionKey(keyType);
+    const combined = Buffer.from(encryptedToken, 'base64');
 
-  // Extract components
-  const iv = combined.subarray(0, IV_LENGTH);
-  const authTag = combined.subarray(combined.length - AUTH_TAG_LENGTH);
-  const encrypted = combined.subarray(IV_LENGTH, combined.length - AUTH_TAG_LENGTH);
+    // Extract components
+    const iv = combined.subarray(0, IV_LENGTH);
+    const authTag = combined.subarray(combined.length - AUTH_TAG_LENGTH);
+    const encrypted = combined.subarray(IV_LENGTH, combined.length - AUTH_TAG_LENGTH);
 
-  const decipher = createDecipheriv(ALGORITHM, key, iv);
-  decipher.setAuthTag(authTag);
+    const decipher = createDecipheriv(ALGORITHM, key, iv);
+    decipher.setAuthTag(authTag);
 
-  const decrypted = Buffer.concat([
-    decipher.update(encrypted),
-    decipher.final(),
-  ]);
+    const decrypted = Buffer.concat([
+      decipher.update(encrypted),
+      decipher.final(),
+    ]);
 
-  return decrypted.toString('utf8');
+    return decrypted.toString('utf8');
+  } catch (error) {
+    // Wrap crypto errors in a typed error for callers to handle
+    if (error instanceof TokenDecryptionError) throw error;
+    throw new TokenDecryptionError(
+      `Failed to decrypt ${keyType} token: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      keyType
+    );
+  }
 }
 
 /**

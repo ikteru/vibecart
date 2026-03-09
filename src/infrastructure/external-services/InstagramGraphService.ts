@@ -8,8 +8,17 @@
  */
 
 import { InstagramApiError } from '@/domain/value-objects/InstagramApiError';
+import { withRetry } from '@/infrastructure/utils/retry';
 
 const INSTAGRAM_AUTH_BASE = 'https://www.instagram.com';
+
+/** Only retry on transient (5xx) errors */
+const RETRY_OPTIONS = {
+  maxRetries: 2,
+  initialDelayMs: 500,
+  shouldRetry: (error: unknown) =>
+    error instanceof InstagramApiError && error.isTransient,
+};
 const INSTAGRAM_API_BASE = 'https://api.instagram.com';
 const GRAPH_API_BASE = 'https://graph.instagram.com';
 
@@ -172,20 +181,22 @@ export class InstagramGraphService {
    * @returns New long-lived token (valid 60 days from now)
    */
   async refreshToken(token: string): Promise<RefreshedTokenResponse> {
-    const params = new URLSearchParams({
-      grant_type: 'ig_refresh_token',
-      access_token: token,
-    });
+    return withRetry(async () => {
+      const params = new URLSearchParams({
+        grant_type: 'ig_refresh_token',
+        access_token: token,
+      });
 
-    const response = await fetch(
-      `${GRAPH_API_BASE}/refresh_access_token?${params.toString()}`
-    );
+      const response = await fetch(
+        `${GRAPH_API_BASE}/refresh_access_token?${params.toString()}`
+      );
 
-    if (!response.ok) {
-      await throwApiError(response, 'refresh token');
-    }
+      if (!response.ok) {
+        await throwApiError(response, 'refresh token');
+      }
 
-    return response.json();
+      return response.json();
+    }, RETRY_OPTIONS);
   }
 
   /**
@@ -195,18 +206,20 @@ export class InstagramGraphService {
    * @returns User profile information
    */
   async getUserProfile(token: string): Promise<InstagramProfile> {
-    const params = new URLSearchParams({
-      fields: 'id,username,account_type,media_count,followers_count,profile_picture_url',
-      access_token: token,
-    });
+    return withRetry(async () => {
+      const params = new URLSearchParams({
+        fields: 'id,username,account_type,media_count,followers_count,profile_picture_url',
+        access_token: token,
+      });
 
-    const response = await fetch(`${GRAPH_API_BASE}/me?${params.toString()}`);
+      const response = await fetch(`${GRAPH_API_BASE}/me?${params.toString()}`);
 
-    if (!response.ok) {
-      await throwApiError(response, 'get user profile');
-    }
+      if (!response.ok) {
+        await throwApiError(response, 'get user profile');
+      }
 
-    return response.json();
+      return response.json();
+    }, RETRY_OPTIONS);
   }
 
   /**
@@ -220,28 +233,30 @@ export class InstagramGraphService {
     token: string,
     options?: { limit?: number; after?: string }
   ): Promise<MediaListResponse> {
-    const params = new URLSearchParams({
-      fields: 'id,media_type,media_url,thumbnail_url,permalink,caption,timestamp',
-      access_token: token,
-    });
+    return withRetry(async () => {
+      const params = new URLSearchParams({
+        fields: 'id,media_type,media_url,thumbnail_url,permalink,caption,timestamp',
+        access_token: token,
+      });
 
-    if (options?.limit) {
-      params.set('limit', options.limit.toString());
-    }
+      if (options?.limit) {
+        params.set('limit', options.limit.toString());
+      }
 
-    if (options?.after) {
-      params.set('after', options.after);
-    }
+      if (options?.after) {
+        params.set('after', options.after);
+      }
 
-    const response = await fetch(
-      `${GRAPH_API_BASE}/me/media?${params.toString()}`
-    );
+      const response = await fetch(
+        `${GRAPH_API_BASE}/me/media?${params.toString()}`
+      );
 
-    if (!response.ok) {
-      await throwApiError(response, 'get user media');
-    }
+      if (!response.ok) {
+        await throwApiError(response, 'get user media');
+      }
 
-    return response.json();
+      return response.json();
+    }, RETRY_OPTIONS);
   }
 
   /**

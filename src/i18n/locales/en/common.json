@@ -31,6 +31,23 @@
     "continueWithGoogle": "Continue with Google",
     "continueWithInstagram": "Continue with Instagram",
     "instagramLoginError": "Instagram login failed. Please try again.",
+    "connectingToInstagram": "Connecting to Instagram...",
+    "instagramErrors": {
+      "denied": "You cancelled the Instagram connection. Try again when ready.",
+      "missing_params": "Something went wrong with the connection. Please try again.",
+      "session_expired": "Your session expired. Please try again.",
+      "invalid_session": "Invalid session. Please try again.",
+      "auth_expired": "Authorization expired. Please try again.",
+      "account_failed": "Failed to create your account. Please try again.",
+      "session_failed": "Failed to create your session. Please try again.",
+      "shop_failed": "Failed to create your shop. Please try again.",
+      "connection_failed": "Failed to connect Instagram. Please try again.",
+      "login_required": "Please log in and try again.",
+      "rate_limited": "Too many attempts. Please wait a minute and try again.",
+      "permission_denied": "Instagram permissions were denied. Please try again and accept all permissions.",
+      "temporary_error": "Instagram is temporarily unavailable. Please try again later.",
+      "unexpected": "An unexpected error occurred. Please try again."
+    },
     "sendCode": "Send Code",
     "sendOtp": "Send Code",
     "verify": "Verify",
@@ -390,7 +407,9 @@
         "expiringSoon": "Your Instagram connection expires in {days} days",
         "refreshFailed": "Instagram connection issue detected",
         "reconnect": "Reconnect Instagram",
-        "dismiss": "Dismiss"
+        "dismiss": "Dismiss",
+        "connectedAs": "Connected as @{username}",
+        "daysLeft": "{days} days left"
       }
     },
     "orders": {

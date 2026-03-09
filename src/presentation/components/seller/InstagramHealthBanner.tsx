@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { AlertCircle, RefreshCw, X } from 'lucide-react';
+import { AlertCircle, CheckCircle, Instagram, RefreshCw, X } from 'lucide-react';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
 
@@ -12,13 +12,15 @@ interface HealthData {
   status: HealthStatus;
   daysRemaining?: number;
   needsReconnect: boolean;
+  username?: string;
 }
 
 /**
  * InstagramHealthBanner
  *
- * Shown on the seller dashboard when the Instagram connection needs attention.
- * Red for expired/revoked, amber for expiring soon. Hidden when healthy.
+ * Shown on the seller dashboard:
+ * - Green compact indicator when healthy
+ * - Red for expired/revoked, amber for expiring soon
  * Dismissible via sessionStorage.
  */
 export function InstagramHealthBanner() {
@@ -31,7 +33,6 @@ export function InstagramHealthBanner() {
     // Check if already dismissed this session
     if (sessionStorage.getItem('ig-health-dismissed') === 'true') {
       setDismissed(true);
-      return;
     }
 
     fetch('/api/instagram/health')
@@ -45,8 +46,29 @@ export function InstagramHealthBanner() {
       .catch(() => {});
   }, []);
 
-  if (dismissed || !health) return null;
-  if (health.status === 'healthy' || health.status === 'disconnected') return null;
+  if (!health) return null;
+  if (health.status === 'disconnected') return null;
+
+  // Healthy state — compact green indicator
+  if (health.status === 'healthy') {
+    return (
+      <div className="flex items-center gap-2 p-2.5 rounded-xl mb-4 text-xs bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+        <Instagram size={14} className="shrink-0" />
+        <span className="flex-1">
+          {health.username && t('connectedAs', { username: health.username })}
+          {health.daysRemaining != null && (
+            <span className="ms-1 text-emerald-500/60">
+              · {t('daysLeft', { days: health.daysRemaining })}
+            </span>
+          )}
+        </span>
+        <CheckCircle size={14} className="shrink-0 text-emerald-500" />
+      </div>
+    );
+  }
+
+  // Problem states — only show if not dismissed
+  if (dismissed) return null;
 
   const isUrgent = health.status === 'expired' || health.status === 'revoked';
   const isWarning = health.status === 'expiring' || health.status === 'refresh_failed';

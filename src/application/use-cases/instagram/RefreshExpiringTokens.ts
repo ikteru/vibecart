@@ -8,7 +8,7 @@
 
 import { InstagramGraphService } from '@/infrastructure/external-services/InstagramGraphService';
 import { InstagramApiError } from '@/domain/value-objects/InstagramApiError';
-import { decryptToken, encryptToken } from '@/infrastructure/utils/encryption';
+import { TokenDecryptionError, decryptToken, encryptToken } from '@/infrastructure/utils/encryption';
 import type { InstagramTokenRepository } from '@/domain/repositories/InstagramTokenRepository';
 
 interface RefreshResult {
@@ -69,6 +69,17 @@ export class RefreshExpiringTokens {
 
         results.push({ sellerId: token.sellerId, status: 'refreshed' });
       } catch (error) {
+        // Decryption failure = corrupted token, mark as revoked
+        if (error instanceof TokenDecryptionError) {
+          token.markAsRevoked('Token decryption failed — key rotation or data corruption');
+          await this.instagramTokenRepository.save(token);
+          results.push({
+            sellerId: token.sellerId,
+            status: 'revoked',
+            error: 'Token decryption failed',
+          });
+          continue;
+        }
         if (error instanceof InstagramApiError && error.requiresReconnect) {
           token.markAsRevoked(error.message);
           await this.instagramTokenRepository.save(token);

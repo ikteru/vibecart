@@ -98,6 +98,18 @@ export async function middleware(request: NextRequest) {
       if (!success) {
         const retryAfter = Math.ceil((reset - Date.now()) / 1000);
 
+        // Instagram auth routes are redirect-based — redirect with error code instead of raw JSON 429
+        if (pathname.startsWith('/api/auth/instagram')) {
+          const isLoginFlow = pathname.includes('/login');
+          const locale = defaultLocale;
+          const redirectPath = isLoginFlow
+            ? `/${locale}/auth/login`
+            : `/${locale}/seller/settings`;
+          const errorUrl = new URL(redirectPath, request.url);
+          errorUrl.searchParams.set('ig_err', 'rate_limited');
+          return NextResponse.redirect(errorUrl);
+        }
+
         return NextResponse.json(
           {
             error: 'Too Many Requests',

@@ -12,6 +12,7 @@ import type { InstagramTokenRepository } from '@/domain/repositories/InstagramTo
 import { FetchInstagramMedia } from './FetchInstagramMedia';
 import type { InstagramMediaDTO } from '@/application/dtos/InstagramDTO';
 import type { ProductCategoryType } from '@/domain/value-objects/ProductCategory';
+import { logger } from '@/infrastructure/utils/logger';
 
 interface ImportReelsAsDraftsInput {
   sellerId: string;
@@ -161,7 +162,7 @@ export class ImportReelsAsDrafts {
         drafts,
       };
     } catch (error) {
-      console.error('ImportReelsAsDrafts error:', error);
+      logger.error('ImportReelsAsDrafts error', { context: 'instagram-import', sellerId: input.sellerId, error: error instanceof Error ? error.message : 'Unknown' });
       return {
         success: false,
         imported: 0,

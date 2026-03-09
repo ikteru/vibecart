@@ -7,6 +7,8 @@ import { InstagramGraphService } from '@/infrastructure/external-services/Instag
 import { InstagramToken } from '@/domain/entities/InstagramToken';
 import { encryptToken } from '@/infrastructure/utils/encryption';
 import { CreateSellerFromInstagram } from '@/application/use-cases/instagram';
+import { INSTAGRAM_ERROR_CODES } from '@/domain/value-objects/InstagramErrorCode';
+import { logger } from '@/infrastructure/utils/logger';
 
 const OAUTH_STATE_COOKIE = 'instagram_login_state';
 const DEFAULT_LOCALE = 'ar-MA';
@@ -30,16 +32,16 @@ export async function GET(request: NextRequest) {
 
   // Handle user denial
   if (error) {
-    console.warn('Instagram login denied:', { error, errorDescription });
+    logger.warn('Instagram login denied', { context: 'instagram', error, errorDescription });
     const errorUrl = new URL(loginUrl);
-    errorUrl.searchParams.set('instagram_error', errorDescription || 'Authorization denied');
+    errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.DENIED);
     return NextResponse.redirect(errorUrl);
   }
 
   // Validate required params
   if (!code || !state) {
     const errorUrl = new URL(loginUrl);
-    errorUrl.searchParams.set('instagram_error', 'Missing authorization parameters');
+    errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.MISSING_PARAMS);
     return NextResponse.redirect(errorUrl);
   }
 
@@ -50,7 +52,7 @@ export async function GET(request: NextRequest) {
 
     if (!expectedState || state !== expectedState) {
       const errorUrl = new URL(loginUrl);
-      errorUrl.searchParams.set('instagram_error', 'Session expired. Please try again.');
+      errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.SESSION_EXPIRED);
       return NextResponse.redirect(errorUrl);
     }
 
@@ -63,20 +65,20 @@ export async function GET(request: NextRequest) {
       stateData = JSON.parse(Buffer.from(state, 'base64url').toString('utf8'));
     } catch {
       const errorUrl = new URL(loginUrl);
-      errorUrl.searchParams.set('instagram_error', 'Invalid session. Please try again.');
+      errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.INVALID_SESSION);
       return NextResponse.redirect(errorUrl);
     }
 
     if (stateData.purpose !== 'login') {
       const errorUrl = new URL(loginUrl);
-      errorUrl.searchParams.set('instagram_error', 'Invalid flow. Please try again.');
+      errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.INVALID_SESSION);
       return NextResponse.redirect(errorUrl);
     }
 
     // Check state expiry (10 minutes)
     if (Date.now() - stateData.timestamp > 10 * 60 * 1000) {
       const errorUrl = new URL(loginUrl);
-      errorUrl.searchParams.set('instagram_error', 'Authorization expired. Please try again.');
+      errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.AUTH_EXPIRED);
       return NextResponse.redirect(errorUrl);
     }
 
@@ -94,7 +96,7 @@ export async function GET(request: NextRequest) {
       accessToken = longLivedToken.access_token;
       tokenExpiresIn = longLivedToken.expires_in;
     } catch (tokenError) {
-      console.warn('Long-lived token exchange failed (likely pending App Review), using short-lived token:', tokenError);
+      logger.warn('Long-lived token exchange failed, using short-lived token', { context: 'instagram', error: tokenError instanceof Error ? tokenError.message : 'Unknown' });
     }
 
     const profile = await instagramService.getUserProfile(accessToken);
@@ -110,14 +112,15 @@ export async function GET(request: NextRequest) {
     let userId: string;
     let isNewUser = false;
 
-    // Check if user exists
-    const { data: existingUsers } = await adminClient.auth.admin.listUsers();
-    const existingUser = existingUsers?.users?.find(
-      (u) => u.email === syntheticEmail
-    );
+    // Look up existing seller by Instagram user ID (avoids full listUsers scan)
+    const { data: existingSeller } = await adminClient
+      .from('sellers')
+      .select('user_id')
+      .eq('shop_config->instagram->>userId', profile.id)
+      .maybeSingle();
 
-    if (existingUser) {
-      userId = existingUser.id;
+    if (existingSeller?.user_id) {
+      userId = existingSeller.user_id;
     } else {
       // Create new user
       const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
@@ -131,9 +134,9 @@ export async function GET(request: NextRequest) {
       });
 
       if (createError || !newUser.user) {
-        console.error('Failed to create user:', createError);
+        logger.error('Failed to create user', { context: 'instagram', error: createError?.message });
         const errorUrl = new URL(loginUrl);
-        errorUrl.searchParams.set('instagram_error', 'Failed to create account');
+        errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.ACCOUNT_FAILED);
         return NextResponse.redirect(errorUrl);
       }
 
@@ -148,9 +151,9 @@ export async function GET(request: NextRequest) {
     });
 
     if (linkError || !linkData) {
-      console.error('Failed to generate session link:', linkError);
+      logger.error('Failed to generate session link', { context: 'instagram', error: linkError?.message });
       const errorUrl = new URL(loginUrl);
-      errorUrl.searchParams.set('instagram_error', 'Failed to create session');
+      errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.SESSION_FAILED);
       return NextResponse.redirect(errorUrl);
     }
 
@@ -174,9 +177,9 @@ export async function GET(request: NextRequest) {
       });
 
       if (!sellerResult.success || !sellerResult.seller) {
-        console.error('Failed to create seller:', sellerResult.error);
+        logger.error('Failed to create seller', { context: 'instagram', error: sellerResult.error });
         const errorUrl = new URL(loginUrl);
-        errorUrl.searchParams.set('instagram_error', 'Failed to create shop');
+        errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.SHOP_FAILED);
         return NextResponse.redirect(errorUrl);
       }
 
@@ -238,9 +241,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.redirect(redirectUrl);
   } catch (error) {
-    console.error('Instagram login callback error:', error);
+    logger.error('Instagram login callback error', { context: 'instagram', error: error instanceof Error ? error.message : 'Unknown error' });
     const errorUrl = new URL(loginUrl);
-    errorUrl.searchParams.set('instagram_error', 'An unexpected error occurred');
+    errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.UNEXPECTED);
     return NextResponse.redirect(errorUrl);
   }
 }

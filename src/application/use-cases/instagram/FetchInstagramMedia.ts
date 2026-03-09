@@ -7,7 +7,8 @@
 
 import { InstagramGraphService } from '@/infrastructure/external-services/InstagramGraphService';
 import { InstagramApiError } from '@/domain/value-objects/InstagramApiError';
-import { decryptToken, encryptToken } from '@/infrastructure/utils/encryption';
+import { TokenDecryptionError, decryptToken, encryptToken } from '@/infrastructure/utils/encryption';
+import { logger } from '@/infrastructure/utils/logger';
 import type { InstagramTokenRepository } from '@/domain/repositories/InstagramTokenRepository';
 import type { InstagramMediaListDTO, InstagramMediaDTO } from '@/application/dtos/InstagramDTO';
 
@@ -59,8 +60,20 @@ export class FetchInstagramMedia {
         };
       }
 
-      // 3. Refresh token if expiring within 7 days
-      let accessToken = decryptToken(token.accessTokenEncrypted);
+      // 3. Decrypt token (handle key rotation / corruption)
+      let accessToken: string;
+      try {
+        accessToken = decryptToken(token.accessTokenEncrypted);
+      } catch (error) {
+        if (error instanceof TokenDecryptionError) {
+          return {
+            success: false,
+            error: 'Instagram token is invalid. Please reconnect.',
+            needsReconnect: true,
+          };
+        }
+        throw error;
+      }
 
       if (token.expiresWithinDays(7)) {
         try {
@@ -87,7 +100,7 @@ export class FetchInstagramMedia {
           // Record refresh failure but continue with existing token
           token.markRefreshFailed(refreshError instanceof Error ? refreshError.message : 'Unknown refresh error');
           await this.instagramTokenRepository.save(token);
-          console.warn('Token refresh failed, using existing token:', refreshError);
+          logger.warn('Token refresh failed, using existing token', { context: 'instagram-media', sellerId: input.sellerId, error: refreshError instanceof Error ? refreshError.message : 'Unknown' });
         }
       }
 
@@ -123,7 +136,7 @@ export class FetchInstagramMedia {
         },
       };
     } catch (error) {
-      console.error('Fetch Instagram media error:', error);
+      logger.error('Fetch Instagram media error', { context: 'instagram-media', sellerId: input.sellerId, error: error instanceof Error ? error.message : 'Unknown' });
 
       // Handle typed Instagram API errors
       if (error instanceof InstagramApiError) {
@@ -136,7 +149,7 @@ export class FetchInstagramMedia {
               await this.instagramTokenRepository.save(token);
             }
           } catch (saveError) {
-            console.error('Failed to mark token as revoked:', saveError);
+            logger.error('Failed to mark token as revoked', { context: 'instagram-media', sellerId: input.sellerId, error: saveError instanceof Error ? saveError.message : 'Unknown' });
           }
 
           return {

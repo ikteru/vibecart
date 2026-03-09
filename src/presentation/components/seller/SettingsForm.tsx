@@ -78,7 +78,8 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
   // Handle Instagram OAuth callback messages
   useEffect(() => {
     const instagramSuccess = searchParams.get('instagram_success');
-    const instagramError = searchParams.get('instagram_error');
+    const instagramErrorCode = searchParams.get('ig_err');
+    const legacyError = searchParams.get('instagram_error');
     const instagramUsername = searchParams.get('instagram_username');
 
     if (instagramSuccess === 'true') {
@@ -88,12 +89,20 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
           ? t('seller.settings.instagram.connectedAs', { username: instagramUsername })
           : t('seller.settings.instagram.connectedSuccess'),
       });
-      // Clear URL params after showing message
       router.replace(pathname, { scroll: false });
-    } else if (instagramError) {
+    } else if (instagramErrorCode) {
+      // Map error code to localized message
+      const errorKey = `auth.instagramErrors.${instagramErrorCode}` as const;
       setInstagramMessage({
         type: 'error',
-        text: instagramError,
+        text: t.has(errorKey) ? t(errorKey) : t('auth.instagramErrors.unexpected'),
+      });
+      router.replace(pathname, { scroll: false });
+    } else if (legacyError) {
+      // Legacy support for old param name
+      setInstagramMessage({
+        type: 'error',
+        text: t('auth.instagramErrors.unexpected'),
       });
       router.replace(pathname, { scroll: false });
     }

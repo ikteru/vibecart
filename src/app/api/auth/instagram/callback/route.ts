@@ -4,13 +4,15 @@ import { cookies } from 'next/headers';
 import { createClient, createAdminClient } from '@/infrastructure/auth/supabase-server';
 import { createRepositories } from '@/infrastructure/persistence/supabase';
 import { CompleteInstagramAuth } from '@/application/use-cases/instagram';
+import { INSTAGRAM_ERROR_CODES } from '@/domain/value-objects/InstagramErrorCode';
+import { logger } from '@/infrastructure/utils/logger';
 
 const OAUTH_STATE_COOKIE = 'instagram_oauth_state';
 
 /**
  * GET /api/auth/instagram/callback
  *
- * Instagram OAuth callback handler.
+ * Instagram OAuth callback handler (reconnect from settings).
  * Exchanges code for token and stores encrypted token.
  */
 export async function GET(request: NextRequest) {
@@ -27,16 +29,16 @@ export async function GET(request: NextRequest) {
 
   // Handle user denial
   if (error) {
-    console.warn('Instagram OAuth denied:', { error, errorReason, errorDescription });
+    logger.warn('Instagram OAuth denied', { context: 'instagram', error, errorReason, errorDescription });
     const errorUrl = new URL(settingsUrl);
-    errorUrl.searchParams.set('instagram_error', errorDescription || 'Authorization denied');
+    errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.DENIED);
     return NextResponse.redirect(errorUrl);
   }
 
   // Validate required params
   if (!code || !state) {
     const errorUrl = new URL(settingsUrl);
-    errorUrl.searchParams.set('instagram_error', 'Missing authorization parameters');
+    errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.MISSING_PARAMS);
     return NextResponse.redirect(errorUrl);
   }
 
@@ -47,7 +49,7 @@ export async function GET(request: NextRequest) {
 
     if (!expectedState) {
       const errorUrl = new URL(settingsUrl);
-      errorUrl.searchParams.set('instagram_error', 'Session expired. Please try again.');
+      errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.SESSION_EXPIRED);
       return NextResponse.redirect(errorUrl);
     }
 
@@ -60,7 +62,7 @@ export async function GET(request: NextRequest) {
 
     if (authError || !user) {
       const errorUrl = new URL(settingsUrl);
-      errorUrl.searchParams.set('instagram_error', 'Please log in and try again');
+      errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.LOGIN_REQUIRED);
       return NextResponse.redirect(errorUrl);
     }
 
@@ -78,7 +80,7 @@ export async function GET(request: NextRequest) {
 
     if (!result.success) {
       const errorUrl = new URL(settingsUrl);
-      errorUrl.searchParams.set('instagram_error', result.error || 'Connection failed');
+      errorUrl.searchParams.set('ig_err', result.errorCode || INSTAGRAM_ERROR_CODES.CONNECTION_FAILED);
       return NextResponse.redirect(errorUrl);
     }
 
@@ -89,9 +91,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(successUrl);
 
   } catch (error) {
-    console.error('Instagram callback error:', error);
+    logger.error('Instagram callback error', { context: 'instagram', error: error instanceof Error ? error.message : 'Unknown error' });
     const errorUrl = new URL(settingsUrl);
-    errorUrl.searchParams.set('instagram_error', 'An unexpected error occurred');
+    errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.UNEXPECTED);
     return NextResponse.redirect(errorUrl);
   }
 }

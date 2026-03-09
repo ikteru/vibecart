@@ -215,6 +215,14 @@ export class InstagramToken {
   }
 
   /**
+   * Mark token as expiring soon (within 7 days)
+   */
+  markAsExpiring(): void {
+    this._status = 'expiring';
+    this._updatedAt = new Date();
+  }
+
+  /**
    * Mark token as revoked (needs reconnection)
    */
   markAsRevoked(reason: string): void {

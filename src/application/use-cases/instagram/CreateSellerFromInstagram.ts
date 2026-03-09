@@ -8,6 +8,7 @@
 import { Seller } from '@/domain/entities/Seller';
 import type { SellerRepository } from '@/domain/repositories/SellerRepository';
 import type { InstagramConfig } from '@/domain/entities/Seller';
+import { logger } from '@/infrastructure/utils/logger';
 
 interface InstagramProfileData {
   username: string;
@@ -68,7 +69,7 @@ export class CreateSellerFromInstagram {
 
       return { success: true, seller };
     } catch (error) {
-      console.error('CreateSellerFromInstagram error:', error);
+      logger.error('CreateSellerFromInstagram error', { context: 'instagram-auth', userId: input.userId, error: error instanceof Error ? error.message : 'Unknown' });
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to create seller',

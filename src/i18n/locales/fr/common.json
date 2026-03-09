@@ -31,6 +31,23 @@
     "continueWithGoogle": "Continuer avec Google",
     "continueWithInstagram": "Continuer avec Instagram",
     "instagramLoginError": "Échec de la connexion Instagram. Veuillez réessayer.",
+    "connectingToInstagram": "Connexion à Instagram en cours...",
+    "instagramErrors": {
+      "denied": "Vous avez annulé la connexion Instagram. Réessayez quand vous êtes prêt.",
+      "missing_params": "Un problème est survenu. Veuillez réessayer.",
+      "session_expired": "Votre session a expiré. Veuillez réessayer.",
+      "invalid_session": "Session invalide. Veuillez réessayer.",
+      "auth_expired": "L'autorisation a expiré. Veuillez réessayer.",
+      "account_failed": "Échec de la création du compte. Veuillez réessayer.",
+      "session_failed": "Échec de la création de la session. Veuillez réessayer.",
+      "shop_failed": "Échec de la création de la boutique. Veuillez réessayer.",
+      "connection_failed": "Échec de la connexion Instagram. Veuillez réessayer.",
+      "login_required": "Veuillez vous connecter et réessayer.",
+      "rate_limited": "Trop de tentatives. Attendez une minute et réessayez.",
+      "permission_denied": "Les permissions Instagram ont été refusées. Réessayez et acceptez toutes les permissions.",
+      "temporary_error": "Instagram est temporairement indisponible. Réessayez plus tard.",
+      "unexpected": "Une erreur inattendue s'est produite. Veuillez réessayer."
+    },
     "sendCode": "Envoyer le code",
     "sendOtp": "Envoyer le code",
     "verify": "Vérifier",
@@ -390,7 +407,9 @@
         "expiringSoon": "Votre connexion Instagram expire dans {days} jours",
         "refreshFailed": "Problème de connexion Instagram détecté",
         "reconnect": "Reconnecter Instagram",
-        "dismiss": "Ignorer"
+        "dismiss": "Ignorer",
+        "connectedAs": "Connecté en tant que @{username}",
+        "daysLeft": "{days} jours restants"
       }
     },
     "orders": {

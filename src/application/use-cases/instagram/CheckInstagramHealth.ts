@@ -7,7 +7,7 @@
 
 import { InstagramGraphService } from '@/infrastructure/external-services/InstagramGraphService';
 import { InstagramApiError } from '@/domain/value-objects/InstagramApiError';
-import { decryptToken } from '@/infrastructure/utils/encryption';
+import { TokenDecryptionError, decryptToken } from '@/infrastructure/utils/encryption';
 import type { InstagramTokenRepository } from '@/domain/repositories/InstagramTokenRepository';
 
 type HealthStatus = 'healthy' | 'expiring' | 'expired' | 'revoked' | 'refresh_failed' | 'disconnected';
@@ -23,6 +23,7 @@ interface CheckInstagramHealthOutput {
   needsReconnect: boolean;
   lastError?: string;
   refreshFailureCount?: number;
+  username?: string;
 }
 
 export class CheckInstagramHealth {
@@ -53,6 +54,7 @@ export class CheckInstagramHealth {
         daysRemaining,
         needsReconnect: true,
         lastError: token.lastError ?? undefined,
+        username: token.instagramUsername,
       };
     }
 
@@ -61,6 +63,7 @@ export class CheckInstagramHealth {
         status: 'expired',
         daysRemaining: 0,
         needsReconnect: true,
+        username: token.instagramUsername,
       };
     }
 
@@ -71,6 +74,7 @@ export class CheckInstagramHealth {
         needsReconnect: token.refreshFailureCount >= 3,
         lastError: token.lastError ?? undefined,
         refreshFailureCount: token.refreshFailureCount,
+        username: token.instagramUsername,
       };
     }
 
@@ -86,6 +90,19 @@ export class CheckInstagramHealth {
           await this.instagramTokenRepository.save(token);
         }
       } catch (error) {
+        // Handle decryption failures — token data is corrupted or key was rotated
+        if (error instanceof TokenDecryptionError) {
+          token.markAsRevoked('Token decryption failed — reconnection required');
+          await this.instagramTokenRepository.save(token);
+          return {
+            status: 'revoked',
+            daysRemaining,
+            needsReconnect: true,
+            lastError: 'Token decryption failed',
+            username: token.instagramUsername,
+          };
+        }
+
         if (error instanceof InstagramApiError && error.requiresReconnect) {
           token.markAsRevoked(error.message);
           await this.instagramTokenRepository.save(token);
@@ -94,18 +111,24 @@ export class CheckInstagramHealth {
             daysRemaining,
             needsReconnect: true,
             lastError: error.message,
+            username: token.instagramUsername,
           };
         }
         // Non-auth errors (rate limit, transient) — don't change status
       }
     }
 
-    // Token is expiring within 7 days
+    // Token is expiring within 7 days — write status to DB
     if (token.expiresWithinDays(7)) {
+      if (token.status !== 'expiring') {
+        token.markAsExpiring();
+        await this.instagramTokenRepository.save(token);
+      }
       return {
         status: 'expiring',
         daysRemaining,
         needsReconnect: false,
+        username: token.instagramUsername,
       };
     }
 
@@ -113,6 +136,7 @@ export class CheckInstagramHealth {
       status: 'healthy',
       daysRemaining,
       needsReconnect: false,
+      username: token.instagramUsername,
     };
   }
 }

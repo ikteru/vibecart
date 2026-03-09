@@ -26,6 +26,7 @@ export interface InstagramAuthResultDTO {
   success: boolean;
   connection?: InstagramConnectionDTO;
   error?: string;
+  errorCode?: string;
 }
 
 export interface InstagramMediaListDTO {

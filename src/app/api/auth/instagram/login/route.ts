@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 import { InstagramGraphService } from '@/infrastructure/external-services/InstagramGraphService';
 import { randomBytes } from 'crypto';
+import { logger } from '@/infrastructure/utils/logger';
 
 const OAUTH_STATE_COOKIE = 'instagram_login_state';
 
@@ -35,8 +36,7 @@ export async function GET(request: NextRequest) {
 
     const authorizationUrl = instagramService.getAuthorizationUrl(state, loginCallbackUri);
 
-    console.log('[Instagram Login] redirect_uri:', loginCallbackUri);
-    console.log('[Instagram Login] full authorization URL:', authorizationUrl);
+    logger.debug('Instagram login initiated', { context: 'instagram', redirectUri: loginCallbackUri });
 
     // Store state in HTTP-only cookie
     const cookieStore = await cookies();
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.redirect(authorizationUrl);
   } catch (error) {
-    console.error('Instagram login initiation error:', error);
+    logger.error('Instagram login initiation error', { context: 'instagram', error: error instanceof Error ? error.message : 'Unknown' });
     return NextResponse.json(
       { error: 'Failed to initiate Instagram login' },
       { status: 500 }

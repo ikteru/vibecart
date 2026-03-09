@@ -31,6 +31,23 @@
     "continueWithGoogle": "كمل بڭوڭل",
     "continueWithInstagram": "كمل بإنستاگرام",
     "instagramLoginError": "ما نجحش الدخول بإنستا. عاود من بعد.",
+    "connectingToInstagram": "كنربطو مع إنستاگرام...",
+    "instagramErrors": {
+      "denied": "لغيتي الربط مع إنستا. عاود من بعد.",
+      "missing_params": "كاين شي مشكل. عاود من بعد.",
+      "session_expired": "الجلسة ديالك سالات. عاود من بعد.",
+      "invalid_session": "جلسة غير صالحة. عاود من بعد.",
+      "auth_expired": "التفويض سالا مدتو. عاود من بعد.",
+      "account_failed": "ما قدرناش نكريو الحساب. عاود من بعد.",
+      "session_failed": "ما قدرناش نبداو الجلسة. عاود من بعد.",
+      "shop_failed": "ما قدرناش نكريو الحانوت. عاود من بعد.",
+      "connection_failed": "ما قدرناش نربطو إنستا. عاود من بعد.",
+      "login_required": "دخل أولاً وعاود.",
+      "rate_limited": "بزاف ديال المحاولات. تسنا دقيقة وعاود.",
+      "permission_denied": "ما قبلتيش الأذونات ديال إنستا. عاود وقبل كلشي.",
+      "temporary_error": "إنستا ما خدامش دابا. عاود من بعد.",
+      "unexpected": "وقع شي مشكل. عاود من بعد."
+    },
     "sendCode": "صيفط الكود",
     "sendOtp": "صيفط الكود",
     "verify": "تأكد",
@@ -390,7 +407,9 @@
         "expiringSoon": "الاتصال ديال إنستا غادي يسالي ف {days} يام",
         "refreshFailed": "كاين مشكل فالاتصال ديال إنستا",
         "reconnect": "عاود ربط إنستا",
-        "dismiss": "تجاهل"
+        "dismiss": "تجاهل",
+        "connectedAs": "مربوط بـ @{username}",
+        "daysLeft": "باقي {days} يوم"
       }
     },
     "orders": {
