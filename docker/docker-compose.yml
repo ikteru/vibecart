@@ -11,7 +11,7 @@ services:
     container_name: vibecart-app
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3500:3000"
     environment:
       # Client-side URL (browser accesses via host's localhost)
       NEXT_PUBLIC_SUPABASE_URL: http://localhost:8000
@@ -82,7 +82,7 @@ services:
       GOTRUE_DB_DRIVER: postgres
       GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:postgres@db:5432/postgres
 
-      GOTRUE_SITE_URL: http://localhost:3000
+      GOTRUE_SITE_URL: http://localhost:3500
       GOTRUE_URI_ALLOW_LIST: "*"
       GOTRUE_DISABLE_SIGNUP: "false"
 
@@ -235,9 +235,7 @@ services:
     profiles:
       - tools
 
-  # ngrok tunnel for Instagram OAuth (exposes localhost to internet)
-  # Get your free auth token at: https://dashboard.ngrok.com/get-started/your-authtoken
-  # Get a free static domain at: https://dashboard.ngrok.com/cloud-edge/domains
+  # ngrok tunnel for Instagram/WhatsApp OAuth (always on — required for Meta OAuth callbacks)
   ngrok:
     image: ngrok/ngrok:latest
     container_name: vibecart-ngrok
@@ -249,11 +247,9 @@ services:
     environment:
       NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN:-}"
     ports:
-      - "4040:4040"  # ngrok web interface
+      - "4040:4040"  # ngrok web interface: http://localhost:4040
     depends_on:
       - app
-    profiles:
-      - ngrok
 
 volumes:
   db_data:
