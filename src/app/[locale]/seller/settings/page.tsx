@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getCurrentSeller } from '@/lib/auth/getCurrentSeller';
-import { getCurrentUser, createClient } from '@/infrastructure/auth/supabase-server';
+import { getCurrentUser, createClient, createAdminClient } from '@/infrastructure/auth/supabase-server';
 import { createRepositories } from '@/infrastructure/persistence/supabase';
 import { UpdateSellerProfile } from '@/application/use-cases/sellers/UpdateSellerProfile';
 import { SettingsForm } from '@/presentation/components/seller/SettingsForm';
@@ -33,7 +33,8 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
     'use server';
 
     const supabaseServer = await createClient();
-    const repos = createRepositories(supabaseServer);
+    const adminClient = createAdminClient();
+    const repos = createRepositories(supabaseServer, adminClient);
     const currentUser = await getCurrentUser();
 
     if (!currentUser) {

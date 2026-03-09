@@ -21,6 +21,13 @@ import {
   ExternalLink,
   Clock,
   Tag,
+  Phone,
+  Sparkles,
+  Sun,
+  Sunset,
+  Moon,
+  CalendarClock,
+  MessageSquare,
 } from 'lucide-react';
 import { SwipeButton } from '../ui/SwipeButton';
 import { MapPicker } from '../map/MapPicker';
@@ -650,58 +657,76 @@ export function CheckoutDrawer({
 
               {/* Fulfillment Selector — shown only when pickup is enabled */}
               {shopConfig.pickup?.enabled && (
-                <div className="mb-5 space-y-2">
-                  <p className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
+                <div className="mb-5 space-y-3">
+                  <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest ms-1">
                     {t('checkout.pickup.howDoYouWantIt')}
                   </p>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2.5">
                     {/* Delivery option */}
                     <button
                       type="button"
                       onClick={() => setFulfillmentType('delivery')}
-                      className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all ${
+                      className={`relative flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all duration-200 ${
                         fulfillmentType === 'delivery'
-                          ? 'bg-zinc-800 border-zinc-500 text-white'
-                          : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:border-zinc-700'
+                          ? 'bg-zinc-800 border-zinc-600 text-white shadow-lg shadow-black/30'
+                          : 'bg-zinc-900/60 border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-900'
                       }`}
                     >
-                      <Truck size={22} className={fulfillmentType === 'delivery' ? 'text-white' : 'text-zinc-500'} />
-                      <span className="text-xs font-bold">{t('checkout.pickup.delivery')}</span>
-                      <span className="text-[10px] text-zinc-500">
-                        {t('checkout.pickup.shippingCostLabel', { amount: shopConfig.shipping?.defaultRate || 0 })}
-                      </span>
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                        fulfillmentType === 'delivery' ? 'bg-zinc-700' : 'bg-zinc-800/80'
+                      }`}>
+                        <Truck size={20} className={fulfillmentType === 'delivery' ? 'text-white' : 'text-zinc-500'} />
+                      </div>
+                      <div className="text-center">
+                        <p className={`text-xs font-bold leading-tight ${fulfillmentType === 'delivery' ? 'text-white' : 'text-zinc-400'}`}>
+                          {t('checkout.pickup.delivery')}
+                        </p>
+                        <p className="text-[10px] text-zinc-500 mt-0.5">
+                          {t('checkout.pickup.shippingCostLabel', { amount: shopConfig.shipping?.defaultRate || 0 })}
+                        </p>
+                      </div>
                     </button>
                     {/* Pickup option */}
                     <button
                       type="button"
                       onClick={() => setFulfillmentType('pickup')}
-                      className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all relative overflow-hidden ${
+                      className={`relative flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all duration-200 overflow-hidden ${
                         fulfillmentType === 'pickup'
-                          ? 'bg-emerald-500/15 border-emerald-500/50 text-white'
-                          : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:border-zinc-700'
+                          ? 'bg-emerald-950/60 border-emerald-500/60 text-white shadow-lg shadow-emerald-900/20'
+                          : 'bg-zinc-900/60 border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-900'
                       }`}
                     >
-                      <Store size={22} className={fulfillmentType === 'pickup' ? 'text-emerald-400' : 'text-zinc-500'} />
-                      <span className="text-xs font-bold">{t('checkout.pickup.pickupAtStore')}</span>
-                      <span className={`text-[10px] font-bold ${fulfillmentType === 'pickup' ? 'text-emerald-400' : 'text-zinc-500'}`}>
-                        {t('checkout.pickup.free')}
-                      </span>
+                      {fulfillmentType === 'pickup' && (
+                        <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/10 to-transparent pointer-events-none" />
+                      )}
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors relative z-10 ${
+                        fulfillmentType === 'pickup' ? 'bg-emerald-500/20' : 'bg-zinc-800/80'
+                      }`}>
+                        <Store size={20} className={fulfillmentType === 'pickup' ? 'text-emerald-400' : 'text-zinc-500'} />
+                      </div>
+                      <div className="text-center relative z-10">
+                        <p className={`text-xs font-bold leading-tight ${fulfillmentType === 'pickup' ? 'text-white' : 'text-zinc-400'}`}>
+                          {t('checkout.pickup.pickupAtStore')}
+                        </p>
+                        <p className={`text-[10px] font-bold mt-0.5 ${fulfillmentType === 'pickup' ? 'text-emerald-400' : 'text-zinc-500'}`}>
+                          {t('checkout.pickup.free')}
+                        </p>
+                      </div>
                       {(shopConfig.pickup?.discountPercent ?? 0) > 0 && (
-                        <span className="absolute top-1.5 end-1.5 bg-emerald-500 text-black text-[8px] font-bold px-1 py-0.5 rounded-full flex items-center gap-0.5">
-                          <Tag size={7} />
+                        <span className="absolute top-2 end-2 bg-emerald-500 text-black text-[8px] font-black px-1.5 py-0.5 rounded-full z-20">
                           -{shopConfig.pickup?.discountPercent}%
                         </span>
                       )}
                     </button>
                   </div>
-                  {/* Open/closed badge for pickup */}
+                  {/* Open/closed badge */}
                   {fulfillmentType === 'pickup' && (
-                    <div className={`flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded-full w-fit ${
+                    <div className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-3 py-1.5 rounded-full ${
                       isStoreOpen
-                        ? 'bg-emerald-500/15 text-emerald-400'
-                        : 'bg-red-500/15 text-red-400'
+                        ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20'
+                        : 'bg-red-500/15 text-red-400 border border-red-500/20'
                     }`}>
-                      <div className={`w-1.5 h-1.5 rounded-full ${isStoreOpen ? 'bg-emerald-400' : 'bg-red-400'}`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${isStoreOpen ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`} />
                       {isStoreOpen ? t('checkout.pickup.currentlyOpen') : t('checkout.pickup.currentlyClosed')}
                     </div>
                   )}
@@ -846,74 +871,94 @@ export function CheckoutDrawer({
                 {/* Pickup Form — only for pickup */}
                 {fulfillmentType === 'pickup' && (
                   <div className="space-y-3 pt-2">
+
                     {/* Store info card */}
-                    <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-4 space-y-3">
-                      <div className="flex items-center gap-2">
-                        <Store size={16} className="text-emerald-400 shrink-0" />
-                        <span className="text-sm font-bold text-white">
-                          {shopConfig.pickup?.storeName || ''}
-                        </span>
-                      </div>
-                      {shopConfig.pickup?.storeAddress && (
-                        <div className="flex items-start gap-2">
-                          <MapPin size={14} className="text-zinc-500 mt-0.5 shrink-0" />
-                          <span className="text-xs text-zinc-400">{shopConfig.pickup.storeAddress}</span>
-                        </div>
-                      )}
-                      {shopConfig.pickup?.preparationTimeMinutes && (
-                        <div className="flex items-center gap-2">
-                          <Clock size={14} className="text-zinc-500 shrink-0" />
-                          <span className="text-xs text-zinc-400">
-                            {t('checkout.pickup.preparationTime', {
-                              time: shopConfig.pickup.preparationTimeMinutes >= 60
-                                ? `${shopConfig.pickup.preparationTimeMinutes / 60}h`
-                                : `${shopConfig.pickup.preparationTimeMinutes}min`
-                            })}
+                    <div className="relative rounded-2xl overflow-hidden border border-emerald-500/20 bg-gradient-to-b from-emerald-950/40 to-zinc-900/80">
+                      {/* Top accent bar */}
+                      <div className="h-0.5 w-full bg-gradient-to-r from-emerald-500/60 via-emerald-400/30 to-transparent" />
+                      <div className="p-4 space-y-3">
+                        {/* Store header */}
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center shrink-0">
+                            <Store size={15} className="text-emerald-400" />
+                          </div>
+                          <span className="text-sm font-bold text-white leading-tight">
+                            {shopConfig.pickup?.storeName || ''}
                           </span>
                         </div>
-                      )}
-                      {shopConfig.pickup?.instructions && (
-                        <p className="text-[11px] text-zinc-500 border-t border-emerald-500/10 pt-2">
-                          {shopConfig.pickup.instructions}
-                        </p>
-                      )}
-                      <div className="flex gap-2 pt-1">
-                        {shopConfig.pickup?.googleMapsUrl && (
-                          <a
-                            href={shopConfig.pickup.googleMapsUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex-1 flex items-center justify-center gap-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold py-2 rounded-lg transition-colors"
-                          >
-                            <ExternalLink size={12} />
-                            {t('checkout.pickup.getDirections')}
-                          </a>
+
+                        {/* Address + prep time row */}
+                        <div className="space-y-2">
+                          {shopConfig.pickup?.storeAddress && (
+                            <div className="flex items-start gap-2">
+                              <MapPin size={13} className="text-zinc-500 mt-0.5 shrink-0" />
+                              <span className="text-xs text-zinc-400 leading-relaxed">{shopConfig.pickup.storeAddress}</span>
+                            </div>
+                          )}
+                          {shopConfig.pickup?.preparationTimeMinutes && (
+                            <div className="inline-flex items-center gap-1.5 bg-zinc-800/80 border border-zinc-700/60 rounded-full px-2.5 py-1">
+                              <Clock size={11} className="text-emerald-400" />
+                              <span className="text-[10px] font-bold text-zinc-300">
+                                {t('checkout.pickup.preparationTime', {
+                                  time: shopConfig.pickup.preparationTimeMinutes >= 60
+                                    ? `${shopConfig.pickup.preparationTimeMinutes / 60}h`
+                                    : `${shopConfig.pickup.preparationTimeMinutes}min`
+                                })}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Instructions */}
+                        {shopConfig.pickup?.instructions && (
+                          <p className="text-[11px] text-zinc-500 border-t border-zinc-800 pt-2.5 leading-relaxed">
+                            {shopConfig.pickup.instructions}
+                          </p>
                         )}
-                        {shopConfig.pickup?.storePhone && (
-                          <a
-                            href={`tel:${shopConfig.pickup.storePhone}`}
-                            className="flex-1 flex items-center justify-center gap-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold py-2 rounded-lg transition-colors"
-                          >
-                            <Smartphone size={12} />
-                            {shopConfig.pickup.storePhone}
-                          </a>
-                        )}
+
+                        {/* Action buttons */}
+                        <div className="flex gap-2 pt-0.5">
+                          {shopConfig.pickup?.googleMapsUrl && (
+                            <a
+                              href={shopConfig.pickup.googleMapsUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-1 flex items-center justify-center gap-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-400 text-xs font-bold py-2 rounded-xl transition-all"
+                            >
+                              <Navigation size={12} />
+                              {t('checkout.pickup.getDirections')}
+                            </a>
+                          )}
+                          {shopConfig.pickup?.storePhone && (
+                            <a
+                              href={`tel:${shopConfig.pickup.storePhone}`}
+                              className="flex-1 flex items-center justify-center gap-1.5 bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/60 text-zinc-300 text-xs font-bold py-2 rounded-xl transition-all"
+                            >
+                              <Phone size={12} />
+                              {shopConfig.pickup.storePhone}
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </div>
 
                     {/* Call confirmation notice */}
                     {shopConfig.pickup?.requirePhoneConfirmation && (
-                      <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2">
-                        <Smartphone size={14} className="text-amber-400 shrink-0" />
-                        <span className="text-xs text-amber-300">{t('checkout.pickup.callBeforeComing')}</span>
+                      <div className="flex items-center gap-3 bg-amber-950/40 border border-amber-500/25 rounded-xl px-4 py-3">
+                        <div className="w-7 h-7 rounded-lg bg-amber-500/15 flex items-center justify-center shrink-0">
+                          <Phone size={13} className="text-amber-400" />
+                        </div>
+                        <span className="text-xs text-amber-200/90 leading-relaxed">{t('checkout.pickup.callBeforeComing')}</span>
                       </div>
                     )}
 
                     {/* Pickup discount callout */}
                     {(shopConfig.pickup?.discountPercent ?? 0) > 0 && (
-                      <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-3 py-2">
-                        <Tag size={14} className="text-emerald-400 shrink-0" />
-                        <span className="text-xs font-bold text-emerald-400">
+                      <div className="flex items-center gap-3 bg-emerald-950/50 border border-emerald-500/25 rounded-xl px-4 py-3">
+                        <div className="w-7 h-7 rounded-lg bg-emerald-500/15 flex items-center justify-center shrink-0">
+                          <Sparkles size={13} className="text-emerald-400" />
+                        </div>
+                        <span className="text-xs font-bold text-emerald-300">
                           {t('checkout.pickup.pickupSavings', {
                             amount: Math.round(product.price.amount * order.quantity * (shopConfig.pickup!.discountPercent! / 100)),
                           })}
@@ -922,36 +967,47 @@ export function CheckoutDrawer({
                     )}
 
                     {/* Preferred time */}
-                    <div className="space-y-1">
-                      <label className="text-[10px] text-zinc-500 font-bold uppercase ms-1">
+                    <div className="space-y-2">
+                      <label className="flex items-center gap-1.5 text-[10px] text-zinc-500 font-bold uppercase tracking-widest ms-0.5">
+                        <CalendarClock size={11} />
                         {t('checkout.pickup.preferredPickupTime')}
                       </label>
-                      <div className="flex gap-2">
-                        {['morning', 'afternoon', 'evening', 'anyTime'].map((slot) => (
-                          <button
-                            key={slot}
-                            type="button"
-                            onClick={() => setPickupScheduledTime(slot === 'anyTime' ? '' : slot)}
-                            className={`flex-1 py-2 rounded-lg text-xs font-bold border transition-all ${
-                              (slot === 'anyTime' ? !pickupScheduledTime : pickupScheduledTime === slot)
-                                ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
-                                : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:border-zinc-700'
-                            }`}
-                          >
-                            {t(`checkout.pickup.${slot}`)}
-                          </button>
-                        ))}
+                      <div className="grid grid-cols-4 gap-1.5">
+                        {([
+                          { slot: 'morning',   Icon: Sun },
+                          { slot: 'afternoon', Icon: Sunset },
+                          { slot: 'evening',   Icon: Moon },
+                          { slot: 'anyTime',   Icon: Sparkles },
+                        ] as const).map(({ slot, Icon }) => {
+                          const isActive = slot === 'anyTime' ? !pickupScheduledTime : pickupScheduledTime === slot;
+                          return (
+                            <button
+                              key={slot}
+                              type="button"
+                              onClick={() => setPickupScheduledTime(slot === 'anyTime' ? '' : slot)}
+                              className={`flex flex-col items-center gap-1 py-2.5 px-1 rounded-xl border transition-all duration-150 ${
+                                isActive
+                                  ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400 shadow-sm shadow-emerald-900/30'
+                                  : 'bg-zinc-900/70 border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:text-zinc-400'
+                              }`}
+                            >
+                              <Icon size={14} />
+                              <span className="text-[9px] font-bold leading-none">{t(`checkout.pickup.${slot}`)}</span>
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
 
                     {/* Pickup notes */}
-                    <div className="space-y-1">
+                    <div className="relative">
+                      <MessageSquare size={13} className="absolute top-3.5 start-3.5 text-zinc-600 pointer-events-none" />
                       <textarea
                         placeholder={t('checkout.pickup.pickupNotes')}
                         value={pickupNotes}
                         onChange={(e) => setPickupNotes(e.target.value)}
                         rows={2}
-                        className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/30 resize-none"
+                        className="w-full bg-zinc-900/80 border border-zinc-800 rounded-xl ps-9 pe-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500/40 focus:bg-zinc-900 resize-none transition-colors"
                       />
                     </div>
                   </div>
@@ -1437,40 +1493,50 @@ export function CheckoutDrawer({
             </>
           ) : fulfillmentType === 'pickup' ? (
             /* Pickup success screen */
-            <div className="flex flex-col items-center justify-center py-6 space-y-5 animate-fade-in">
-              <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center relative">
-                <div className="absolute inset-0 bg-emerald-500/20 rounded-full animate-ping" />
-                <Store size={36} className="text-emerald-500 relative z-10" />
+            <div className="flex flex-col items-center py-4 space-y-4 animate-fade-in">
+              {/* Animated icon */}
+              <div className="relative flex items-center justify-center mt-2">
+                <div className="absolute w-24 h-24 bg-emerald-500/10 rounded-full animate-ping" style={{ animationDuration: '2s' }} />
+                <div className="absolute w-20 h-20 bg-emerald-500/15 rounded-full" />
+                <div className="relative w-16 h-16 bg-emerald-500/20 border border-emerald-500/30 rounded-2xl flex items-center justify-center z-10">
+                  <Store size={28} className="text-emerald-400" />
+                </div>
               </div>
 
-              <div className="text-center space-y-1">
+              <div className="text-center space-y-1.5 px-2">
                 <h3 className="text-xl font-bold text-white">{t('checkout.pickup.pickupSuccessTitle')}</h3>
-                <p className="text-zinc-400 text-sm">{t('checkout.pickup.pickupSuccessMessage')}</p>
+                <p className="text-zinc-400 text-sm leading-relaxed">{t('checkout.pickup.pickupSuccessMessage')}</p>
               </div>
 
-              {/* Pickup code — big and prominent */}
+              {/* Pickup code — bold and scannable */}
               {createdPickupCode && (
-                <div className="w-full bg-emerald-500/10 border-2 border-emerald-500/30 rounded-2xl p-5 text-center">
-                  <p className="text-[10px] text-emerald-400 font-bold uppercase mb-1">
-                    {t('checkout.pickup.pickupCode')}
-                  </p>
-                  <p className="text-4xl font-black text-white tracking-widest font-mono">
-                    {createdPickupCode}
-                  </p>
-                  <p className="text-[10px] text-zinc-500 mt-2">
-                    {t('checkout.pickup.storeInfo')}
-                  </p>
+                <div className="w-full relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-b from-emerald-950/60 to-zinc-900">
+                  <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-emerald-500/60 to-transparent" />
+                  <div className="p-5 text-center">
+                    <p className="text-[9px] font-black text-emerald-500/80 uppercase tracking-[0.2em] mb-2">
+                      {t('checkout.pickup.pickupCode')}
+                    </p>
+                    <p className="text-5xl font-black text-white tracking-[0.15em] font-mono">
+                      {createdPickupCode}
+                    </p>
+                    <p className="text-[10px] text-zinc-600 mt-2.5">
+                      {t('checkout.pickup.storeInfo')}
+                    </p>
+                  </div>
+                  <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
                 </div>
               )}
 
-              {/* Store address */}
+              {/* Store address card */}
               {shopConfig.pickup?.storeAddress && (
-                <div className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-4 space-y-3">
-                  <div className="flex items-start gap-3">
-                    <MapPin size={16} className="text-zinc-500 mt-0.5 shrink-0" />
-                    <div>
-                      <p className="text-xs font-bold text-white">{shopConfig.pickup.storeName || ''}</p>
-                      <p className="text-xs text-zinc-400 mt-0.5">{shopConfig.pickup.storeAddress}</p>
+                <div className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/80 overflow-hidden">
+                  <div className="p-4 flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center shrink-0 mt-0.5">
+                      <MapPin size={14} className="text-zinc-400" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-white leading-tight">{shopConfig.pickup.storeName || ''}</p>
+                      <p className="text-xs text-zinc-400 mt-1 leading-relaxed">{shopConfig.pickup.storeAddress}</p>
                     </div>
                   </div>
                   {shopConfig.pickup.googleMapsUrl && (
@@ -1478,9 +1544,9 @@ export function CheckoutDrawer({
                       href={shopConfig.pickup.googleMapsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold py-2.5 rounded-lg transition-colors"
+                      className="flex items-center justify-center gap-2 w-full bg-emerald-500/10 hover:bg-emerald-500/20 border-t border-emerald-500/20 text-emerald-400 text-xs font-bold py-3 transition-colors"
                     >
-                      <ExternalLink size={12} />
+                      <Navigation size={13} />
                       {t('checkout.pickup.openMaps')}
                     </a>
                   )}
@@ -1489,7 +1555,7 @@ export function CheckoutDrawer({
 
               <button
                 onClick={onClose}
-                className="text-zinc-500 text-sm font-medium hover:text-white transition-colors"
+                className="text-zinc-600 text-sm font-medium hover:text-zinc-400 transition-colors py-1"
               >
                 {t('checkout.closeWindow')}
               </button>

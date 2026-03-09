@@ -61,6 +61,7 @@ export function ShopPageClient({ seller, products: productDTOs }: ShopPageClient
     const vibe = seller.shopConfig?.vibe;
     const googleMaps = seller.shopConfig?.googleMaps;
     const shipping = seller.shopConfig?.shipping;
+    const pickup = seller.shopConfig?.pickup;
 
     return {
       // Google Maps from seller config
@@ -102,6 +103,8 @@ export function ShopPageClient({ seller, products: productDTOs }: ShopPageClient
         freeShippingThreshold: shipping?.freeShippingThreshold,
         rules: shipping?.rules || [],
       },
+      // Pickup config
+      pickup: pickup,
     };
   }, [seller]);
 
@@ -141,6 +144,7 @@ export function ShopPageClient({ seller, products: productDTOs }: ShopPageClient
         onBack={handleBackFromFeed}
         shopConfig={{
           shipping: shopConfig.shipping,
+          pickup: shopConfig.pickup,
         }}
       />
     </div>

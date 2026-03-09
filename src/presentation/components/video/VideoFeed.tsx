@@ -15,6 +15,28 @@ interface ShopConfig {
     defaultRate: number;
     rules?: Array<{ city: string; rate: number }>;
   };
+  pickup?: {
+    enabled: boolean;
+    storeName?: string;
+    storeAddress?: string;
+    storeCity?: string;
+    storePhone?: string;
+    requirePhoneConfirmation?: boolean;
+    googleMapsUrl?: string;
+    preparationTimeMinutes?: number;
+    instructions?: string;
+    discountPercent?: number;
+    hours?: {
+      alwaysOpen?: boolean;
+      monday?: { open: string; close: string; closed?: boolean };
+      tuesday?: { open: string; close: string; closed?: boolean };
+      wednesday?: { open: string; close: string; closed?: boolean };
+      thursday?: { open: string; close: string; closed?: boolean };
+      friday?: { open: string; close: string; closed?: boolean };
+      saturday?: { open: string; close: string; closed?: boolean };
+      sunday?: { open: string; close: string; closed?: boolean };
+    };
+  };
 }
 
 interface VideoFeedProps {
