@@ -142,14 +142,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(errorUrl);
     }
 
+    // GoTrue returns user fields inline (not nested under "user") when called directly.
+    // The Supabase JS SDK transforms this, but direct fetch gets the flat structure.
     const linkData = await genLinkRes.json() as {
       hashed_token: string;
-      user: { id: string; created_at: string };
+      id: string;
+      created_at: string;
     };
 
-    const userId = linkData.user.id;
+    const userId = linkData.id;
     // isNewUser: user was just created if created_at is within the last 30 seconds
-    const isNewUser = (Date.now() - new Date(linkData.user.created_at).getTime()) < 30_000;
+    const isNewUser = (Date.now() - new Date(linkData.created_at).getTime()) < 30_000;
 
     // 7. Find or create seller
     const { sellerRepository, instagramTokenRepository } = createRepositories(adminClient, adminClient);

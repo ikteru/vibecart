@@ -2,9 +2,8 @@
 
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import { useEffect, useRef, forwardRef } from 'react';
+import { useEffect, useRef, forwardRef, useState } from 'react';
 import { Instagram, Sparkles, Loader2, AlertCircle, ArrowRight } from 'lucide-react';
-import { useState } from 'react';
 import Link from 'next/link';
 
 interface BetaSignupSectionProps {
@@ -19,6 +18,7 @@ export const BetaSignupSection = forwardRef<HTMLDivElement, BetaSignupSectionPro
     const t = useTranslations('landing.signup');
     const ts = useTranslations('landing.signup.success');
     const tb = useTranslations('landing.signup.benefits');
+    const tAuth = useTranslations('auth');
 
     const [isRedirecting, setIsRedirecting] = useState(false);
     const confettiRef = useRef<HTMLDivElement>(null);
@@ -39,6 +39,20 @@ export const BetaSignupSection = forwardRef<HTMLDivElement, BetaSignupSectionPro
 
     return (
       <section ref={ref} className="px-4 py-20" id="signup">
+        {/* Full-screen overlay during Instagram OAuth redirect */}
+        {isRedirecting && (
+          <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm">
+            <div className="relative mb-6">
+              <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 p-0.5">
+                <div className="flex h-full w-full items-center justify-center rounded-2xl bg-black">
+                  <Instagram className="h-8 w-8 text-white" />
+                </div>
+              </div>
+              <div className="absolute -inset-2 animate-spin rounded-2xl border-2 border-transparent border-t-pink-500" />
+            </div>
+            <p className="text-lg font-medium text-white">{tAuth('connectingToInstagram')}</p>
+          </div>
+        )}
         <div className="mx-auto max-w-2xl">
           <motion.div
             className="text-center"
