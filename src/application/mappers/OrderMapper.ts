@@ -1,4 +1,5 @@
 import { Order } from '@/domain/entities/Order';
+import type { Address } from '@/domain/value-objects/Address';
 import type {
   OrderResponseDTO,
   OrderSummaryDTO,
@@ -25,7 +26,13 @@ export const OrderMapper = {
       sellerId: order.sellerId,
       customerName: order.customerName,
       customerPhone: order.customerPhone.toDisplayFormat(),
-      shippingAddress: this.addressToDTO(order.shippingAddress),
+      fulfillmentType: order.fulfillmentType,
+      shippingAddress: order.shippingAddress ? this.addressToDTO(order.shippingAddress) : null,
+      pickupCode: order.pickupCode || null,
+      pickupScheduledTime: order.pickupScheduledTime || null,
+      pickupNotes: order.pickupNotes || null,
+      pickupReadyAt: order.pickupReadyAt?.toISOString() || null,
+      isPickup: order.isPickup,
       items: props.items.map((item) => this.itemToDTO(item)),
       subtotal: {
         amount: order.subtotal.amount,
@@ -74,6 +81,8 @@ export const OrderMapper = {
       orderNumber: order.orderNumber,
       customerName: order.customerName,
       customerPhone: order.customerPhone.toDisplayFormat(),
+      fulfillmentType: order.fulfillmentType,
+      pickupCode: order.pickupCode || null,
       itemCount,
       itemsSummary,
       total: {
@@ -110,7 +119,7 @@ export const OrderMapper = {
   /**
    * Convert Address to DTO
    */
-  addressToDTO(address: Order['shippingAddress']): AddressDTO {
+  addressToDTO(address: Address): AddressDTO {
     const json = address.toJSON();
     return {
       city: json.city,

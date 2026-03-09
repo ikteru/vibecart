@@ -450,7 +450,15 @@ export class SendOrderNotification {
       const accessToken = decryptWhatsAppToken(token.accessTokenEncrypted);
       const customerPhone = order.customerPhone.toWhatsAppFormat();
 
-      const textMessage = `مرحباً ${order.customerName}!
+      const textMessage = order.isPickup
+        ? `مرحباً ${order.customerName}! 🏪
+
+✅ تم استلام طلب الاستلام من المحل رقم *${order.orderNumber}*
+💰 المجموع: ${order.total.amount} درهم (بدون تكلفة التوصيل)
+🔑 كود الاستلام: *${order.pickupCode}*
+
+سيتم إعلامك عندما يكون طلبك جاهزا ✨`
+        : `مرحباً ${order.customerName}!
 
 تم استلام طلبك رقم ${order.orderNumber}
 المجموع: ${order.total.amount} درهم

@@ -47,6 +47,7 @@ export const OrderFactory = {
       sellerId: 'test-seller-id',
       customerName: 'Test Customer',
       customerPhone: PhoneNumber.create('0612345678'),
+      fulfillmentType: 'delivery',
       shippingAddress: Address.create({
         city: 'Casablanca',
         neighborhood: 'Maarif',

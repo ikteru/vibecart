@@ -39,6 +39,7 @@ export class CreateOrder {
    */
   private validateInput(input: Partial<CreateOrderDTO>): ValidationResult {
     const errors: string[] = [];
+    const isPickup = input.fulfillmentType === 'pickup';
 
     // Required fields validation
     if (!input.sellerId?.trim()) {
@@ -53,15 +54,17 @@ export class CreateOrder {
       errors.push('Customer phone is required');
     }
 
-    // Shipping address validation
-    if (!input.shippingAddress) {
-      errors.push('Shipping address is required');
-    } else {
-      if (!input.shippingAddress.city?.trim()) {
-        errors.push('City is required in shipping address');
-      }
-      if (!input.shippingAddress.street?.trim()) {
-        errors.push('Street is required in shipping address');
+    // Shipping address only required for delivery orders
+    if (!isPickup) {
+      if (!input.shippingAddress) {
+        errors.push('Shipping address is required');
+      } else {
+        if (!input.shippingAddress.city?.trim()) {
+          errors.push('City is required in shipping address');
+        }
+        if (!input.shippingAddress.street?.trim()) {
+          errors.push('Street is required in shipping address');
+        }
       }
     }
 
@@ -105,7 +108,10 @@ export class CreateOrder {
         sellerId: input.sellerId,
         customerName: input.customerName,
         customerPhone: input.customerPhone,
+        fulfillmentType: input.fulfillmentType,
         shippingAddress: input.shippingAddress,
+        pickupScheduledTime: input.pickupScheduledTime,
+        pickupNotes: input.pickupNotes,
         items: input.items,
         shippingCost: input.shippingCost,
       });

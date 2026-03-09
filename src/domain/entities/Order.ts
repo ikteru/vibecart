@@ -15,6 +15,8 @@ export type OrderStatus =
   | 'delivered'
   | 'cancelled';
 
+export type FulfillmentType = 'delivery' | 'pickup';
+
 export interface OrderItem {
   id: string;
   productId: string;
@@ -37,7 +39,12 @@ export interface OrderProps {
   sellerId: string;
   customerName: string;
   customerPhone: PhoneNumber;
-  shippingAddress: Address;
+  shippingAddress: Address | null;
+  fulfillmentType: FulfillmentType;
+  pickupCode?: string;
+  pickupScheduledTime?: string;
+  pickupNotes?: string;
+  pickupReadyAt?: Date;
   items: OrderItem[];
   subtotal: Money;
   shippingCost: Money;
@@ -55,7 +62,10 @@ export interface CreateOrderInput {
   sellerId: string;
   customerName: string;
   customerPhone: string;
-  shippingAddress: AddressProps;
+  fulfillmentType?: FulfillmentType;
+  shippingAddress?: AddressProps;
+  pickupScheduledTime?: string;
+  pickupNotes?: string;
   items: {
     productId: string;
     title: string;
@@ -72,7 +82,12 @@ export class Order {
   public readonly sellerId: string;
   private _customerName: string;
   private _customerPhone: PhoneNumber;
-  private _shippingAddress: Address;
+  private _shippingAddress: Address | null;
+  private _fulfillmentType: FulfillmentType;
+  private _pickupCode: string | undefined;
+  private _pickupScheduledTime: string | undefined;
+  private _pickupNotes: string | undefined;
+  private _pickupReadyAt: Date | null;
   private _items: OrderItem[];
   private _subtotal: Money;
   private _shippingCost: Money;
@@ -92,6 +107,11 @@ export class Order {
     this._customerName = props.customerName;
     this._customerPhone = props.customerPhone;
     this._shippingAddress = props.shippingAddress;
+    this._fulfillmentType = props.fulfillmentType;
+    this._pickupCode = props.pickupCode;
+    this._pickupScheduledTime = props.pickupScheduledTime;
+    this._pickupNotes = props.pickupNotes;
+    this._pickupReadyAt = props.pickupReadyAt || null;
     this._items = [...props.items];
     this._subtotal = props.subtotal;
     this._shippingCost = props.shippingCost;
@@ -110,6 +130,7 @@ export class Order {
    */
   static create(input: CreateOrderInput): Order {
     const now = new Date();
+    const fulfillmentType: FulfillmentType = input.fulfillmentType || 'delivery';
 
     // Validation
     if (!input.customerName || input.customerName.trim() === '') {
@@ -117,6 +138,11 @@ export class Order {
     }
     if (input.items.length === 0) {
       throw new Error('Order must have at least one item');
+    }
+
+    // For delivery orders, address is required
+    if (fulfillmentType === 'delivery' && !input.shippingAddress) {
+      throw new Error('Shipping address is required for delivery orders');
     }
 
     // Calculate subtotal
@@ -139,17 +165,27 @@ export class Order {
       .toString()
       .padStart(4, '0')}`;
 
+    // Pickup orders are always free shipping; generate pickup code
+    const shippingCost = fulfillmentType === 'pickup' ? 0 : input.shippingCost;
+    const pickupCode = fulfillmentType === 'pickup'
+      ? 'VC-' + Math.random().toString(36).slice(-4).toUpperCase()
+      : undefined;
+
     return new Order({
       id: crypto.randomUUID(),
       orderNumber,
       sellerId: input.sellerId,
       customerName: input.customerName.trim(),
       customerPhone: PhoneNumber.create(input.customerPhone),
-      shippingAddress: Address.create(input.shippingAddress),
+      shippingAddress: input.shippingAddress ? Address.create(input.shippingAddress) : null,
+      fulfillmentType,
+      pickupCode,
+      pickupScheduledTime: input.pickupScheduledTime,
+      pickupNotes: input.pickupNotes,
       items,
       subtotal: Money.create(subtotal),
-      shippingCost: Money.create(input.shippingCost),
-      total: Money.create(subtotal + input.shippingCost),
+      shippingCost: Money.create(shippingCost),
+      total: Money.create(subtotal + shippingCost),
       status: 'pending',
       messages: [],
       createdAt: now,
@@ -173,8 +209,32 @@ export class Order {
     return this._customerPhone;
   }
 
-  get shippingAddress(): Address {
+  get shippingAddress(): Address | null {
     return this._shippingAddress;
+  }
+
+  get fulfillmentType(): FulfillmentType {
+    return this._fulfillmentType;
+  }
+
+  get pickupCode(): string | undefined {
+    return this._pickupCode;
+  }
+
+  get pickupScheduledTime(): string | undefined {
+    return this._pickupScheduledTime;
+  }
+
+  get pickupNotes(): string | undefined {
+    return this._pickupNotes;
+  }
+
+  get pickupReadyAt(): Date | null {
+    return this._pickupReadyAt;
+  }
+
+  get isPickup(): boolean {
+    return this._fulfillmentType === 'pickup';
   }
 
   get items(): OrderItem[] {
@@ -358,9 +418,16 @@ export class Order {
   }
 
   /**
-   * Generate WhatsApp order message
+   * Generate WhatsApp order message for seller
    */
   generateWhatsAppMessage(shopName: string): string {
+    if (this._fulfillmentType === 'pickup') {
+      return this.generatePickupWhatsAppMessage();
+    }
+    return this.generateDeliveryWhatsAppMessage(shopName);
+  }
+
+  private generateDeliveryWhatsAppMessage(shopName: string): string {
     const lines = [
       `🛒 *New Order from ${shopName}*`,
       '',
@@ -383,12 +450,49 @@ export class Order {
       `Shipping: ${this._shippingCost.isZero() ? 'FREE' : this._shippingCost.format()}`
     );
     lines.push(`*Total: ${this._total.format()}*`);
-    lines.push('');
-    lines.push('📍 *Delivery Address:*');
-    lines.push(this._shippingAddress.toWhatsAppFormat());
+
+    if (this._shippingAddress) {
+      lines.push('');
+      lines.push('📍 *Delivery Address:*');
+      lines.push(this._shippingAddress.toWhatsAppFormat());
+    }
+
     lines.push('');
     lines.push(`📱 Customer: ${this._customerName}`);
     lines.push(`📞 Phone: ${this._customerPhone.toDisplayFormat()}`);
+
+    return lines.join('\n');
+  }
+
+  private generatePickupWhatsAppMessage(): string {
+    const lines = [
+      `🏪 *طلب استلام من المحل!*`,
+      '',
+      `📦 *طلب #${this.orderNumber}* | 🔑 كود الاستلام: *${this._pickupCode}*`,
+      '',
+      `🛍️ *المنتجات:*`,
+    ];
+
+    for (const item of this._items) {
+      let itemLine = `• ${item.title} x${item.quantity} - ${item.price.multiply(item.quantity).format()}`;
+      if (item.selectedVariant) {
+        itemLine += ` (${item.selectedVariant})`;
+      }
+      lines.push(itemLine);
+    }
+
+    lines.push('');
+    lines.push(`💰 *المجموع: ${this._total.format()}* (بدون تكلفة التوصيل 🎉)`);
+    lines.push('');
+    lines.push(`👤 ${this._customerName}`);
+    lines.push(`📞 ${this._customerPhone.toDisplayFormat()}`);
+
+    if (this._pickupScheduledTime) {
+      lines.push(`⏰ وقت الاستلام المفضل: ${this._pickupScheduledTime}`);
+    }
+    if (this._pickupNotes) {
+      lines.push(`📝 ${this._pickupNotes}`);
+    }
 
     return lines.join('\n');
   }
@@ -404,6 +508,11 @@ export class Order {
       customerName: this._customerName,
       customerPhone: this._customerPhone,
       shippingAddress: this._shippingAddress,
+      fulfillmentType: this._fulfillmentType,
+      pickupCode: this._pickupCode,
+      pickupScheduledTime: this._pickupScheduledTime,
+      pickupNotes: this._pickupNotes,
+      pickupReadyAt: this._pickupReadyAt || undefined,
       items: [...this._items],
       subtotal: this._subtotal,
       shippingCost: this._shippingCost,

@@ -26,11 +26,13 @@ import {
   AlertCircle,
   MessageSquareText,
   ChevronRight,
+  Store,
+  Clock,
 } from 'lucide-react';
 import { ComingSoonModal } from '@/presentation/components/ui/ComingSoonModal';
 import { InstagramReconnectGuide } from '@/presentation/components/seller/InstagramReconnectGuide';
 import type { SellerResponseDTO, UpdateSellerDTO } from '@/application/dtos/SellerDTO';
-import type { ShippingRule } from '@/domain/entities/Seller';
+import type { ShippingRule, PickupConfig } from '@/domain/entities/Seller';
 
 const LANGUAGE_CODES = [
   { code: 'en', nameKey: 'english', flag: '🇬🇧' },
@@ -165,6 +167,19 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
       defaultRate: seller.shopConfig.shipping?.defaultRate || 35,
       rules: seller.shopConfig.shipping?.rules || [],
     },
+    pickup: {
+      enabled: seller.shopConfig.pickup?.enabled || false,
+      storeName: seller.shopConfig.pickup?.storeName || '',
+      storeAddress: seller.shopConfig.pickup?.storeAddress || '',
+      storeCity: seller.shopConfig.pickup?.storeCity || '',
+      storePhone: seller.shopConfig.pickup?.storePhone || '',
+      requirePhoneConfirmation: seller.shopConfig.pickup?.requirePhoneConfirmation || false,
+      googleMapsUrl: seller.shopConfig.pickup?.googleMapsUrl || '',
+      preparationTimeMinutes: seller.shopConfig.pickup?.preparationTimeMinutes ?? 120,
+      instructions: seller.shopConfig.pickup?.instructions || '',
+      discountPercent: seller.shopConfig.pickup?.discountPercent ?? 0,
+      hours: seller.shopConfig.pickup?.hours || { alwaysOpen: true },
+    } as PickupConfig,
   });
 
   // Fetch Instagram health when connected
@@ -344,6 +359,7 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
         shipping: config.shipping,
         instagram: config.instagram,
         googleMaps: config.googleMaps,
+        pickup: config.pickup,
       },
     };
 
@@ -379,6 +395,21 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
 
   return (
     <div className="animate-fade-in pb-24 space-y-6">
+      {/* Full-screen overlay during Instagram OAuth redirect */}
+      {isConnectingInstagram && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm">
+          <div className="relative mb-6">
+            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 p-0.5">
+              <div className="flex h-full w-full items-center justify-center rounded-2xl bg-black">
+                <Instagram className="h-8 w-8 text-white" />
+              </div>
+            </div>
+            <div className="absolute -inset-2 animate-spin rounded-2xl border-2 border-transparent border-t-pink-500" />
+          </div>
+          <p className="text-lg font-medium text-white">{t('auth.connectingToInstagram')}</p>
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-white">{t('seller.settings.title')}</h2>
         <button
@@ -786,6 +817,296 @@ export function SettingsForm({ seller, locale, updateAction, logoutAction }: Set
             </div>
           </div>
         </Link>
+      </div>
+
+      {/* Pickup at Store */}
+      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex items-center justify-center">
+              <Store size={20} className="text-emerald-400" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm text-white">{t('seller.settings.pickup.title')}</h3>
+              <p className="text-[10px] text-zinc-500">{t('seller.settings.pickup.description')}</p>
+            </div>
+          </div>
+          <button
+            onClick={() =>
+              setConfig((prev) => ({
+                ...prev,
+                pickup: { ...prev.pickup, enabled: !prev.pickup.enabled },
+              }))
+            }
+            className={`w-10 h-6 rounded-full transition-colors relative ${
+              config.pickup.enabled ? 'bg-emerald-500' : 'bg-zinc-700'
+            }`}
+          >
+            <div
+              className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
+                config.pickup.enabled ? 'start-5' : 'start-1'
+              }`}
+            />
+          </button>
+        </div>
+
+        {config.pickup.enabled && (
+          <div className="space-y-4 pt-1">
+            {/* Store Details */}
+            <div className="space-y-3">
+              <p className="text-[10px] text-zinc-500 font-bold uppercase ms-1">{t('seller.settings.pickup.storeDetailsSection')}</p>
+
+              <div className="space-y-1">
+                <label className="text-[10px] text-zinc-500 ms-1">{t('seller.settings.pickup.storeName')}</label>
+                <input
+                  type="text"
+                  placeholder={seller.shopName}
+                  value={config.pickup.storeName || ''}
+                  onChange={(e) =>
+                    setConfig((prev) => ({
+                      ...prev,
+                      pickup: { ...prev.pickup, storeName: e.target.value },
+                    }))
+                  }
+                  className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-zinc-600"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] text-zinc-500 ms-1">{t('seller.settings.pickup.storeAddress')}</label>
+                <textarea
+                  placeholder={t('seller.settings.pickup.storeAddressPlaceholder')}
+                  value={config.pickup.storeAddress || ''}
+                  onChange={(e) =>
+                    setConfig((prev) => ({
+                      ...prev,
+                      pickup: { ...prev.pickup, storeAddress: e.target.value },
+                    }))
+                  }
+                  rows={2}
+                  className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-zinc-600 resize-none"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] text-zinc-500 ms-1">{t('seller.settings.pickup.googleMapsUrl')}</label>
+                <input
+                  type="url"
+                  placeholder="https://maps.google.com/..."
+                  value={config.pickup.googleMapsUrl || ''}
+                  onChange={(e) =>
+                    setConfig((prev) => ({
+                      ...prev,
+                      pickup: { ...prev.pickup, googleMapsUrl: e.target.value },
+                    }))
+                  }
+                  className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-zinc-600"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] text-zinc-500 ms-1">{t('seller.settings.pickup.storePhone')}</label>
+                <input
+                  type="tel"
+                  placeholder="06XXXXXXXX"
+                  value={config.pickup.storePhone || ''}
+                  onChange={(e) =>
+                    setConfig((prev) => ({
+                      ...prev,
+                      pickup: { ...prev.pickup, storePhone: e.target.value },
+                    }))
+                  }
+                  className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-zinc-600"
+                />
+              </div>
+
+              {/* Require call toggle */}
+              <div className="flex items-center justify-between bg-black border border-zinc-800 rounded-lg px-3 py-2">
+                <span className="text-xs text-zinc-300">{t('seller.settings.pickup.requireCall')}</span>
+                <button
+                  onClick={() =>
+                    setConfig((prev) => ({
+                      ...prev,
+                      pickup: { ...prev.pickup, requirePhoneConfirmation: !prev.pickup.requirePhoneConfirmation },
+                    }))
+                  }
+                  className={`w-9 h-5 rounded-full transition-colors relative flex-shrink-0 ${
+                    config.pickup.requirePhoneConfirmation ? 'bg-emerald-500' : 'bg-zinc-700'
+                  }`}
+                >
+                  <div
+                    className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all ${
+                      config.pickup.requirePhoneConfirmation ? 'start-4' : 'start-0.5'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+
+            {/* Pickup Options */}
+            <div className="space-y-3">
+              <p className="text-[10px] text-zinc-500 font-bold uppercase ms-1">{t('seller.settings.pickup.optionsSection')}</p>
+
+              {/* Preparation time */}
+              <div className="space-y-1">
+                <label className="text-[10px] text-zinc-500 ms-1">{t('seller.settings.pickup.preparationTime')}</label>
+                <select
+                  value={config.pickup.preparationTimeMinutes ?? 120}
+                  onChange={(e) =>
+                    setConfig((prev) => ({
+                      ...prev,
+                      pickup: { ...prev.pickup, preparationTimeMinutes: parseInt(e.target.value) },
+                    }))
+                  }
+                  className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-zinc-600"
+                >
+                  <option value={30}>{t('seller.settings.pickup.preparationTimeOptions.30')}</option>
+                  <option value={60}>{t('seller.settings.pickup.preparationTimeOptions.60')}</option>
+                  <option value={120}>{t('seller.settings.pickup.preparationTimeOptions.120')}</option>
+                  <option value={480}>{t('seller.settings.pickup.preparationTimeOptions.480')}</option>
+                </select>
+              </div>
+
+              {/* Pickup discount */}
+              <div className="flex items-center justify-between bg-black border border-zinc-800 rounded-lg px-3 py-2">
+                <span className="text-xs text-zinc-300">{t('seller.settings.pickup.discountPercent')}</span>
+                <div className="flex items-center gap-1">
+                  <input
+                    type="number"
+                    min={0}
+                    max={50}
+                    value={config.pickup.discountPercent ?? 0}
+                    onChange={(e) =>
+                      setConfig((prev) => ({
+                        ...prev,
+                        pickup: { ...prev.pickup, discountPercent: Math.min(50, Math.max(0, parseInt(e.target.value) || 0)) },
+                      }))
+                    }
+                    className="w-14 bg-zinc-900 text-center text-sm text-white font-bold rounded-md py-1 focus:outline-none"
+                  />
+                  <span className="text-xs text-zinc-500">%</span>
+                </div>
+              </div>
+
+              {/* Custom instructions */}
+              <div className="space-y-1">
+                <label className="text-[10px] text-zinc-500 ms-1">{t('seller.settings.pickup.instructions')}</label>
+                <textarea
+                  placeholder={t('seller.settings.pickup.instructionsPlaceholder')}
+                  value={config.pickup.instructions || ''}
+                  onChange={(e) =>
+                    setConfig((prev) => ({
+                      ...prev,
+                      pickup: { ...prev.pickup, instructions: e.target.value },
+                    }))
+                  }
+                  rows={2}
+                  className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-zinc-600 resize-none"
+                />
+              </div>
+            </div>
+
+            {/* Store Hours */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] text-zinc-500 font-bold uppercase ms-1 flex items-center gap-1">
+                  <Clock size={10} />
+                  {t('seller.settings.pickup.hours')}
+                </p>
+                <button
+                  onClick={() =>
+                    setConfig((prev) => ({
+                      ...prev,
+                      pickup: {
+                        ...prev.pickup,
+                        hours: { ...prev.pickup.hours, alwaysOpen: !prev.pickup.hours?.alwaysOpen },
+                      },
+                    }))
+                  }
+                  className={`flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded-full transition-colors ${
+                    config.pickup.hours?.alwaysOpen
+                      ? 'bg-emerald-500/20 text-emerald-400'
+                      : 'bg-zinc-800 text-zinc-400'
+                  }`}
+                >
+                  {t('seller.settings.pickup.alwaysOpen')}
+                </button>
+              </div>
+
+              {!config.pickup.hours?.alwaysOpen && (
+                <div className="space-y-2">
+                  {(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const).map((day) => {
+                    const dayConfig = config.pickup.hours?.[day];
+                    const isClosed = dayConfig?.closed || false;
+                    return (
+                      <div key={day} className="flex items-center gap-2 bg-black border border-zinc-800 rounded-lg px-3 py-2">
+                        <span className="text-xs text-zinc-400 w-8 shrink-0">{t(`seller.settings.pickup.days.${day}`)}</span>
+                        <button
+                          onClick={() =>
+                            setConfig((prev) => ({
+                              ...prev,
+                              pickup: {
+                                ...prev.pickup,
+                                hours: {
+                                  ...prev.pickup.hours,
+                                  [day]: { open: dayConfig?.open || '09:00', close: dayConfig?.close || '18:00', closed: !isClosed },
+                                },
+                              },
+                            }))
+                          }
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full w-14 text-center transition-colors ${
+                            isClosed ? 'bg-red-500/20 text-red-400' : 'bg-emerald-500/20 text-emerald-400'
+                          }`}
+                        >
+                          {isClosed ? t('seller.settings.pickup.closed') : t('seller.settings.pickup.open')}
+                        </button>
+                        {!isClosed && (
+                          <div className="flex items-center gap-1 flex-1">
+                            <input
+                              type="time"
+                              value={dayConfig?.open || '09:00'}
+                              onChange={(e) =>
+                                setConfig((prev) => ({
+                                  ...prev,
+                                  pickup: {
+                                    ...prev.pickup,
+                                    hours: {
+                                      ...prev.pickup.hours,
+                                      [day]: { ...dayConfig, open: e.target.value, close: dayConfig?.close || '18:00' },
+                                    },
+                                  },
+                                }))
+                              }
+                              className="flex-1 bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-xs text-white focus:outline-none"
+                            />
+                            <span className="text-zinc-600 text-xs">–</span>
+                            <input
+                              type="time"
+                              value={dayConfig?.close || '18:00'}
+                              onChange={(e) =>
+                                setConfig((prev) => ({
+                                  ...prev,
+                                  pickup: {
+                                    ...prev.pickup,
+                                    hours: {
+                                      ...prev.pickup.hours,
+                                      [day]: { ...dayConfig, open: dayConfig?.open || '09:00', close: e.target.value },
+                                    },
+                                  },
+                                }))
+                              }
+                              className="flex-1 bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-xs text-white focus:outline-none"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* App Settings */}

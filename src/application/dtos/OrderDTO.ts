@@ -1,4 +1,4 @@
-import type { OrderStatus } from '@/domain/entities/Order';
+import type { OrderStatus, FulfillmentType } from '@/domain/entities/Order';
 
 /**
  * Order Item DTO
@@ -58,7 +58,13 @@ export interface OrderResponseDTO {
   sellerId: string;
   customerName: string;
   customerPhone: string;
-  shippingAddress: AddressDTO;
+  fulfillmentType: FulfillmentType;
+  shippingAddress: AddressDTO | null;
+  pickupCode: string | null;
+  pickupScheduledTime: string | null;
+  pickupNotes: string | null;
+  pickupReadyAt: string | null;
+  isPickup: boolean;
   items: OrderItemDTO[];
   subtotal: {
     amount: number;
@@ -97,6 +103,8 @@ export interface OrderSummaryDTO {
   orderNumber: string;
   customerName: string;
   customerPhone: string;
+  fulfillmentType: FulfillmentType;
+  pickupCode: string | null;
   itemCount: number;
   itemsSummary: string;
   total: {
@@ -128,7 +136,8 @@ export interface CreateOrderDTO {
   sellerId: string;
   customerName: string;
   customerPhone: string;
-  shippingAddress: {
+  fulfillmentType?: FulfillmentType;
+  shippingAddress?: {
     city: string;
     neighborhood?: string;
     street: string;
@@ -142,6 +151,8 @@ export interface CreateOrderDTO {
     };
     locationUrl?: string;
   };
+  pickupScheduledTime?: string;
+  pickupNotes?: string;
   items: CreateOrderItemInput[];
   shippingCost: number;
 }

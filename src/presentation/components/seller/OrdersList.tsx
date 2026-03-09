@@ -10,6 +10,7 @@ import {
   MessageCircle,
   ChevronRight,
   Info,
+  Store,
 } from 'lucide-react';
 import type { OrderSummaryDTO } from '@/application/dtos/OrderDTO';
 import type { OrderStatus } from '@/domain/entities/Order';
@@ -196,7 +197,12 @@ export function OrdersList({ orders }: OrdersListProps) {
                   </div>
                   <div>
                     <h3 className="font-bold text-sm text-white">{order.customerName}</h3>
-                    <p className="text-[10px] text-zinc-500">
+                    <p className="text-[10px] text-zinc-500 flex items-center gap-1.5">
+                      {order.fulfillmentType === 'pickup' && (
+                        <span className="inline-flex items-center gap-0.5 bg-emerald-500/15 text-emerald-400 px-1.5 py-0.5 rounded font-bold text-[9px]">
+                          <Store size={9} />🏪
+                        </span>
+                      )}
                       {order.orderNumber} • {formatRelativeTime(order.createdAt)}
                     </p>
                   </div>

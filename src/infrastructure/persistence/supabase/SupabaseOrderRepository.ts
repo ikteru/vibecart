@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { Order, OrderStatus, OrderItem, ChatMessage } from '@/domain/entities/Order';
+import { Order, OrderStatus, OrderItem, ChatMessage, FulfillmentType } from '@/domain/entities/Order';
 import { OrderRepository } from '@/domain/repositories/OrderRepository';
 import { Money, Currency } from '@/domain/value-objects/Money';
 import { Address } from '@/domain/value-objects/Address';
@@ -170,27 +170,35 @@ export class SupabaseOrderRepository implements OrderRepository {
     const props = order.toPersistence();
 
     // Prepare order data for the RPC function
-    const orderData = {
+    const orderData: Record<string, unknown> = {
       id: props.id,
       order_number: props.orderNumber,
       seller_id: props.sellerId,
       customer_name: props.customerName,
       customer_phone: props.customerPhone.toWhatsAppFormat(),
-      address_city: props.shippingAddress.city,
-      address_neighborhood: props.shippingAddress.neighborhood || null,
-      address_street: props.shippingAddress.street,
-      address_building_name: props.shippingAddress.buildingName || null,
-      address_floor: props.shippingAddress.floor || null,
-      address_apartment_number: props.shippingAddress.apartmentNumber || null,
-      address_delivery_instructions: props.shippingAddress.deliveryInstructions || null,
-      location_lat: props.shippingAddress.location?.lat || null,
-      location_lng: props.shippingAddress.location?.lng || null,
-      location_url: props.shippingAddress.locationUrl || null,
+      fulfillment_type: props.fulfillmentType,
+      pickup_code: props.pickupCode || null,
+      pickup_scheduled_time: props.pickupScheduledTime || null,
+      pickup_notes: props.pickupNotes || null,
       subtotal: props.subtotal.toCents(),
       shipping_cost: props.shippingCost.toCents(),
       total: props.total.toCents(),
       currency: props.total.currency,
     };
+
+    // Only include address fields for delivery orders
+    if (props.shippingAddress) {
+      orderData.address_city = props.shippingAddress.city;
+      orderData.address_neighborhood = props.shippingAddress.neighborhood || null;
+      orderData.address_street = props.shippingAddress.street;
+      orderData.address_building_name = props.shippingAddress.buildingName || null;
+      orderData.address_floor = props.shippingAddress.floor || null;
+      orderData.address_apartment_number = props.shippingAddress.apartmentNumber || null;
+      orderData.address_delivery_instructions = props.shippingAddress.deliveryInstructions || null;
+      orderData.location_lat = props.shippingAddress.location?.lat || null;
+      orderData.location_lng = props.shippingAddress.location?.lng || null;
+      orderData.location_url = props.shippingAddress.locationUrl || null;
+    }
 
     // Prepare items for the RPC function
     const items = props.items.map((item) => ({
@@ -234,25 +242,27 @@ export class SupabaseOrderRepository implements OrderRepository {
     const props = order.toPersistence();
 
     // Convert to database row
-    const orderRow: Omit<OrderRow, 'created_at' | 'updated_at'> & {
-      created_at?: string;
-      updated_at?: string;
-    } = {
+    const orderRow: Record<string, unknown> = {
       id: props.id,
       order_number: props.orderNumber,
       seller_id: props.sellerId,
       customer_name: props.customerName,
       customer_phone: props.customerPhone.toWhatsAppFormat(),
-      address_city: props.shippingAddress.city,
-      address_neighborhood: props.shippingAddress.neighborhood,
-      address_street: props.shippingAddress.street,
-      address_building_name: props.shippingAddress.buildingName,
-      address_floor: props.shippingAddress.floor,
-      address_apartment_number: props.shippingAddress.apartmentNumber,
-      address_delivery_instructions: props.shippingAddress.deliveryInstructions,
-      location_lat: props.shippingAddress.location?.lat || null,
-      location_lng: props.shippingAddress.location?.lng || null,
-      location_url: props.shippingAddress.locationUrl,
+      fulfillment_type: props.fulfillmentType,
+      pickup_code: props.pickupCode || null,
+      pickup_scheduled_time: props.pickupScheduledTime || null,
+      pickup_notes: props.pickupNotes || null,
+      pickup_ready_at: props.pickupReadyAt?.toISOString() || null,
+      address_city: props.shippingAddress?.city || null,
+      address_neighborhood: props.shippingAddress?.neighborhood || null,
+      address_street: props.shippingAddress?.street || null,
+      address_building_name: props.shippingAddress?.buildingName || null,
+      address_floor: props.shippingAddress?.floor || null,
+      address_apartment_number: props.shippingAddress?.apartmentNumber || null,
+      address_delivery_instructions: props.shippingAddress?.deliveryInstructions || null,
+      location_lat: props.shippingAddress?.location?.lat || null,
+      location_lng: props.shippingAddress?.location?.lng || null,
+      location_url: props.shippingAddress?.locationUrl || null,
       status: props.status,
       subtotal: props.subtotal.toCents(),
       shipping_cost: props.shippingCost.toCents(),
@@ -517,24 +527,26 @@ export class SupabaseOrderRepository implements OrderRepository {
       createdAt: new Date(row.created_at),
     }));
 
-    // Build address
-    const address = Address.create({
-      city: orderRow.address_city,
-      neighborhood: orderRow.address_neighborhood || undefined,
-      street: orderRow.address_street,
-      buildingName: orderRow.address_building_name || undefined,
-      floor: orderRow.address_floor || undefined,
-      apartmentNumber: orderRow.address_apartment_number || undefined,
-      deliveryInstructions: orderRow.address_delivery_instructions || undefined,
-      location:
-        orderRow.location_lat && orderRow.location_lng
-          ? {
-              lat: Number(orderRow.location_lat),
-              lng: Number(orderRow.location_lng),
-            }
-          : undefined,
-      locationUrl: orderRow.location_url || undefined,
-    });
+    // Build address only for delivery orders with address data
+    const address = orderRow.address_city && orderRow.address_street
+      ? Address.create({
+          city: orderRow.address_city,
+          neighborhood: orderRow.address_neighborhood || undefined,
+          street: orderRow.address_street,
+          buildingName: orderRow.address_building_name || undefined,
+          floor: orderRow.address_floor || undefined,
+          apartmentNumber: orderRow.address_apartment_number || undefined,
+          deliveryInstructions: orderRow.address_delivery_instructions || undefined,
+          location:
+            orderRow.location_lat && orderRow.location_lng
+              ? {
+                  lat: Number(orderRow.location_lat),
+                  lng: Number(orderRow.location_lng),
+                }
+              : undefined,
+          locationUrl: orderRow.location_url || undefined,
+        })
+      : null;
 
     return Order.fromPersistence({
       id: orderRow.id,
@@ -543,6 +555,11 @@ export class SupabaseOrderRepository implements OrderRepository {
       customerName: orderRow.customer_name,
       customerPhone: PhoneNumber.create(orderRow.customer_phone),
       shippingAddress: address,
+      fulfillmentType: (orderRow.fulfillment_type || 'delivery') as FulfillmentType,
+      pickupCode: orderRow.pickup_code || undefined,
+      pickupScheduledTime: orderRow.pickup_scheduled_time || undefined,
+      pickupNotes: orderRow.pickup_notes || undefined,
+      pickupReadyAt: orderRow.pickup_ready_at ? new Date(orderRow.pickup_ready_at) : undefined,
       items,
       subtotal: Money.fromCents(orderRow.subtotal, currency),
       shippingCost: Money.fromCents(orderRow.shipping_cost, currency),

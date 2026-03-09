@@ -41,9 +41,14 @@ export interface OrderRow {
   seller_id: string;
   customer_name: string;
   customer_phone: string;
-  address_city: string;
+  fulfillment_type: string;
+  pickup_code: string | null;
+  pickup_scheduled_time: string | null;
+  pickup_notes: string | null;
+  pickup_ready_at: string | null;
+  address_city: string | null;
   address_neighborhood: string | null;
-  address_street: string;
+  address_street: string | null;
   address_building_name: string | null;
   address_floor: string | null;
   address_apartment_number: string | null;

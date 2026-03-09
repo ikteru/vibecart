@@ -217,6 +217,7 @@ export function OrderDetail({
               </button>
             </div>
 
+            {order.shippingAddress && (
             <div className="border-t border-zinc-800 pt-3">
               <div className="flex items-start gap-2 text-sm text-zinc-400">
                 <MapPin size={16} className="mt-0.5 shrink-0" />
@@ -256,6 +257,7 @@ export function OrderDetail({
                 </a>
               )}
             </div>
+            )}
           </div>
         </section>
 

@@ -82,6 +82,35 @@ export interface WhatsAppBusinessConfig {
   tokenExpiresAt?: string;         // ISO date string for UI warning
 }
 
+export interface DayHours {
+  open: string;    // e.g. "09:00"
+  close: string;   // e.g. "18:00"
+  closed?: boolean;
+}
+
+export interface PickupConfig {
+  enabled: boolean;
+  storeName?: string;              // Defaults to shopName in UI
+  storeAddress?: string;           // Human-readable address
+  storeCity?: string;
+  storePhone?: string;             // Optional contact phone
+  requirePhoneConfirmation?: boolean; // "Call before coming" toggle
+  googleMapsUrl?: string;
+  preparationTimeMinutes?: number; // e.g. 120 = "~2 hours"
+  instructions?: string;           // "How to find us" freeform text
+  discountPercent?: number;        // e.g. 10 = "Save 10%"
+  hours?: {
+    alwaysOpen?: boolean;
+    monday?: DayHours;
+    tuesday?: DayHours;
+    wednesday?: DayHours;
+    thursday?: DayHours;
+    friday?: DayHours;
+    saturday?: DayHours;
+    sunday?: DayHours;
+  };
+}
+
 export interface ShopConfig {
   heroText?: string;
   accentColor?: string;
@@ -94,6 +123,7 @@ export interface ShopConfig {
   googleMaps?: GoogleMapsConfig;
   instagram?: InstagramConfig;
   whatsappBusiness?: WhatsAppBusinessConfig;
+  pickup?: PickupConfig;
 }
 
 export interface SellerProps {
