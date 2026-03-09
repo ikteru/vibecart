@@ -105,57 +105,51 @@ export async function GET(request: NextRequest) {
     const expiresAt = new Date();
     expiresAt.setSeconds(expiresAt.getSeconds() + tokenExpiresIn);
 
-    // 5. Find or create Supabase user
+    // 5. Find or create Supabase user AND generate magic link.
+    // generateLink creates the user if they don't exist, or returns the existing user.
+    // This avoids a separate createUser call which may fail on some local Supabase setups.
     const adminClient = createAdminClient();
     const syntheticEmail = `ig_${profile.id}@instagram.vibecart.app`;
 
-    let userId: string;
-    let isNewUser = false;
+    // 6. Generate magic link via direct GoTrue call (bypasses Kong which blocks POST to /admin/*)
+    // GOTRUE_URL points to GoTrue directly (port 9999 in local dev); in production the SDK works fine
+    // so this env var is left unset and we fall back to the standard Supabase URL path.
+    const gotrueBase = process.env.GOTRUE_URL
+      || `${process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:8000'}/auth/v1`;
 
-    // Look up existing seller by Instagram user ID (avoids full listUsers scan)
-    const { data: existingSeller } = await adminClient
-      .from('sellers')
-      .select('user_id')
-      .eq('shop_config->instagram->>userId', profile.id)
-      .maybeSingle();
-
-    if (existingSeller?.user_id) {
-      userId = existingSeller.user_id;
-    } else {
-      // Create new user
-      const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
+    const genLinkRes = await fetch(`${gotrueBase}/admin/generate_link`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.SUPABASE_SECRET_KEY!}`,
+      },
+      body: JSON.stringify({
+        type: 'magiclink',
         email: syntheticEmail,
-        email_confirm: true,
-        user_metadata: {
+        data: {
           instagram_id: profile.id,
           instagram_username: profile.username,
           avatar_url: profile.profile_picture_url,
         },
-      });
-
-      if (createError || !newUser.user) {
-        logger.error('Failed to create user', { context: 'instagram', error: createError?.message });
-        const errorUrl = new URL(loginUrl);
-        errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.ACCOUNT_FAILED);
-        return NextResponse.redirect(errorUrl);
-      }
-
-      userId = newUser.user.id;
-      isNewUser = true;
-    }
-
-    // 6. Generate magic link to create session
-    const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
-      type: 'magiclink',
-      email: syntheticEmail,
+      }),
     });
 
-    if (linkError || !linkData) {
-      logger.error('Failed to generate session link', { context: 'instagram', error: linkError?.message });
+    if (!genLinkRes.ok) {
+      const errText = await genLinkRes.text();
+      logger.error('Failed to generate session link', { context: 'instagram', status: genLinkRes.status, error: errText });
       const errorUrl = new URL(loginUrl);
       errorUrl.searchParams.set('ig_err', INSTAGRAM_ERROR_CODES.SESSION_FAILED);
       return NextResponse.redirect(errorUrl);
     }
+
+    const linkData = await genLinkRes.json() as {
+      hashed_token: string;
+      user: { id: string; created_at: string };
+    };
+
+    const userId = linkData.user.id;
+    // isNewUser: user was just created if created_at is within the last 30 seconds
+    const isNewUser = (Date.now() - new Date(linkData.user.created_at).getTime()) < 30_000;
 
     // 7. Find or create seller
     const { sellerRepository, instagramTokenRepository } = createRepositories(adminClient, adminClient);
@@ -216,7 +210,7 @@ export async function GET(request: NextRequest) {
 
     // 9. Set session via Supabase auth
     // Use the hashed token from generateLink to verify OTP
-    const token_hash = linkData.properties?.hashed_token;
+    const token_hash = linkData.hashed_token;
     if (token_hash) {
       // Set the session cookie by verifying the OTP
       const { createClient } = await import('@/infrastructure/auth/supabase-server');

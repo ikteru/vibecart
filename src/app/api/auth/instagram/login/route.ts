@@ -15,10 +15,10 @@ const OAUTH_STATE_COOKIE = 'instagram_login_state';
  */
 export async function GET(request: NextRequest) {
   try {
-    // Derive base URL from the incoming request (works on any domain: ngrok, Vercel, custom domain)
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `${request.nextUrl.protocol}//${request.nextUrl.host}`;
-
-    const loginCallbackUri = `${baseUrl}/api/auth/instagram/login/callback`;
+    // Use explicit env var so the redirect URI is always predictable and matches Meta registration.
+    // INSTAGRAM_LOGIN_REDIRECT_URI must be registered in Meta Developer Portal.
+    const loginCallbackUri = process.env.INSTAGRAM_LOGIN_REDIRECT_URI
+      || `${process.env.NEXT_PUBLIC_APP_URL || `${request.nextUrl.protocol}//${request.nextUrl.host}`}/api/auth/instagram/login/callback`;
 
     const instagramService = new InstagramGraphService();
 
