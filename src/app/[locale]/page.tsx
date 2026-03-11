@@ -11,7 +11,7 @@ export default async function HomePage({ params }: HomePageProps) {
   const user = await getCurrentUser();
 
   if (user) {
-    redirect(`/${params.locale}/seller/dashboard`);
+    redirect(`/${params.locale}/seller/profile`);
   }
 
   return (

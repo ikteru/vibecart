@@ -1337,10 +1337,26 @@
             "title": "Cookies essentiels",
             "description": "Ces cookies sont strictement nécessaires pour vous fournir les services disponibles sur notre plateforme et pour utiliser certaines de ses fonctionnalités, comme l'accès aux zones sécurisées. Sans ces cookies, certains services que vous avez demandés ne peuvent pas être fournis.",
             "cookies": {
-              "accessToken": { "name": "sb-access-token", "purpose": "Session d'authentification", "duration": "Session" },
-              "refreshToken": { "name": "sb-refresh-token", "purpose": "Rafraîchissement d'authentification", "duration": "7 jours" },
-              "locale": { "name": "locale", "purpose": "Préférence de langue", "duration": "1 an" },
-              "theme": { "name": "theme", "purpose": "Préférence mode sombre/clair", "duration": "1 an" }
+              "accessToken": {
+                "name": "sb-access-token",
+                "purpose": "Session d'authentification",
+                "duration": "Session"
+              },
+              "refreshToken": {
+                "name": "sb-refresh-token",
+                "purpose": "Rafraîchissement d'authentification",
+                "duration": "7 jours"
+              },
+              "locale": {
+                "name": "locale",
+                "purpose": "Préférence de langue",
+                "duration": "1 an"
+              },
+              "theme": {
+                "name": "theme",
+                "purpose": "Préférence mode sombre/clair",
+                "duration": "1 an"
+              }
             }
           },
           "analytics": {
@@ -1349,9 +1365,21 @@
             "description": "Ces cookies nous aident à comprendre comment les visiteurs interagissent avec notre plateforme en collectant et rapportant des informations de manière anonyme. Cela nous aide à améliorer notre plateforme et à fournir une meilleure expérience utilisateur.",
             "note": "Remarque : Nous utilisons actuellement des analyses minimales. Si nous implémentons des analyses tierces (comme Google Analytics), nous mettrons à jour cette politique et demanderons votre consentement lorsque requis.",
             "cookies": {
-              "session": { "name": "_vc_session", "purpose": "Analyses de session", "duration": "30 minutes" },
-              "visitor": { "name": "_vc_visitor", "purpose": "Suivi des visiteurs uniques", "duration": "1 an" },
-              "events": { "name": "_vc_events", "purpose": "Suivi des événements (clics, vues)", "duration": "Session" }
+              "session": {
+                "name": "_vc_session",
+                "purpose": "Analyses de session",
+                "duration": "30 minutes"
+              },
+              "visitor": {
+                "name": "_vc_visitor",
+                "purpose": "Suivi des visiteurs uniques",
+                "duration": "1 an"
+              },
+              "events": {
+                "name": "_vc_events",
+                "purpose": "Suivi des événements (clics, vues)",
+                "duration": "Session"
+              }
             }
           },
           "functionality": {
@@ -1359,8 +1387,16 @@
             "title": "Cookies de fonctionnalité",
             "description": "Ces cookies nous permettent de mémoriser les choix que vous faites lorsque vous utilisez notre plateforme, comme la mémorisation de vos identifiants de connexion ou de votre préférence de langue. Ils fournissent des fonctionnalités améliorées et plus personnalisées.",
             "cookies": {
-              "preferences": { "name": "vc_preferences", "purpose": "Préférences utilisateur", "duration": "1 an" },
-              "recentViews": { "name": "vc_recent_views", "purpose": "Produits consultés récemment", "duration": "7 jours" }
+              "preferences": {
+                "name": "vc_preferences",
+                "purpose": "Préférences utilisateur",
+                "duration": "1 an"
+              },
+              "recentViews": {
+                "name": "vc_recent_views",
+                "purpose": "Produits consultés récemment",
+                "duration": "7 jours"
+              }
             }
           }
         },
@@ -1445,5 +1481,146 @@
       "arabic": "العربية",
       "darija": "الدارجة"
     }
+  },
+  "customer": {
+    "nav": {
+      "feed": "Fil",
+      "saved": "Favoris",
+      "cart": "Panier",
+      "orders": "Commandes"
+    },
+    "feed": {
+      "title": "Fil",
+      "all": "Tout",
+      "sale": "Soldes",
+      "pullToRefresh": "Tirer pour rafraîchir",
+      "noProducts": "Aucun produit pour le moment",
+      "noProductsHint": "Cette boutique n'a pas encore ajouté de produits",
+      "onlyLeft": "Plus que {count} en stock",
+      "freeShipping": "Livraison gratuite",
+      "pickupAvailable": "Retrait en magasin disponible"
+    },
+    "saved": {
+      "title": "Produits sauvegardés",
+      "edit": "Modifier",
+      "done": "Terminé",
+      "empty": "Aucun produit sauvegardé",
+      "emptyHint": "Parcourez le fil et appuyez sur le cœur pour sauvegarder les produits",
+      "remove": "Supprimer",
+      "itemCount": "{count} articles"
+    },
+    "cart": {
+      "title": "Panier",
+      "itemCount": "{count} articles",
+      "empty": "Votre panier est vide",
+      "emptyHint": "Parcourez le fil et ajoutez des produits au panier",
+      "subtotal": "Sous-total",
+      "shipping": "Livraison",
+      "shippingEstimate": "Estimé au paiement",
+      "total": "Total",
+      "proceedToCheckout": "Passer à la caisse",
+      "addedToCart": "Ajouté au panier",
+      "removedFromCart": "Retiré du panier",
+      "variant": "Variante",
+      "remove": "Supprimer"
+    },
+    "login": {
+      "title": "Suivez vos commandes",
+      "subtitle": "Entrez le numéro utilisé lors de votre commande",
+      "phonePlaceholder": "Votre numéro WhatsApp",
+      "sendLink": "Envoyer le lien",
+      "sending": "Envoi...",
+      "linkSent": "Lien envoyé !",
+      "linkSentHint": "Vérifiez votre WhatsApp pour le lien de connexion. Il expire dans 10 minutes.",
+      "tryAgain": "Renvoyer",
+      "invalidPhone": "Entrez un numéro marocain valide",
+      "tooManyAttempts": "Trop de tentatives. Patientez quelques minutes.",
+      "error": "Une erreur est survenue. Réessayez.",
+      "loggedInAs": "Connecté",
+      "logout": "Se déconnecter"
+    },
+    "orders": {
+      "title": "Mes commandes",
+      "empty": "Aucune commande pour le moment",
+      "emptyHint": "Votre historique de commandes apparaîtra ici",
+      "items": "{count} articles",
+      "item": "1 article",
+      "pickupCode": "Code de retrait",
+      "trackingUpdated": "Statut mis à jour",
+      "viewDetails": "Voir les détails",
+      "status": {
+        "pending": "En attente",
+        "confirmed": "Confirmée",
+        "shipped": "Expédiée",
+        "delivered": "Livrée",
+        "cancelled": "Annulée"
+      }
+    },
+    "video": {
+      "slideToShop": "Glisser pour acheter",
+      "outOfStock": "Rupture de stock",
+      "close": "Fermer"
+    }
+  },
+  "sellerProfile": {
+    "editProfile": "Modifier le profil",
+    "products": "Produits",
+    "orders": "Commandes",
+    "revenue": "Revenus",
+    "myProducts": "Mes produits",
+    "gridView": "Grille",
+    "listView": "Liste",
+    "shareShopLink": "Partager le lien de la boutique",
+    "copyLink": "Copier le lien",
+    "linkCopied": "Lien copié !",
+    "shareWhatsApp": "WhatsApp",
+    "shareInstagram": "Instagram",
+    "preview": "Aperçu",
+    "addProduct": "Ajouter un produit",
+    "draftBadge": "Brouillon",
+    "noProducts": "Aucun produit pour le moment",
+    "noProductsHint": "Appuyez sur + pour ajouter votre premier produit"
+  },
+  "sellerSettings": {
+    "title": "Paramètres",
+    "connections": "Connexions",
+    "fulfillment": "Livraison",
+    "shopFeatures": "Fonctionnalités",
+    "appSettings": "Application",
+    "connected": "Connecté",
+    "notConnected": "Non connecté",
+    "connect": "Connecter",
+    "shippingRates": "Tarifs de livraison",
+    "pickupAtStore": "Retrait en magasin",
+    "deliveryTeam": "Équipe de livraison",
+    "googleMaps": "Google Maps",
+    "messageTemplates": "Modèles de messages",
+    "language": "Langue",
+    "shopLink": "Lien de la boutique",
+    "termsOfService": "Conditions d'utilisation",
+    "privacyPolicy": "Politique de confidentialité",
+    "logOut": "Déconnexion",
+    "logOutConfirm": "Êtes-vous sûr de vouloir vous déconnecter ?"
+  },
+  "editProfile": {
+    "title": "Modifier le profil",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "saved": "Profil enregistré !",
+    "shopInfo": "Infos boutique",
+    "aboutYou": "À propos de vous",
+    "yourName": "Votre nom",
+    "yourRole": "Votre rôle",
+    "bio": "Bio",
+    "profileImage": "Photo de profil",
+    "spotlight": "Mise en avant",
+    "enableSpotlight": "Activer la mise en avant",
+    "spotlightTitle": "Titre",
+    "spotlightSubtitle": "Sous-titre",
+    "customerReviews": "Avis clients",
+    "pinnedReviews": "Avis épinglés",
+    "chatScreenshots": "Captures de chat",
+    "uploadImage": "Télécharger une image",
+    "changeAvatar": "Changer l'avatar"
   }
 }

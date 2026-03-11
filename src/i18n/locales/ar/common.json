@@ -1337,10 +1337,26 @@
             "title": "ملفات تعريف الارتباط الأساسية",
             "description": "هذه الملفات ضرورية تماماً لتزويدك بالخدمات المتاحة على منصتنا واستخدام بعض ميزاتها، مثل الوصول إلى المناطق الآمنة. بدون هذه الملفات، لا يمكن تقديم بعض الخدمات التي طلبتها.",
             "cookies": {
-              "accessToken": { "name": "sb-access-token", "purpose": "جلسة المصادقة", "duration": "الجلسة" },
-              "refreshToken": { "name": "sb-refresh-token", "purpose": "تجديد المصادقة", "duration": "7 أيام" },
-              "locale": { "name": "locale", "purpose": "تفضيل اللغة", "duration": "سنة واحدة" },
-              "theme": { "name": "theme", "purpose": "تفضيل الوضع الداكن/الفاتح", "duration": "سنة واحدة" }
+              "accessToken": {
+                "name": "sb-access-token",
+                "purpose": "جلسة المصادقة",
+                "duration": "الجلسة"
+              },
+              "refreshToken": {
+                "name": "sb-refresh-token",
+                "purpose": "تجديد المصادقة",
+                "duration": "7 أيام"
+              },
+              "locale": {
+                "name": "locale",
+                "purpose": "تفضيل اللغة",
+                "duration": "سنة واحدة"
+              },
+              "theme": {
+                "name": "theme",
+                "purpose": "تفضيل الوضع الداكن/الفاتح",
+                "duration": "سنة واحدة"
+              }
             }
           },
           "analytics": {
@@ -1349,9 +1365,21 @@
             "description": "تساعدنا هذه الملفات على فهم كيفية تفاعل الزوار مع منصتنا من خلال جمع المعلومات والإبلاغ عنها بشكل مجهول. يساعدنا ذلك على تحسين منصتنا وتقديم تجربة مستخدم أفضل.",
             "note": "ملاحظة: نستخدم حالياً تحليلات بسيطة. إذا قمنا بتطبيق تحليلات الطرف الثالث (مثل Google Analytics)، سنحدّث هذه السياسة ونطلب موافقتك عند الاقتضاء.",
             "cookies": {
-              "session": { "name": "_vc_session", "purpose": "تحليلات الجلسة", "duration": "30 دقيقة" },
-              "visitor": { "name": "_vc_visitor", "purpose": "تتبع الزوار الفريدين", "duration": "سنة واحدة" },
-              "events": { "name": "_vc_events", "purpose": "تتبع الأحداث (النقرات، المشاهدات)", "duration": "الجلسة" }
+              "session": {
+                "name": "_vc_session",
+                "purpose": "تحليلات الجلسة",
+                "duration": "30 دقيقة"
+              },
+              "visitor": {
+                "name": "_vc_visitor",
+                "purpose": "تتبع الزوار الفريدين",
+                "duration": "سنة واحدة"
+              },
+              "events": {
+                "name": "_vc_events",
+                "purpose": "تتبع الأحداث (النقرات، المشاهدات)",
+                "duration": "الجلسة"
+              }
             }
           },
           "functionality": {
@@ -1359,8 +1387,16 @@
             "title": "ملفات تعريف الارتباط الوظيفية",
             "description": "تتيح لنا هذه الملفات تذكر الخيارات التي تقوم بها عند استخدام منصتنا، مثل تذكر بيانات تسجيل الدخول أو تفضيل اللغة. توفر ميزات محسنة وأكثر تخصيصاً.",
             "cookies": {
-              "preferences": { "name": "vc_preferences", "purpose": "تفضيلات المستخدم", "duration": "سنة واحدة" },
-              "recentViews": { "name": "vc_recent_views", "purpose": "المنتجات المعروضة مؤخراً", "duration": "7 أيام" }
+              "preferences": {
+                "name": "vc_preferences",
+                "purpose": "تفضيلات المستخدم",
+                "duration": "سنة واحدة"
+              },
+              "recentViews": {
+                "name": "vc_recent_views",
+                "purpose": "المنتجات المعروضة مؤخراً",
+                "duration": "7 أيام"
+              }
             }
           }
         },
@@ -1445,5 +1481,146 @@
       "arabic": "العربية",
       "darija": "الدارجة"
     }
+  },
+  "customer": {
+    "nav": {
+      "feed": "الخلاصة",
+      "saved": "المحفوظات",
+      "cart": "السلة",
+      "orders": "الطلبات"
+    },
+    "feed": {
+      "title": "الخلاصة",
+      "all": "الكل",
+      "sale": "تخفيضات",
+      "pullToRefresh": "اسحب للتحديث",
+      "noProducts": "لا توجد منتجات بعد",
+      "noProductsHint": "هذا المتجر لم يضف أي منتجات بعد",
+      "onlyLeft": "متبقي {count} فقط",
+      "freeShipping": "شحن مجاني",
+      "pickupAvailable": "الاستلام من المتجر متاح"
+    },
+    "saved": {
+      "title": "المنتجات المحفوظة",
+      "edit": "تعديل",
+      "done": "تم",
+      "empty": "لا توجد منتجات محفوظة",
+      "emptyHint": "تصفح الخلاصة واضغط على القلب لحفظ المنتجات",
+      "remove": "حذف",
+      "itemCount": "{count} منتجات"
+    },
+    "cart": {
+      "title": "السلة",
+      "itemCount": "{count} منتجات",
+      "empty": "السلة فارغة",
+      "emptyHint": "تصفح الخلاصة وأضف المنتجات إلى السلة",
+      "subtotal": "المجموع الجزئي",
+      "shipping": "الشحن",
+      "shippingEstimate": "يُحدد عند الدفع",
+      "total": "المجموع",
+      "proceedToCheckout": "المتابعة للدفع",
+      "addedToCart": "أُضيف إلى السلة",
+      "removedFromCart": "أُزيل من السلة",
+      "variant": "النوع",
+      "remove": "حذف"
+    },
+    "login": {
+      "title": "تتبع طلباتك",
+      "subtitle": "أدخل رقم الهاتف الذي استخدمته عند الطلب",
+      "phonePlaceholder": "رقم الواتساب",
+      "sendLink": "إرسال رابط الدخول",
+      "sending": "جاري الإرسال...",
+      "linkSent": "تم إرسال الرابط!",
+      "linkSentHint": "تحقق من الواتساب للحصول على رابط الدخول. ينتهي خلال 10 دقائق.",
+      "tryAgain": "إعادة الإرسال",
+      "invalidPhone": "أدخل رقم هاتف مغربي صحيح",
+      "tooManyAttempts": "محاولات كثيرة. انتظر بضع دقائق.",
+      "error": "حدث خطأ. حاول مرة أخرى.",
+      "loggedInAs": "مسجل الدخول",
+      "logout": "تسجيل الخروج"
+    },
+    "orders": {
+      "title": "طلباتي",
+      "empty": "لا توجد طلبات بعد",
+      "emptyHint": "سيظهر سجل طلباتك هنا",
+      "items": "{count} منتجات",
+      "item": "منتج واحد",
+      "pickupCode": "رمز الاستلام",
+      "trackingUpdated": "تم تحديث الحالة",
+      "viewDetails": "عرض التفاصيل",
+      "status": {
+        "pending": "قيد الانتظار",
+        "confirmed": "مؤكد",
+        "shipped": "تم الشحن",
+        "delivered": "تم التوصيل",
+        "cancelled": "ملغي"
+      }
+    },
+    "video": {
+      "slideToShop": "اسحب للشراء",
+      "outOfStock": "نفذ المخزون",
+      "close": "إغلاق"
+    }
+  },
+  "sellerProfile": {
+    "editProfile": "تعديل الملف الشخصي",
+    "products": "المنتجات",
+    "orders": "الطلبات",
+    "revenue": "الإيرادات",
+    "myProducts": "منتجاتي",
+    "gridView": "شبكة",
+    "listView": "قائمة",
+    "shareShopLink": "مشاركة رابط المتجر",
+    "copyLink": "نسخ الرابط",
+    "linkCopied": "تم نسخ الرابط!",
+    "shareWhatsApp": "واتساب",
+    "shareInstagram": "إنستغرام",
+    "preview": "معاينة",
+    "addProduct": "إضافة منتج",
+    "draftBadge": "مسودة",
+    "noProducts": "لا توجد منتجات بعد",
+    "noProductsHint": "اضغط + لإضافة أول منتج"
+  },
+  "sellerSettings": {
+    "title": "الإعدادات",
+    "connections": "الاتصالات",
+    "fulfillment": "التوصيل",
+    "shopFeatures": "مميزات المتجر",
+    "appSettings": "التطبيق",
+    "connected": "متصل",
+    "notConnected": "غير متصل",
+    "connect": "اتصال",
+    "shippingRates": "أسعار الشحن",
+    "pickupAtStore": "الاستلام من المتجر",
+    "deliveryTeam": "فريق التوصيل",
+    "googleMaps": "خرائط غوغل",
+    "messageTemplates": "قوالب الرسائل",
+    "language": "اللغة",
+    "shopLink": "رابط المتجر",
+    "termsOfService": "شروط الخدمة",
+    "privacyPolicy": "سياسة الخصوصية",
+    "logOut": "تسجيل الخروج",
+    "logOutConfirm": "هل تريد تسجيل الخروج؟"
+  },
+  "editProfile": {
+    "title": "تعديل الملف الشخصي",
+    "save": "حفظ",
+    "saving": "جارِ الحفظ...",
+    "saved": "تم حفظ الملف الشخصي!",
+    "shopInfo": "معلومات المتجر",
+    "aboutYou": "عنك",
+    "yourName": "اسمك",
+    "yourRole": "دورك",
+    "bio": "النبذة",
+    "profileImage": "صورة الملف الشخصي",
+    "spotlight": "العرض المميز",
+    "enableSpotlight": "تفعيل العرض المميز",
+    "spotlightTitle": "العنوان",
+    "spotlightSubtitle": "العنوان الفرعي",
+    "customerReviews": "تقييمات العملاء",
+    "pinnedReviews": "التقييمات المثبتة",
+    "chatScreenshots": "لقطات المحادثة",
+    "uploadImage": "رفع صورة",
+    "changeAvatar": "تغيير الصورة"
   }
 }

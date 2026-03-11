@@ -106,6 +106,7 @@ interface CheckoutDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   shopConfig: ShopConfig;
+  onOrderSuccess?: (order: import('@/presentation/hooks/useCustomerOrders').LocalOrder) => void;
 }
 
 /**
@@ -119,6 +120,7 @@ export function CheckoutDrawer({
   isOpen,
   onClose,
   shopConfig,
+  onOrderSuccess,
 }: CheckoutDrawerProps) {
   const t = useTranslations();
   const locale = useLocale();
@@ -530,6 +532,29 @@ export function CheckoutDrawer({
       if (result.success) {
         if (result.order?.pickupCode) {
           setCreatedPickupCode(result.order.pickupCode);
+        }
+        // Save order to localStorage for customer Orders tab
+        if (onOrderSuccess && result.order) {
+          onOrderSuccess({
+            orderId: result.order.id,
+            orderNumber: result.order.orderNumber || result.order.id,
+            items: [
+              {
+                productId: product.id,
+                title: product.title,
+                price: product.price.amount,
+                quantity: order.quantity,
+                variant: order.selectedVariant,
+                thumbnail: product.videoUrl || undefined,
+              },
+            ],
+            total: product.price.amount * order.quantity + effectiveShippingCost,
+            currency: product.price.currency,
+            status: 'pending',
+            fulfillmentType: fulfillmentType as 'delivery' | 'pickup',
+            pickupCode: result.order.pickupCode || undefined,
+            createdAt: new Date().toISOString(),
+          });
         }
         setStep('success');
       } else {

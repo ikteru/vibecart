@@ -1,11 +1,17 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import { SellerProfile } from '@/presentation/components/seller/SellerProfile';
+import React, { useState, useMemo, useCallback } from 'react';
+import { useLocale } from 'next-intl';
 import { VideoFeed } from '@/presentation/components/video/VideoFeed';
+import { CustomerNav, type CustomerTab } from '@/presentation/components/customer/CustomerNav';
+import { CustomerFeed } from '@/presentation/components/customer/CustomerFeed';
+import { SavedProducts } from '@/presentation/components/customer/SavedProducts';
+import { CustomerOrders } from '@/presentation/components/customer/CustomerOrders';
 import { Product } from '@/domain/entities/Product';
 import { Money, type Currency } from '@/domain/value-objects/Money';
 import { ProductCategory } from '@/domain/value-objects/ProductCategory';
+import { useSaved } from '@/presentation/hooks/useSaved';
+import { useCustomerOrders } from '@/presentation/hooks/useCustomerOrders';
 import type { ProductResponseDTO } from '@/application/dtos/ProductDTO';
 import type { PublicSellerDTO } from '@/application/dtos/SellerDTO';
 
@@ -13,8 +19,6 @@ interface ShopPageClientProps {
   seller: PublicSellerDTO;
   products: ProductResponseDTO[];
 }
-
-type View = 'profile' | 'feed' | 'checkout';
 
 /**
  * Convert ProductResponseDTO to Product domain entity for UI components
@@ -44,19 +48,24 @@ function dtoToProduct(dto: ProductResponseDTO): Product {
 /**
  * ShopPageClient
  *
- * Client component for shop page interactivity.
+ * Client component for the customer shop experience with tabbed navigation.
  */
 export function ShopPageClient({ seller, products: productDTOs }: ShopPageClientProps) {
-  // Convert DTOs to domain entities for UI components
+  const locale = useLocale();
   const products = useMemo(
     () => productDTOs.map(dtoToProduct),
     [productDTOs]
   );
 
-  const [view, setView] = useState<View>('profile');
+  const [activeTab, setActiveTab] = useState<CustomerTab>('feed');
+  const [showVideoFeed, setShowVideoFeed] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
 
-  // Build shop config from real seller data
+  // Hooks for local customer data
+  const saved = useSaved(seller.handle);
+  const customerOrders = useCustomerOrders(seller.handle, activeTab === 'orders');
+
+  // Build shop config from seller data
   const shopConfig = useMemo(() => {
     const vibe = seller.shopConfig?.vibe;
     const googleMaps = seller.shopConfig?.googleMaps;
@@ -64,21 +73,18 @@ export function ShopPageClient({ seller, products: productDTOs }: ShopPageClient
     const pickup = seller.shopConfig?.pickup;
 
     return {
-      // Google Maps from seller config
       googleMaps: {
         enabled: googleMaps?.enabled || false,
         rating: googleMaps?.rating || 0,
         reviews: googleMaps?.reviews || 0,
         placeName: googleMaps?.placeName || '',
       },
-      // Spotlight from vibe config
       spotlight: {
         enabled: vibe?.spotlight?.enabled || false,
         title: vibe?.spotlight?.title || '',
         subtitle: vibe?.spotlight?.subtitle || '',
         color: vibe?.spotlight?.color || 'from-zinc-500 to-zinc-600',
       },
-      // Maker bio from vibe config
       makerBio: {
         enabled: vibe?.makerBio?.enabled || false,
         name: vibe?.makerBio?.name || '',
@@ -86,66 +92,105 @@ export function ShopPageClient({ seller, products: productDTOs }: ShopPageClient
         bio: vibe?.makerBio?.bio || '',
         imageUrl: vibe?.makerBio?.imageUrl || '',
       },
-      // Pinned reviews from vibe config
       reviews: (vibe?.pinnedReviews || []).map((review) => ({
         ...review,
         enabled: true,
       })),
-      // Chat reviews from vibe config
       chatReviews: vibe?.chatReviews || [],
-      // WhatsApp
       whatsapp: {
         businessNumber: seller.whatsappUrl,
       },
-      // Shipping from seller config with defaults
       shipping: {
         defaultRate: shipping?.defaultRate || 35,
         freeShippingThreshold: shipping?.freeShippingThreshold,
         rules: shipping?.rules || [],
       },
-      // Pickup config
       pickup: pickup,
     };
   }, [seller]);
 
-  const handleSelectProduct = (productId: string) => {
+  const handleSelectProduct = useCallback((productId: string) => {
     setSelectedProductId(productId);
-    setView('feed');
-  };
+    setShowVideoFeed(true);
+  }, []);
 
-  const handleBackFromFeed = () => {
-    setView('profile');
+  const handleBackFromFeed = useCallback(() => {
+    setShowVideoFeed(false);
     setSelectedProductId(null);
-  };
+  }, []);
 
-  // Profile view
-  if (view === 'profile') {
+  const handleToggleSaved = useCallback(
+    (product: Product) => {
+      saved.toggleSaved({
+        productId: product.id,
+        title: product.title,
+        price: product.price.amount,
+        currency: product.price.currency,
+        discountPrice: product.discountPrice?.amount,
+        thumbnail: product.videoUrl || undefined,
+      });
+    },
+    [saved]
+  );
+
+  // Full-screen video feed view
+  if (showVideoFeed) {
     return (
       <div className="h-screen">
-        <SellerProfile
+        <VideoFeed
+          products={products}
+          sellerId={seller.id}
+          initialVideoId={selectedProductId || undefined}
+          onBack={handleBackFromFeed}
+          shopConfig={{
+            shipping: shopConfig.shipping,
+            pickup: shopConfig.pickup,
+          }}
           sellerName={seller.shopName}
           sellerHandle={seller.handle}
-          products={products}
-          shopConfig={shopConfig}
-          onBack={() => window.history.back()}
-          onSelectProduct={handleSelectProduct}
+          onOrderSuccess={customerOrders.addOrder}
         />
       </div>
     );
   }
 
-  // Video feed view
+  // Tabbed customer experience
   return (
-    <div className="h-screen">
-      <VideoFeed
-        products={products}
-        sellerId={seller.id}
-        initialVideoId={selectedProductId || undefined}
-        onBack={handleBackFromFeed}
-        shopConfig={{
-          shipping: shopConfig.shipping,
-          pickup: shopConfig.pickup,
-        }}
+    <div className="h-screen bg-black">
+      {activeTab === 'feed' && (
+        <CustomerFeed
+          sellerName={seller.shopName}
+          sellerHandle={seller.handle}
+          products={products}
+          shopConfig={shopConfig}
+          onSelectProduct={handleSelectProduct}
+          isSaved={saved.isSaved}
+          onToggleSaved={handleToggleSaved}
+          hasOrderUpdates={customerOrders.hasUpdates}
+          onNotificationTap={() => setActiveTab('orders')}
+        />
+      )}
+
+      {activeTab === 'saved' && (
+        <SavedProducts
+          saved={saved.saved}
+          onRemove={saved.removeSaved}
+          onTap={(productId) => handleSelectProduct(productId)}
+        />
+      )}
+
+      {activeTab === 'orders' && (
+        <CustomerOrders
+          localOrders={customerOrders.orders}
+          shopHandle={seller.handle}
+          locale={locale}
+        />
+      )}
+
+      <CustomerNav
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        hasOrderUpdates={customerOrders.hasUpdates}
       />
     </div>
   );
