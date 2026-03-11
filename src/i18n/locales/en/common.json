@@ -1354,10 +1354,26 @@
             "title": "Essential Cookies",
             "description": "These cookies are strictly necessary to provide you with services available through our platform and to use some of its features, such as access to secure areas. Without these cookies, certain services you have asked for cannot be provided.",
             "cookies": {
-              "accessToken": { "name": "sb-access-token", "purpose": "Authentication session", "duration": "Session" },
-              "refreshToken": { "name": "sb-refresh-token", "purpose": "Refresh authentication", "duration": "7 days" },
-              "locale": { "name": "locale", "purpose": "Language preference", "duration": "1 year" },
-              "theme": { "name": "theme", "purpose": "Dark/light mode preference", "duration": "1 year" }
+              "accessToken": {
+                "name": "sb-access-token",
+                "purpose": "Authentication session",
+                "duration": "Session"
+              },
+              "refreshToken": {
+                "name": "sb-refresh-token",
+                "purpose": "Refresh authentication",
+                "duration": "7 days"
+              },
+              "locale": {
+                "name": "locale",
+                "purpose": "Language preference",
+                "duration": "1 year"
+              },
+              "theme": {
+                "name": "theme",
+                "purpose": "Dark/light mode preference",
+                "duration": "1 year"
+              }
             }
           },
           "analytics": {
@@ -1366,9 +1382,21 @@
             "description": "These cookies help us understand how visitors interact with our platform by collecting and reporting information anonymously. This helps us improve our platform and provide a better user experience.",
             "note": "Note: We currently use minimal analytics. If we implement third-party analytics (such as Google Analytics), we will update this policy and request your consent where required.",
             "cookies": {
-              "session": { "name": "_vc_session", "purpose": "Session analytics", "duration": "30 minutes" },
-              "visitor": { "name": "_vc_visitor", "purpose": "Unique visitor tracking", "duration": "1 year" },
-              "events": { "name": "_vc_events", "purpose": "Event tracking (clicks, views)", "duration": "Session" }
+              "session": {
+                "name": "_vc_session",
+                "purpose": "Session analytics",
+                "duration": "30 minutes"
+              },
+              "visitor": {
+                "name": "_vc_visitor",
+                "purpose": "Unique visitor tracking",
+                "duration": "1 year"
+              },
+              "events": {
+                "name": "_vc_events",
+                "purpose": "Event tracking (clicks, views)",
+                "duration": "Session"
+              }
             }
           },
           "functionality": {
@@ -1376,8 +1404,16 @@
             "title": "Functionality Cookies",
             "description": "These cookies allow us to remember choices you make when you use our platform, such as remembering your login details or language preference. They provide enhanced, more personal features.",
             "cookies": {
-              "preferences": { "name": "vc_preferences", "purpose": "User preferences", "duration": "1 year" },
-              "recentViews": { "name": "vc_recent_views", "purpose": "Recently viewed products", "duration": "7 days" }
+              "preferences": {
+                "name": "vc_preferences",
+                "purpose": "User preferences",
+                "duration": "1 year"
+              },
+              "recentViews": {
+                "name": "vc_recent_views",
+                "purpose": "Recently viewed products",
+                "duration": "7 days"
+              }
             }
           }
         },
@@ -1462,5 +1498,146 @@
       "arabic": "العربية",
       "darija": "الدارجة"
     }
+  },
+  "customer": {
+    "nav": {
+      "feed": "Feed",
+      "saved": "Saved",
+      "cart": "Cart",
+      "orders": "Orders"
+    },
+    "feed": {
+      "title": "Feed",
+      "all": "All",
+      "sale": "Sale",
+      "pullToRefresh": "Pull to refresh",
+      "noProducts": "No products yet",
+      "noProductsHint": "This shop hasn't added any products yet",
+      "onlyLeft": "Only {count} left",
+      "freeShipping": "Free shipping",
+      "pickupAvailable": "Pickup available"
+    },
+    "saved": {
+      "title": "Saved Products",
+      "edit": "Edit",
+      "done": "Done",
+      "empty": "No saved products yet",
+      "emptyHint": "Browse the feed and tap the heart to save products you like",
+      "remove": "Remove",
+      "itemCount": "{count} items"
+    },
+    "cart": {
+      "title": "Cart",
+      "itemCount": "{count} items",
+      "empty": "Your cart is empty",
+      "emptyHint": "Browse the feed and add products to your cart",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "shippingEstimate": "Estimated at checkout",
+      "total": "Total",
+      "proceedToCheckout": "Proceed to Checkout",
+      "addedToCart": "Added to cart",
+      "removedFromCart": "Removed from cart",
+      "variant": "Variant",
+      "remove": "Remove"
+    },
+    "login": {
+      "title": "Track Your Orders",
+      "subtitle": "Enter the phone number you used when ordering",
+      "phonePlaceholder": "Your WhatsApp number",
+      "sendLink": "Send Login Link",
+      "sending": "Sending...",
+      "linkSent": "Login link sent!",
+      "linkSentHint": "Check your WhatsApp for the login link. It expires in 10 minutes.",
+      "tryAgain": "Send again",
+      "invalidPhone": "Enter a valid Moroccan phone number",
+      "tooManyAttempts": "Too many attempts. Please wait a few minutes.",
+      "error": "Something went wrong. Please try again.",
+      "loggedInAs": "Logged in as",
+      "logout": "Log out"
+    },
+    "orders": {
+      "title": "My Orders",
+      "empty": "No orders yet",
+      "emptyHint": "Your order history will appear here",
+      "items": "{count} items",
+      "item": "1 item",
+      "pickupCode": "Pickup Code",
+      "trackingUpdated": "Status updated",
+      "viewDetails": "View Details",
+      "status": {
+        "pending": "Pending",
+        "confirmed": "Confirmed",
+        "shipped": "Shipped",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
+      }
+    },
+    "video": {
+      "slideToShop": "Slide to Shop",
+      "outOfStock": "Out of Stock",
+      "close": "Close"
+    }
+  },
+  "sellerProfile": {
+    "editProfile": "Edit Profile",
+    "products": "Products",
+    "orders": "Orders",
+    "revenue": "Revenue",
+    "myProducts": "My Products",
+    "gridView": "Grid",
+    "listView": "List",
+    "shareShopLink": "Share Shop Link",
+    "copyLink": "Copy Link",
+    "linkCopied": "Link copied!",
+    "shareWhatsApp": "WhatsApp",
+    "shareInstagram": "Instagram",
+    "preview": "Preview",
+    "addProduct": "Add Product",
+    "draftBadge": "Draft",
+    "noProducts": "No products yet",
+    "noProductsHint": "Tap + to add your first product"
+  },
+  "sellerSettings": {
+    "title": "Settings",
+    "connections": "Connections",
+    "fulfillment": "Fulfillment",
+    "shopFeatures": "Shop Features",
+    "appSettings": "App",
+    "connected": "Connected",
+    "notConnected": "Not connected",
+    "connect": "Connect",
+    "shippingRates": "Shipping Rates",
+    "pickupAtStore": "Pickup at Store",
+    "deliveryTeam": "Delivery Team",
+    "googleMaps": "Google Maps",
+    "messageTemplates": "Message Templates",
+    "language": "Language",
+    "shopLink": "Shop Link",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "logOut": "Log Out",
+    "logOutConfirm": "Are you sure you want to log out?"
+  },
+  "editProfile": {
+    "title": "Edit Profile",
+    "save": "Save",
+    "saving": "Saving...",
+    "saved": "Profile saved!",
+    "shopInfo": "Shop Info",
+    "aboutYou": "About You",
+    "yourName": "Your Name",
+    "yourRole": "Your Role",
+    "bio": "Bio",
+    "profileImage": "Profile Image",
+    "spotlight": "Spotlight / Featured",
+    "enableSpotlight": "Enable Spotlight",
+    "spotlightTitle": "Title",
+    "spotlightSubtitle": "Subtitle",
+    "customerReviews": "Customer Reviews",
+    "pinnedReviews": "Pinned Reviews",
+    "chatScreenshots": "Chat Screenshots",
+    "uploadImage": "Upload Image",
+    "changeAvatar": "Change Avatar"
   }
 }

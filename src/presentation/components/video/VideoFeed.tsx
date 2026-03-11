@@ -2,12 +2,13 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Volume2, VolumeX, ArrowLeft, ShoppingBag, AlertCircle } from 'lucide-react';
+import { Volume2, VolumeX, ArrowLeft, ShoppingBag, AlertCircle, X } from 'lucide-react';
 import { DirectionalIcon } from '../ui/DirectionalIcon';
 import { SwipeButton } from '../ui/SwipeButton';
 import { CheckoutDrawer } from '../checkout/CheckoutDrawer';
 import { ProductVideo } from './ProductVideo';
 import type { Product } from '@/domain/entities/Product';
+import type { LocalOrder } from '@/presentation/hooks/useCustomerOrders';
 
 // Simplified ShopConfiguration for VideoFeed (can be expanded later)
 interface ShopConfig {
@@ -45,6 +46,9 @@ interface VideoFeedProps {
   initialVideoId?: string;
   onBack: () => void;
   shopConfig: ShopConfig;
+  sellerName?: string;
+  sellerHandle?: string;
+  onOrderSuccess?: (order: LocalOrder) => void;
 }
 
 /**
@@ -59,6 +63,9 @@ export function VideoFeed({
   initialVideoId,
   onBack,
   shopConfig,
+  sellerName,
+  sellerHandle,
+  onOrderSuccess,
 }: VideoFeedProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeVideoId, setActiveVideoId] = useState<string>(
@@ -104,22 +111,49 @@ export function VideoFeed({
       ref={containerRef}
       className="h-[100dvh] w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar bg-black relative"
     >
-      {/* Fixed Controls - Back button on LEFT, Volume on RIGHT */}
-      <div className="fixed top-4 left-4 z-30">
-        <button
-          onClick={onBack}
-          className="p-2 bg-black/40 backdrop-blur-md rounded-full text-white border border-white/10 hover:bg-black/60 transition-colors"
-        >
-          <DirectionalIcon icon={ArrowLeft} size={24} />
-        </button>
-      </div>
-      <div className="fixed top-4 right-4 z-30">
-        <button
-          onClick={() => setIsMuted(!isMuted)}
-          className="p-2 bg-black/40 backdrop-blur-md rounded-full text-white border border-white/10 hover:bg-black/60 transition-colors"
-        >
-          {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
-        </button>
+      {/* Fixed header — seller info + close button */}
+      <div className="fixed top-0 inset-x-0 z-30 bg-gradient-to-b from-black/60 to-transparent pt-3 pb-8 px-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {sellerName && (
+              <>
+                <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center border-2 border-white/20">
+                  <span className="text-white font-bold text-sm">
+                    {sellerName.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-white font-semibold text-sm leading-tight">{sellerName}</p>
+                  {sellerHandle && (
+                    <p className="text-white/50 text-xs">@{sellerHandle}</p>
+                  )}
+                </div>
+              </>
+            )}
+            {!sellerName && (
+              <button
+                onClick={onBack}
+                className="p-2 bg-black/40 backdrop-blur-md rounded-full text-white border border-white/10"
+              >
+                <DirectionalIcon icon={ArrowLeft} size={20} />
+              </button>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsMuted(!isMuted)}
+              className="p-2 bg-black/40 backdrop-blur-md rounded-full text-white border border-white/10"
+            >
+              {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+            </button>
+            <button
+              onClick={onBack}
+              className="p-2 bg-black/40 backdrop-blur-md rounded-full text-white border border-white/10"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Video Cards */}
@@ -141,6 +175,7 @@ export function VideoFeed({
           isOpen={!!checkoutProduct}
           onClose={() => setCheckoutProduct(null)}
           shopConfig={shopConfig}
+          onOrderSuccess={onOrderSuccess}
         />
       )}
     </div>

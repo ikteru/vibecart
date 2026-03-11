@@ -1354,10 +1354,26 @@
             "title": "الكوكيز الأساسية",
             "description": "هاد الكوكيز ضرورية بزاف باش نوفرو ليك الخدمات المتاحة فالمنصة ديالنا ونستعملو بعض الميزات ديالها. بلا هاد الكوكيز، بعض الخدمات اللي طلبتيها ما يمكنش نوفروها.",
             "cookies": {
-              "accessToken": { "name": "sb-access-token", "purpose": "جلسة المصادقة", "duration": "الجلسة" },
-              "refreshToken": { "name": "sb-refresh-token", "purpose": "تجديد المصادقة", "duration": "7 أيام" },
-              "locale": { "name": "locale", "purpose": "تفضيل اللغة", "duration": "عام واحد" },
-              "theme": { "name": "theme", "purpose": "تفضيل الوضع الداكن/الفاتح", "duration": "عام واحد" }
+              "accessToken": {
+                "name": "sb-access-token",
+                "purpose": "جلسة المصادقة",
+                "duration": "الجلسة"
+              },
+              "refreshToken": {
+                "name": "sb-refresh-token",
+                "purpose": "تجديد المصادقة",
+                "duration": "7 أيام"
+              },
+              "locale": {
+                "name": "locale",
+                "purpose": "تفضيل اللغة",
+                "duration": "عام واحد"
+              },
+              "theme": {
+                "name": "theme",
+                "purpose": "تفضيل الوضع الداكن/الفاتح",
+                "duration": "عام واحد"
+              }
             }
           },
           "analytics": {
@@ -1366,9 +1382,21 @@
             "description": "هاد الكوكيز كتعاوننا نفهمو كيفاش الزوار كيتفاعلو مع المنصة ديالنا عن طريق جمع المعلومات بشكل مجهول. هادشي كيعاوننا نحسنو المنصة ونوفرو تجربة أفضل.",
             "note": "ملاحظة: حاليا كنستعملو تحليلات بسيطة. إلا درنا تحليلات الطرف الثالث (بحال Google Analytics)، غادي نحدثو هاد السياسة ونطلبو الموافقة ديالك.",
             "cookies": {
-              "session": { "name": "_vc_session", "purpose": "تحليلات الجلسة", "duration": "30 دقيقة" },
-              "visitor": { "name": "_vc_visitor", "purpose": "تتبع الزوار الفريدين", "duration": "عام واحد" },
-              "events": { "name": "_vc_events", "purpose": "تتبع الأحداث (النقرات، المشاهدات)", "duration": "الجلسة" }
+              "session": {
+                "name": "_vc_session",
+                "purpose": "تحليلات الجلسة",
+                "duration": "30 دقيقة"
+              },
+              "visitor": {
+                "name": "_vc_visitor",
+                "purpose": "تتبع الزوار الفريدين",
+                "duration": "عام واحد"
+              },
+              "events": {
+                "name": "_vc_events",
+                "purpose": "تتبع الأحداث (النقرات، المشاهدات)",
+                "duration": "الجلسة"
+              }
             }
           },
           "functionality": {
@@ -1376,8 +1404,16 @@
             "title": "كوكيز الوظائف",
             "description": "هاد الكوكيز كتمكننا نتفكرو الاختيارات اللي درتي ملي كتستعمل المنصة ديالنا، بحال تفكر بيانات الدخول ولا تفضيل اللغة. كتوفر ميزات محسنة وأكثر تخصيصا.",
             "cookies": {
-              "preferences": { "name": "vc_preferences", "purpose": "تفضيلات المستخدم", "duration": "عام واحد" },
-              "recentViews": { "name": "vc_recent_views", "purpose": "المنتجات اللي شفتيها مؤخرا", "duration": "7 أيام" }
+              "preferences": {
+                "name": "vc_preferences",
+                "purpose": "تفضيلات المستخدم",
+                "duration": "عام واحد"
+              },
+              "recentViews": {
+                "name": "vc_recent_views",
+                "purpose": "المنتجات اللي شفتيها مؤخرا",
+                "duration": "7 أيام"
+              }
             }
           }
         },
@@ -1462,5 +1498,146 @@
       "arabic": "العربية",
       "darija": "الدارجة"
     }
+  },
+  "customer": {
+    "nav": {
+      "feed": "الفيد",
+      "saved": "المحفوظات",
+      "cart": "السلة",
+      "orders": "الطلبات"
+    },
+    "feed": {
+      "title": "الفيد",
+      "all": "الكل",
+      "sale": "تخفيضات",
+      "pullToRefresh": "سحب للتحديث",
+      "noProducts": "مازال ما كاين حتى منتوج",
+      "noProductsHint": "هاد الحانوت مازال ما زاد حتى منتوج",
+      "onlyLeft": "غير {count} بقاو",
+      "freeShipping": "التوصيل بالمجان",
+      "pickupAvailable": "الاستلام من المحل متوفر"
+    },
+    "saved": {
+      "title": "المنتجات المحفوظة",
+      "edit": "تعديل",
+      "done": "تم",
+      "empty": "مازال ما حفظتي حتى منتوج",
+      "emptyHint": "تصفح الفيد وكليكي على القلب باش تحفظ المنتجات اللي عجبوك",
+      "remove": "حذف",
+      "itemCount": "{count} منتجات"
+    },
+    "cart": {
+      "title": "السلة",
+      "itemCount": "{count} منتجات",
+      "empty": "السلة فارغة",
+      "emptyHint": "تصفح الفيد وزيد المنتجات للسلة",
+      "subtotal": "المجموع الجزئي",
+      "shipping": "التوصيل",
+      "shippingEstimate": "يتحدد عند الشراء",
+      "total": "المجموع",
+      "proceedToCheckout": "كمل للشراء",
+      "addedToCart": "تزاد للسلة",
+      "removedFromCart": "تحيد من السلة",
+      "variant": "النوع",
+      "remove": "حذف"
+    },
+    "login": {
+      "title": "تبع الطلبات ديالك",
+      "subtitle": "دخل الرقم اللي استعملتي فاش طلبتي",
+      "phonePlaceholder": "الرقم ديال الواتساب",
+      "sendLink": "صيفط لينك الدخول",
+      "sending": "كيتصيفط...",
+      "linkSent": "اللينك تصيفط!",
+      "linkSentHint": "شوف الواتساب ديالك، اللينك كيمشي ف 10 دقائق.",
+      "tryAgain": "عاود صيفط",
+      "invalidPhone": "دخل رقم مغربي صحيح",
+      "tooManyAttempts": "بزاف ديال المحاولات. تسنا شوية.",
+      "error": "كاين مشكل. عاود حاول.",
+      "loggedInAs": "داخل ب",
+      "logout": "خروج"
+    },
+    "orders": {
+      "title": "الطلبات ديالي",
+      "empty": "مازال ما كاين حتى طلب",
+      "emptyHint": "تاريخ الطلبات ديالك غادي يبان هنا",
+      "items": "{count} منتجات",
+      "item": "منتوج واحد",
+      "pickupCode": "كود الاستلام",
+      "trackingUpdated": "الحالة تحدثات",
+      "viewDetails": "شوف التفاصيل",
+      "status": {
+        "pending": "في الانتظار",
+        "confirmed": "مؤكد",
+        "shipped": "تصيفط",
+        "delivered": "توصل",
+        "cancelled": "ملغي"
+      }
+    },
+    "video": {
+      "slideToShop": "سحب للشراء",
+      "outOfStock": "نفذ المخزون",
+      "close": "إغلاق"
+    }
+  },
+  "sellerProfile": {
+    "editProfile": "تعديل البروفايل",
+    "products": "المنتجات",
+    "orders": "الطلبات",
+    "revenue": "المداخيل",
+    "myProducts": "المنتجات ديالي",
+    "gridView": "شبكة",
+    "listView": "لائحة",
+    "shareShopLink": "شارك لينك الحانوت",
+    "copyLink": "نسخ اللينك",
+    "linkCopied": "اللينك تنسخ!",
+    "shareWhatsApp": "واتساب",
+    "shareInstagram": "إنستاگرام",
+    "preview": "معاينة",
+    "addProduct": "زيد منتوج",
+    "draftBadge": "مسودة",
+    "noProducts": "مازال ما كاين حتى منتوج",
+    "noProductsHint": "كليكي على + باش تزيد أول منتوج"
+  },
+  "sellerSettings": {
+    "title": "الإعدادات",
+    "connections": "الربط",
+    "fulfillment": "التوصيل",
+    "shopFeatures": "مميزات الحانوت",
+    "appSettings": "التطبيق",
+    "connected": "مربوط",
+    "notConnected": "ما مربوطش",
+    "connect": "ربط",
+    "shippingRates": "أسعار التوصيل",
+    "pickupAtStore": "الاستلام من المحل",
+    "deliveryTeam": "فريق التوصيل",
+    "googleMaps": "خريطة گوگل",
+    "messageTemplates": "قوالب الرسائل",
+    "language": "اللغة",
+    "shopLink": "لينك الحانوت",
+    "termsOfService": "شروط الاستخدام",
+    "privacyPolicy": "سياسة الخصوصية",
+    "logOut": "خروج",
+    "logOutConfirm": "واش بصح بغيتي تخرج؟"
+  },
+  "editProfile": {
+    "title": "تعديل البروفايل",
+    "save": "حفظ",
+    "saving": "كنحفظ...",
+    "saved": "البروفايل تحفظ!",
+    "shopInfo": "معلومات الحانوت",
+    "aboutYou": "على بالك",
+    "yourName": "سميتك",
+    "yourRole": "الدور ديالك",
+    "bio": "البيو",
+    "profileImage": "صورة البروفايل",
+    "spotlight": "العرض المميز",
+    "enableSpotlight": "تفعيل العرض المميز",
+    "spotlightTitle": "العنوان",
+    "spotlightSubtitle": "العنوان الفرعي",
+    "customerReviews": "تقييمات الزبناء",
+    "pinnedReviews": "التقييمات المثبتة",
+    "chatScreenshots": "سكرينات الشات",
+    "uploadImage": "رفع صورة",
+    "changeAvatar": "بدل الصورة"
   }
 }
