@@ -1,7 +1,7 @@
-import { Suspense } from 'react';
-import { redirect } from 'next/navigation';
-import { getCurrentUser } from '@/infrastructure/auth/supabase-server';
-import { BetaLanding } from '@/presentation/components/landing/BetaLanding';
+import { getCurrentUser, createAdminClient } from '@/infrastructure/auth/supabase-server';
+import { SupabaseFeedRepository } from '@/infrastructure/persistence/supabase/SupabaseFeedRepository';
+import { GetPublicFeed } from '@/application/use-cases/feed/GetPublicFeed';
+import { PublicVideoFeed } from '@/presentation/components/feed/PublicVideoFeed';
 
 interface HomePageProps {
   params: { locale: string };
@@ -10,13 +10,17 @@ interface HomePageProps {
 export default async function HomePage({ params }: HomePageProps) {
   const user = await getCurrentUser();
 
-  if (user) {
-    redirect(`/${params.locale}/seller/profile`);
-  }
+  // Fetch initial feed data server-side
+  const adminClient = createAdminClient();
+  const feedRepository = new SupabaseFeedRepository(adminClient);
+  const useCase = new GetPublicFeed(feedRepository);
+  const result = await useCase.execute({ limit: 10 });
 
   return (
-    <Suspense fallback={null}>
-      <BetaLanding />
-    </Suspense>
+    <PublicVideoFeed
+      initialProducts={result.products}
+      initialCursor={result.nextCursor}
+      isLoggedInSeller={!!user}
+    />
   );
 }

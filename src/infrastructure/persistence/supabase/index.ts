@@ -16,6 +16,7 @@ import { SupabaseWhatsAppTemplateRepository } from './SupabaseWhatsAppTemplateRe
 import { SupabaseTemplateEventBindingRepository } from './SupabaseTemplateEventBindingRepository';
 import { SupabaseDeliveryPersonRepository } from './SupabaseDeliveryPersonRepository';
 import { SupabaseOrderDispatchRepository } from './SupabaseOrderDispatchRepository';
+import { SupabaseFeedRepository } from './SupabaseFeedRepository';
 
 export { SupabaseProductRepository } from './SupabaseProductRepository';
 export { SupabaseSellerRepository } from './SupabaseSellerRepository';
@@ -28,6 +29,7 @@ export { SupabaseWhatsAppTemplateRepository } from './SupabaseWhatsAppTemplateRe
 export { SupabaseTemplateEventBindingRepository } from './SupabaseTemplateEventBindingRepository';
 export { SupabaseDeliveryPersonRepository } from './SupabaseDeliveryPersonRepository';
 export { SupabaseOrderDispatchRepository } from './SupabaseOrderDispatchRepository';
+export { SupabaseFeedRepository } from './SupabaseFeedRepository';
 export type {
   ProductRow,
   SellerRow,
@@ -61,5 +63,6 @@ export function createRepositories(supabase: SupabaseClient, adminClient?: Supab
     templateEventBindingRepository: new SupabaseTemplateEventBindingRepository(supabase),
     deliveryPersonRepository: new SupabaseDeliveryPersonRepository(supabase, adminClient),
     orderDispatchRepository: new SupabaseOrderDispatchRepository(supabase, adminClient),
+    feedRepository: new SupabaseFeedRepository(supabase),
   };
 }

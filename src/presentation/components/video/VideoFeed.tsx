@@ -1,16 +1,22 @@
 'use client';
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
-import { Volume2, VolumeX, ArrowLeft, ShoppingBag, AlertCircle, X } from 'lucide-react';
-import { DirectionalIcon } from '../ui/DirectionalIcon';
+import {
+  Volume2,
+  VolumeX,
+  ShoppingBag,
+  AlertCircle,
+  X,
+  Play,
+  Pause,
+} from 'lucide-react';
 import { SwipeButton } from '../ui/SwipeButton';
 import { CheckoutDrawer } from '../checkout/CheckoutDrawer';
 import { ProductVideo } from './ProductVideo';
 import type { Product } from '@/domain/entities/Product';
 import type { LocalOrder } from '@/presentation/hooks/useCustomerOrders';
 
-// Simplified ShopConfiguration for VideoFeed (can be expanded later)
 interface ShopConfig {
   shipping?: {
     defaultRate: number;
@@ -51,20 +57,12 @@ interface VideoFeedProps {
   onOrderSuccess?: (order: LocalOrder) => void;
 }
 
-/**
- * VideoFeed Component
- *
- * TikTok-style vertical video feed for browsing products.
- * Full-screen snapping, auto-play, and swipe-to-buy interaction.
- */
 export function VideoFeed({
   products,
   sellerId,
   initialVideoId,
   onBack,
   shopConfig,
-  sellerName,
-  sellerHandle,
   onOrderSuccess,
 }: VideoFeedProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -111,59 +109,16 @@ export function VideoFeed({
       ref={containerRef}
       className="h-[100dvh] w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar bg-black relative"
     >
-      {/* Fixed header — seller info + close button */}
-      <div className="fixed top-0 inset-x-0 z-30 bg-gradient-to-b from-black/60 to-transparent pt-3 pb-8 px-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {sellerName && (
-              <>
-                <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center border-2 border-white/20">
-                  <span className="text-white font-bold text-sm">
-                    {sellerName.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                <div>
-                  <p className="text-white font-semibold text-sm leading-tight">{sellerName}</p>
-                  {sellerHandle && (
-                    <p className="text-white/50 text-xs">@{sellerHandle}</p>
-                  )}
-                </div>
-              </>
-            )}
-            {!sellerName && (
-              <button
-                onClick={onBack}
-                className="p-2 bg-black/40 backdrop-blur-md rounded-full text-white border border-white/10"
-              >
-                <DirectionalIcon icon={ArrowLeft} size={20} />
-              </button>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setIsMuted(!isMuted)}
-              className="p-2 bg-black/40 backdrop-blur-md rounded-full text-white border border-white/10"
-            >
-              {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-            </button>
-            <button
-              onClick={onBack}
-              className="p-2 bg-black/40 backdrop-blur-md rounded-full text-white border border-white/10"
-            >
-              <X size={18} />
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* Video Cards */}
       {products.map((product) => (
-        <VideoCard
+        <MinimalVideoCard
           key={product.id}
           product={product}
           isActive={activeVideoId === product.id}
           isMuted={isMuted}
+          onMuteToggle={() => setIsMuted(!isMuted)}
           onBuy={() => setCheckoutProduct(product)}
+          onClose={onBack}
         />
       ))}
 
@@ -182,98 +137,136 @@ export function VideoFeed({
   );
 }
 
-interface VideoCardProps {
+interface MinimalVideoCardProps {
   product: Product;
   isActive: boolean;
   isMuted: boolean;
+  onMuteToggle: () => void;
   onBuy: () => void;
+  onClose: () => void;
 }
 
-/**
- * VideoCard Component
- *
- * Individual product card with video, price, and buy button.
- */
-function VideoCard({
+function MinimalVideoCard({
   product,
   isActive,
   isMuted,
+  onMuteToggle,
   onBuy,
-}: VideoCardProps) {
-  const t = useTranslations();
-
+  onClose,
+}: MinimalVideoCardProps) {
+  const t = useTranslations('publicFeed');
+  const tFeed = useTranslations('customer.feed');
   const price = product.price;
   const discountPrice = product.discountPrice;
   const stock = product.stock;
+  const displayPrice = discountPrice
+    ? `${discountPrice.amount} ${discountPrice.currency}`
+    : `${price.amount} ${price.currency}`;
+
+  const [isPaused, setIsPaused] = useState(false);
+  const [showPlayPause, setShowPlayPause] = useState(false);
+  const fadeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!isActive) setIsPaused(false);
+  }, [isActive]);
+
+  const handleVideoTap = useCallback(() => {
+    setIsPaused((prev) => !prev);
+    setShowPlayPause(true);
+    if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
+    fadeTimerRef.current = setTimeout(() => setShowPlayPause(false), 800);
+  }, []);
+
+  const effectiveActive = isActive && !isPaused;
 
   return (
     <div
       id={`video-card-${product.id}`}
       data-id={product.id}
-      className="video-card w-full h-[100dvh] snap-start flex flex-col bg-black p-3 pb-8"
+      className="video-card w-full h-[100dvh] snap-start relative bg-black"
     >
-      {/* Video Container - corners match button roundness */}
-      <div className="relative flex-1 w-full rounded-3xl overflow-hidden shadow-[0_0_40px_-10px_rgba(255,255,255,0.15)] border border-zinc-800/50 bg-zinc-900">
+      {/* Full-screen video */}
+      <div className="absolute inset-0">
         <ProductVideo
           productId={product.id}
           src={product.videoUrl}
-          isActive={isActive}
-          className="absolute inset-0 w-full h-full object-cover"
+          isActive={effectiveActive}
+          className="w-full h-full object-cover"
           loop
           playsInline
           muted={isMuted}
         />
-
-        {/* Badges */}
-        <div className="absolute bottom-4 start-4 z-20 flex gap-2">
-          {stock < 10 && stock > 0 && (
-            <div className="flex items-center gap-1 bg-red-500/90 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full animate-pulse">
-              <AlertCircle size={10} />
-              <span>{t('product.lowStock', { count: stock })}</span>
-            </div>
-          )}
-          {product.promotionLabel && (
-            <div className="bg-purple-600/90 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-lg">
-              {product.promotionLabel}
-            </div>
-          )}
-        </div>
       </div>
 
-      {/* Product Details */}
-      <div className="mt-5 px-2 flex flex-col gap-6">
-        <div className="flex justify-between items-center gap-4">
-          <h2 className="text-xl font-bold text-white leading-tight flex-1">
-            {product.title}
-          </h2>
+      {/* Tap zone for play/pause */}
+      <button
+        onClick={handleVideoTap}
+        className="absolute inset-0 bottom-36 z-10"
+        aria-label={isPaused ? 'Play' : 'Pause'}
+      />
 
-          <div className="flex flex-col items-end shrink-0">
-            {discountPrice ? (
-              <>
-                <span className="text-2xl font-bold text-emerald-400">
-                  {discountPrice.amount}
-                  <span className="text-sm ms-1 text-emerald-500/80">{discountPrice.currency}</span>
-                </span>
-                <span className="text-xs text-zinc-600 line-through font-medium">
-                  {price.amount}
-                </span>
-              </>
+      {/* Play/Pause indicator */}
+      {showPlayPause && (
+        <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+          <div className="w-16 h-16 rounded-full bg-black/25 backdrop-blur-sm flex items-center justify-center animate-[pulse-fade_0.8s_ease-out_forwards]">
+            {isPaused ? (
+              <Play size={28} className="text-white/80 fill-white/80 ms-1" />
             ) : (
-              <span className="text-2xl font-bold text-white">
-                {price.amount}
-                <span className="text-sm ms-1 text-zinc-500">{price.currency}</span>
-              </span>
+              <Pause size={28} className="text-white/80 fill-white/80" />
             )}
           </div>
         </div>
+      )}
 
-        {/* Swipe to Buy */}
-        <SwipeButton
-          onConfirm={onBuy}
-          disabled={stock === 0}
-          label={stock === 0 ? t('product.outOfStock') : t('product.slideToBuy')}
-          icon={<ShoppingBag size={20} className="text-white fill-white/20" />}
-        />
+      {/* Close button — top start */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 start-4 z-20 p-2 bg-black/20 backdrop-blur-sm rounded-full text-white/60"
+      >
+        <X size={16} />
+      </button>
+
+      {/* Mute button — top end */}
+      <button
+        onClick={onMuteToggle}
+        className="absolute top-4 end-4 z-20 p-2 bg-black/20 backdrop-blur-sm rounded-full text-white/60"
+      >
+        {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+      </button>
+
+      {/* Bottom overlay — compact */}
+      <div className="absolute bottom-0 inset-x-0 z-10">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+
+        <div className="relative px-4 pb-6 pt-10">
+          {/* Product title */}
+          <h2 className="text-sm font-medium text-white drop-shadow-lg line-clamp-1 mb-3">
+            {product.title}
+          </h2>
+
+          {/* Stock badge */}
+          {stock < 10 && stock > 0 && (
+            <div className="flex gap-2 mb-3">
+              <div className="flex items-center gap-1 bg-red-500/80 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                <AlertCircle size={10} />
+                <span>{tFeed('onlyLeft', { count: stock })}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Swipe to Buy with price */}
+          <SwipeButton
+            onConfirm={onBuy}
+            disabled={stock === 0}
+            label={
+              stock === 0
+                ? t('outOfStock')
+                : `${displayPrice} · ${t('slideToShop')}`
+            }
+            icon={<ShoppingBag size={20} className="text-white fill-white/20" />}
+          />
+        </div>
       </div>
     </div>
   );

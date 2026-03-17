@@ -1560,7 +1560,28 @@
       "slideToShop": "اسحب للشراء",
       "outOfStock": "نفذ المخزون",
       "close": "إغلاق"
+    },
+    "stories": {
+      "spotlight": "العرض المميز",
+      "about": "عنّا",
+      "reviews": "التقييمات",
+      "chat": "المحادثات",
+      "viewProduct": "عرض المنتج",
+      "swipeToBuy": "اسحب للشراء"
     }
+  },
+  "publicFeed": {
+    "discover": "اكتشف",
+    "shopBy": "تسوق من @{handle}",
+    "viewShop": "عرض المتجر",
+    "loadingMore": "جارِ التحميل...",
+    "noMoreProducts": "لقد شاهدت كل شيء!",
+    "noProducts": "لا توجد منتجات بعد",
+    "noProductsHint": "تحقق لاحقاً لمنتجات جديدة",
+    "joinAsSeller": "بيع على VibeCart",
+    "dashboard": "لوحة التحكم",
+    "slideToShop": "اسحب للشراء",
+    "outOfStock": "نفذ المخزون"
   },
   "sellerProfile": {
     "editProfile": "تعديل الملف الشخصي",

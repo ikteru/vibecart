@@ -66,6 +66,16 @@ const config: Config = {
         arabic: ['var(--font-noto-arabic)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
         'arabic-display': ['var(--font-cairo)', 'var(--font-noto-arabic)', 'system-ui', 'sans-serif'],
       },
+      keyframes: {
+        'pulse-fade': {
+          '0%': { opacity: '1', transform: 'scale(1)' },
+          '50%': { opacity: '0.8', transform: 'scale(1.1)' },
+          '100%': { opacity: '0', transform: 'scale(1.2)' },
+        },
+      },
+      animation: {
+        'pulse-fade': 'pulse-fade 0.8s ease-out forwards',
+      },
       // RTL-aware spacing utilities
       spacing: {
         'safe-top': 'env(safe-area-inset-top)',

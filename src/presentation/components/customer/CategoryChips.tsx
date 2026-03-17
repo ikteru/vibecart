@@ -20,7 +20,6 @@ export function CategoryChips({
   const scrollRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLButtonElement>(null);
 
-  // Scroll active chip into view
   useEffect(() => {
     if (activeRef.current && scrollRef.current) {
       const container = scrollRef.current;
@@ -31,37 +30,34 @@ export function CategoryChips({
   }, [activeCategory]);
 
   const allChips = [
-    t('all'),
-    ...categories,
-    ...(hasSaleItems ? [t('sale')] : []),
+    { key: 'all', label: t('all') },
+    ...categories.map((cat) => ({ key: cat, label: cat })),
+    ...(hasSaleItems ? [{ key: 'sale', label: t('sale') }] : []),
   ];
 
   return (
     <div
       ref={scrollRef}
-      className="flex gap-2 overflow-x-auto scrollbar-hide px-4 py-2"
+      className="flex gap-1.5 overflow-x-auto no-scrollbar px-4 py-2"
     >
       {allChips.map((chip) => {
-        const isAll = chip === t('all');
-        const isActive =
-          (isAll && activeCategory === 'all') ||
-          (!isAll && activeCategory === chip);
-        const isSale = chip === t('sale');
+        const isActive = activeCategory === chip.key;
+        const isSale = chip.key === 'sale';
 
         return (
           <button
-            key={chip}
+            key={chip.key}
             ref={isActive ? activeRef : undefined}
-            onClick={() => onSelect(isAll ? 'all' : chip)}
-            className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+            onClick={() => onSelect(chip.key)}
+            className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-all ${
               isActive
-                ? 'bg-white text-black'
+                ? 'bg-zinc-700 text-white'
                 : isSale
-                  ? 'bg-red-500/20 text-red-400 border border-red-500/30'
-                  : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
+                  ? 'bg-red-500/10 text-red-400 border border-red-500/20'
+                  : 'bg-zinc-900 text-zinc-400 border border-zinc-800'
             }`}
           >
-            {chip}
+            {chip.label}
           </button>
         );
       })}

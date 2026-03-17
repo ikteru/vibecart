@@ -2,11 +2,17 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import { useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { VideoFeed } from '@/presentation/components/video/VideoFeed';
 import { CustomerNav, type CustomerTab } from '@/presentation/components/customer/CustomerNav';
-import { CustomerFeed } from '@/presentation/components/customer/CustomerFeed';
 import { SavedProducts } from '@/presentation/components/customer/SavedProducts';
 import { CustomerOrders } from '@/presentation/components/customer/CustomerOrders';
+import { StoryCircles } from '@/presentation/components/stories/StoryCircles';
+import { StoryViewer } from '@/presentation/components/stories/StoryViewer';
+import { ProductGrid } from '@/presentation/components/customer/ProductGrid';
+import { CategoryChips } from '@/presentation/components/customer/CategoryChips';
+import { useStoryGroups } from '@/presentation/hooks/useStoryGroups';
+import { useLocalStorage } from '@/presentation/hooks/useLocalStorage';
 import { Product } from '@/domain/entities/Product';
 import { Money, type Currency } from '@/domain/value-objects/Money';
 import { ProductCategory } from '@/domain/value-objects/ProductCategory';
@@ -52,6 +58,7 @@ function dtoToProduct(dto: ProductResponseDTO): Product {
  */
 export function ShopPageClient({ seller, products: productDTOs }: ShopPageClientProps) {
   const locale = useLocale();
+  const t = useTranslations();
   const products = useMemo(
     () => productDTOs.map(dtoToProduct),
     [productDTOs]
@@ -133,6 +140,73 @@ export function ShopPageClient({ seller, products: productDTOs }: ShopPageClient
     [saved]
   );
 
+  // Story groups from vibe config + featured products
+  const storyGroups = useStoryGroups(
+    {
+      spotlight: shopConfig.spotlight,
+      makerBio: shopConfig.makerBio,
+      reviews: shopConfig.reviews,
+      chatReviews: shopConfig.chatReviews,
+    },
+    products
+  );
+
+  // Track viewed stories in localStorage
+  const [viewedStoryIds, setViewedStoryIds] = useLocalStorage<string[]>(
+    `vibecart_stories_viewed_${seller.handle}`,
+    []
+  );
+  const viewedSet = useMemo(() => new Set(viewedStoryIds), [viewedStoryIds]);
+
+  const [storyViewerIndex, setStoryViewerIndex] = useState<number | null>(null);
+
+  // Category filtering for grid
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const filteredProducts = useMemo(() => {
+    if (!selectedCategory || selectedCategory === 'all') return products;
+    if (selectedCategory === 'sale') return products.filter((p) => p.discountPrice);
+    return products.filter((p) => p.category?.value === selectedCategory);
+  }, [products, selectedCategory]);
+
+  const categories = useMemo(() => {
+    const cats = new Set<string>();
+    products.forEach((p) => {
+      if (p.category?.value) cats.add(p.category.value);
+    });
+    return Array.from(cats);
+  }, [products]);
+
+  const hasSaleItems = useMemo(
+    () => products.some((p) => p.discountPrice),
+    [products]
+  );
+
+  const handleStoryViewed = useCallback(
+    (groupId: string) => {
+      setViewedStoryIds((prev) => {
+        if (prev.includes(groupId)) return prev;
+        return [...prev, groupId];
+      });
+    },
+    [setViewedStoryIds]
+  );
+
+  const handleStoryProductTap = useCallback(
+    (groupIndex: number) => {
+      const group = storyGroups[groupIndex];
+      if (group && group.items[0]?.type === 'product') {
+        // For product stories, open video feed directly
+        const productId = group.items[0].data.product.id;
+        handleSelectProduct(productId);
+      } else {
+        // For vibe stories, open story viewer
+        setStoryViewerIndex(groupIndex);
+      }
+    },
+    [storyGroups, handleSelectProduct]
+  );
+
   // Full-screen video feed view
   if (showVideoFeed) {
     return (
@@ -154,44 +228,60 @@ export function ShopPageClient({ seller, products: productDTOs }: ShopPageClient
     );
   }
 
+  // Story viewer overlay
+  if (storyViewerIndex !== null) {
+    return (
+      <StoryViewer
+        groups={storyGroups}
+        initialGroupIndex={storyViewerIndex}
+        onClose={() => setStoryViewerIndex(null)}
+        onViewed={handleStoryViewed}
+      />
+    );
+  }
+
   // Tabbed customer experience
   return (
     <div className="h-screen bg-black">
-      {activeTab === 'feed' && (
-        <CustomerFeed
-          sellerName={seller.shopName}
-          sellerHandle={seller.handle}
-          products={products}
-          shopConfig={shopConfig}
+      <div className="h-full overflow-y-auto no-scrollbar">
+        {/* Compact profile header */}
+        <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-800 flex items-center justify-center border border-zinc-600 shrink-0">
+            <span className="text-white font-bold text-xl">
+              {seller.shopName.charAt(0).toUpperCase()}
+            </span>
+          </div>
+          <div>
+            <h1 className="text-white font-bold text-base leading-tight">{seller.shopName}</h1>
+            <p className="text-zinc-500 text-sm">@{seller.handle}</p>
+          </div>
+        </div>
+
+        {/* Story circles */}
+        {storyGroups.length > 0 && (
+          <StoryCircles
+            groups={storyGroups}
+            viewedIds={viewedSet}
+            onTap={handleStoryProductTap}
+          />
+        )}
+
+        {/* Category chips — only if 3+ categories */}
+        {categories.length >= 3 && (
+          <CategoryChips
+            categories={categories}
+            activeCategory={selectedCategory || 'all'}
+            onSelect={(cat) => setSelectedCategory(cat === 'all' ? null : cat)}
+            hasSaleItems={hasSaleItems}
+          />
+        )}
+
+        {/* Product grid */}
+        <ProductGrid
+          products={filteredProducts}
           onSelectProduct={handleSelectProduct}
-          isSaved={saved.isSaved}
-          onToggleSaved={handleToggleSaved}
-          hasOrderUpdates={customerOrders.hasUpdates}
-          onNotificationTap={() => setActiveTab('orders')}
         />
-      )}
-
-      {activeTab === 'saved' && (
-        <SavedProducts
-          saved={saved.saved}
-          onRemove={saved.removeSaved}
-          onTap={(productId) => handleSelectProduct(productId)}
-        />
-      )}
-
-      {activeTab === 'orders' && (
-        <CustomerOrders
-          localOrders={customerOrders.orders}
-          shopHandle={seller.handle}
-          locale={locale}
-        />
-      )}
-
-      <CustomerNav
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        hasOrderUpdates={customerOrders.hasUpdates}
-      />
+      </div>
     </div>
   );
 }

@@ -1560,7 +1560,28 @@
       "slideToShop": "Glisser pour acheter",
       "outOfStock": "Rupture de stock",
       "close": "Fermer"
+    },
+    "stories": {
+      "spotlight": "À la une",
+      "about": "À propos",
+      "reviews": "Avis",
+      "chat": "Chat",
+      "viewProduct": "Voir le produit",
+      "swipeToBuy": "Glisser pour acheter"
     }
+  },
+  "publicFeed": {
+    "discover": "Découvrir",
+    "shopBy": "Acheter chez @{handle}",
+    "viewShop": "Voir la boutique",
+    "loadingMore": "Chargement...",
+    "noMoreProducts": "Vous avez tout vu !",
+    "noProducts": "Aucun produit pour le moment",
+    "noProductsHint": "Revenez plus tard pour de nouveaux produits",
+    "joinAsSeller": "Vendre sur VibeCart",
+    "dashboard": "Tableau de bord",
+    "slideToShop": "Glisser pour acheter",
+    "outOfStock": "Rupture de stock"
   },
   "sellerProfile": {
     "editProfile": "Modifier le profil",

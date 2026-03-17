@@ -1577,7 +1577,28 @@
       "slideToShop": "Slide to Shop",
       "outOfStock": "Out of Stock",
       "close": "Close"
+    },
+    "stories": {
+      "spotlight": "Spotlight",
+      "about": "About",
+      "reviews": "Reviews",
+      "chat": "Chat",
+      "viewProduct": "View Product",
+      "swipeToBuy": "Swipe to Buy"
     }
+  },
+  "publicFeed": {
+    "discover": "Discover",
+    "shopBy": "Shop from @{handle}",
+    "viewShop": "View Shop",
+    "loadingMore": "Loading...",
+    "noMoreProducts": "You've seen everything!",
+    "noProducts": "No products yet",
+    "noProductsHint": "Check back later for new products",
+    "joinAsSeller": "Sell on VibeCart",
+    "dashboard": "Dashboard",
+    "slideToShop": "Slide to Shop",
+    "outOfStock": "Out of Stock"
   },
   "sellerProfile": {
     "editProfile": "Edit Profile",

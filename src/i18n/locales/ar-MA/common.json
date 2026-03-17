@@ -1577,7 +1577,28 @@
       "slideToShop": "سحب للشراء",
       "outOfStock": "نفذ المخزون",
       "close": "إغلاق"
+    },
+    "stories": {
+      "spotlight": "العرض المميز",
+      "about": "على بالنا",
+      "reviews": "التقييمات",
+      "chat": "الشات",
+      "viewProduct": "شوف المنتوج",
+      "swipeToBuy": "سحب للشراء"
     }
+  },
+  "publicFeed": {
+    "discover": "اكتشف",
+    "shopBy": "تسوق من @{handle}",
+    "viewShop": "شوف الحانوت",
+    "loadingMore": "كيتحمل...",
+    "noMoreProducts": "شفتي كلشي!",
+    "noProducts": "مازال ما كاين حتى منتوج",
+    "noProductsHint": "رجع من بعد، غادي يكونو منتوجات جداد",
+    "joinAsSeller": "بيع على VibeCart",
+    "dashboard": "لوحة التحكم",
+    "slideToShop": "سحب للشراء",
+    "outOfStock": "نفذ المخزون"
   },
   "sellerProfile": {
     "editProfile": "تعديل البروفايل",
