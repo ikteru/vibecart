@@ -1,4 +1,5 @@
-const createNextIntlPlugin = require('next-intl/plugin');
+import createNextIntlPlugin from 'next-intl/plugin';
+import withSerwist from '@serwist/next';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
@@ -8,7 +9,7 @@ const isDev = process.env.NODE_ENV === 'development';
 // In prod, lock down to known HTTPS endpoints only.
 const connectSrc = isDev
   ? "connect-src 'self' http://localhost:* ws://localhost:* https://*.supabase.co https://graph.instagram.com https://graph.facebook.com https://*.upstash.io https://*.ngrok-free.dev https://*.ngrok.io https://nominatim.openstreetmap.org https://*.tile.openstreetmap.org"
-  : "connect-src 'self' https://*.supabase.co https://graph.instagram.com https://graph.facebook.com https://*.upstash.io https://nominatim.openstreetmap.org https://*.tile.openstreetmap.org";
+  : "connect-src 'self' https://*.supabase.co https://graph.instagram.com https://graph.facebook.com https://*.upstash.io https://nominatim.openstreetmap.org https://*.tile.openstreetmap.org capacitor://localhost ionic://localhost";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -108,4 +109,11 @@ const nextConfig = {
   },
 };
 
-module.exports = withNextIntl(nextConfig);
+// Serwist PWA service worker (disabled in dev to avoid caching issues)
+const withPWA = withSerwist({
+  swSrc: 'src/app/sw.ts',
+  swDest: 'public/sw.js',
+  disable: isDev,
+});
+
+export default withPWA(withNextIntl(nextConfig));

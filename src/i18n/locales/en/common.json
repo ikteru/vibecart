@@ -1671,5 +1671,15 @@
     "chatScreenshots": "Chat Screenshots",
     "uploadImage": "Upload Image",
     "changeAvatar": "Change Avatar"
+  },
+  "app": {
+    "installPrompt": "Add VibeCart to your home screen for a better experience",
+    "installButton": "Install",
+    "installDismiss": "Not now",
+    "offline": {
+      "title": "You're offline",
+      "description": "Check your internet connection and try again.",
+      "retry": "Retry"
+    }
   }
 }

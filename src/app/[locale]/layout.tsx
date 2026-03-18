@@ -4,6 +4,9 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { Noto_Sans_Arabic, Inter, Cairo } from 'next/font/google';
 import { locales, isRTL, type Locale } from '@/i18n/config';
 import { AuthProvider } from '@/presentation/providers/AuthProvider';
+import { InstallBanner } from '@/presentation/components/pwa/InstallBanner';
+import { NativeBootstrap } from '@/presentation/components/pwa/NativeBootstrap';
+import { OfflineBanner } from '@/presentation/components/pwa/OfflineBanner';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -65,6 +68,9 @@ export default async function LocaleLayout({
           <AuthProvider>
             <div className="relative flex min-h-screen flex-col">
               <main className="flex-1">{children}</main>
+              <InstallBanner />
+              <NativeBootstrap />
+              <OfflineBanner />
             </div>
           </AuthProvider>
         </NextIntlClientProvider>

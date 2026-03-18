@@ -1654,5 +1654,15 @@
     "chatScreenshots": "Captures de chat",
     "uploadImage": "Télécharger une image",
     "changeAvatar": "Changer l'avatar"
+  },
+  "app": {
+    "installPrompt": "Ajoutez VibeCart à votre écran d'accueil pour une meilleure expérience",
+    "installButton": "Installer",
+    "installDismiss": "Pas maintenant",
+    "offline": {
+      "title": "Vous êtes hors ligne",
+      "description": "Vérifiez votre connexion internet et réessayez.",
+      "retry": "Réessayer"
+    }
   }
 }

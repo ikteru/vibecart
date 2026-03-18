@@ -3,6 +3,7 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { Check } from 'lucide-react';
 import { useRTL } from '@/presentation/hooks/useRTL';
+import { hapticImpact, hapticNotification } from '@/presentation/utils/haptics';
 
 interface SwipeButtonProps {
   onConfirm: () => void;
@@ -53,6 +54,7 @@ export function SwipeButton({
 
   const handleStart = (clientX: number) => {
     if (disabled || confirmed || isBlocked) return;
+    hapticImpact('light');
     setIsDragging(true);
     setIsReleasing(false);
     startXRef.current = clientX;
@@ -85,6 +87,7 @@ export function SwipeButton({
       setConfirmed(true);
       setIsDragging(false);
       setDragWidth(maxDrag);
+      hapticNotification('success');
       onConfirm();
 
       setTimeout(() => {

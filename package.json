@@ -19,10 +19,27 @@
     "db:migrate": "supabase db push",
     "db:seed": "tsx scripts/seed.ts",
     "docker:up": "docker compose up -d",
-    "docker:down": "docker compose down"
+    "docker:down": "docker compose down",
+    "cap:sync": "npx cap sync",
+    "cap:android": "npx cap open android",
+    "cap:ios": "npx cap open ios"
   },
   "dependencies": {
+    "@capacitor/android": "^8.2.0",
+    "@capacitor/app": "^8.0.1",
+    "@capacitor/camera": "^8.0.2",
+    "@capacitor/cli": "^8.2.0",
+    "@capacitor/core": "^8.2.0",
+    "@capacitor/haptics": "^8.0.1",
+    "@capacitor/ios": "^8.2.0",
+    "@capacitor/keyboard": "^8.0.1",
+    "@capacitor/network": "^8.0.1",
+    "@capacitor/push-notifications": "^8.0.2",
+    "@capacitor/share": "^8.0.1",
+    "@capacitor/splash-screen": "^8.0.1",
+    "@capacitor/status-bar": "^8.0.1",
     "@google/genai": "^1.44.0",
+    "@serwist/next": "^9.5.7",
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.47.0",
     "@upstash/ratelimit": "^2.0.8",
@@ -35,6 +52,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-leaflet": "^4.2.1",
+    "serwist": "^9.5.7",
     "zod": "^3.23.8"
   },
   "devDependencies": {

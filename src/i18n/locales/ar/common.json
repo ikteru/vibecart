@@ -1654,5 +1654,15 @@
     "chatScreenshots": "لقطات المحادثة",
     "uploadImage": "رفع صورة",
     "changeAvatar": "تغيير الصورة"
+  },
+  "app": {
+    "installPrompt": "أضف VibeCart إلى شاشتك الرئيسية لتجربة أفضل",
+    "installButton": "تثبيت",
+    "installDismiss": "ليس الآن",
+    "offline": {
+      "title": "أنت غير متصل",
+      "description": "تحقق من اتصالك بالإنترنت وحاول مرة أخرى.",
+      "retry": "إعادة المحاولة"
+    }
   }
 }
