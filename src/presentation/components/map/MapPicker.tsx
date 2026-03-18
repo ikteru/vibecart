@@ -180,7 +180,6 @@ export function MapPicker({
   useEffect(() => {
     if (!isOpen || !mapContainerRef.current) return;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let L: any;
     const initMap = async () => {
       // Dynamic import of Leaflet

@@ -46,6 +46,7 @@ export interface InstagramProfile {
   media_count?: number;
   followers_count?: number;
   profile_picture_url?: string;
+  biography?: string;
 }
 
 export interface InstagramMedia {
@@ -208,7 +209,7 @@ export class InstagramGraphService {
   async getUserProfile(token: string): Promise<InstagramProfile> {
     return withRetry(async () => {
       const params = new URLSearchParams({
-        fields: 'id,username,account_type,media_count,followers_count,profile_picture_url',
+        fields: 'id,username,account_type,media_count,followers_count,profile_picture_url,biography',
         access_token: token,
       });
 

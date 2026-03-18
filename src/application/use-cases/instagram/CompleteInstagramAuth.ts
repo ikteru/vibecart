@@ -131,6 +131,7 @@ export class CompleteInstagramAuth {
             tokenExpiresAt: expiresAt.toISOString(),
             followersCount: profile.followers_count,
             profilePictureUrl: profile.profile_picture_url,
+            biography: profile.biography,
           },
         });
 

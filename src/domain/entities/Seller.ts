@@ -70,6 +70,7 @@ export interface InstagramConfig {
   tokenExpiresAt?: string;   // ISO date string for UI warning about expiring token
   followersCount?: number;   // Number of followers on the Instagram account
   profilePictureUrl?: string; // Instagram profile picture URL
+  biography?: string;        // Instagram bio text
 }
 
 export interface WhatsAppBusinessConfig {

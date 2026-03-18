@@ -66,6 +66,50 @@ const config: Config = {
         arabic: ['var(--font-noto-arabic)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
         'arabic-display': ['var(--font-cairo)', 'var(--font-noto-arabic)', 'system-ui', 'sans-serif'],
       },
+      keyframes: {
+        'pulse-fade': {
+          '0%': { opacity: '1', transform: 'scale(1)' },
+          '50%': { opacity: '0.8', transform: 'scale(1.1)' },
+          '100%': { opacity: '0', transform: 'scale(1.2)' },
+        },
+        'shimmer-slide': {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
+        'thumb-nudge': {
+          '0%, 100%': { transform: 'translateX(0)', boxShadow: '0 0 12px 2px rgba(16,185,129,0.2)' },
+          '50%': { transform: 'translateX(3px)', boxShadow: '0 0 18px 4px rgba(16,185,129,0.35)' },
+        },
+        'confirm-burst': {
+          '0%': { transform: 'scale(1)', opacity: '1' },
+          '30%': { transform: 'scale(1.08)' },
+          '60%': { transform: 'scale(0.98)' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        'chevron-flow': {
+          '0%': { opacity: '0' },
+          '15%': { opacity: '0.6' },
+          '50%': { opacity: '0.6' },
+          '85%': { opacity: '0' },
+          '100%': { opacity: '0' },
+        },
+        'blocked-shake': {
+          '0%, 100%': { transform: 'translateX(0) scaleY(1)' },
+          '15%': { transform: 'translateX(-2px) scaleY(0.94)' },
+          '30%': { transform: 'translateX(2px) scaleY(0.92)' },
+          '45%': { transform: 'translateX(-1px) scaleY(0.94)' },
+          '60%': { transform: 'translateX(1px) scaleY(0.96)' },
+          '80%': { transform: 'translateX(0) scaleY(1)' },
+        },
+      },
+      animation: {
+        'pulse-fade': 'pulse-fade 0.8s ease-out forwards',
+        'shimmer-slide': 'shimmer-slide 2.5s ease-in-out infinite',
+        'thumb-nudge': 'thumb-nudge 2s ease-in-out infinite',
+        'confirm-burst': 'confirm-burst 0.4s ease-out forwards',
+        'chevron-flow': 'chevron-flow 1.4s ease-in-out infinite',
+        'blocked-shake': 'blocked-shake 0.35s ease-out forwards',
+      },
       // RTL-aware spacing utilities
       spacing: {
         'safe-top': 'env(safe-area-inset-top)',

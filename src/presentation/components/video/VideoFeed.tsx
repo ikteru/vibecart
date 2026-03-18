@@ -1,15 +1,23 @@
 'use client';
 
-import React, { useRef, useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { Volume2, VolumeX, ArrowLeft, ShoppingBag, AlertCircle } from 'lucide-react';
-import { DirectionalIcon } from '../ui/DirectionalIcon';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
+import {
+  Volume2,
+  VolumeX,
+  ShoppingBag,
+  AlertCircle,
+  X,
+  Play,
+  Pause,
+  Share2,
+} from 'lucide-react';
 import { SwipeButton } from '../ui/SwipeButton';
 import { CheckoutDrawer } from '../checkout/CheckoutDrawer';
 import { ProductVideo } from './ProductVideo';
 import type { Product } from '@/domain/entities/Product';
+import type { LocalOrder } from '@/presentation/hooks/useCustomerOrders';
 
-// Simplified ShopConfiguration for VideoFeed (can be expanded later)
 interface ShopConfig {
   shipping?: {
     defaultRate: number;
@@ -45,27 +53,37 @@ interface VideoFeedProps {
   initialVideoId?: string;
   onBack: () => void;
   shopConfig: ShopConfig;
+  sellerName?: string;
+  sellerHandle?: string;
+  onOrderSuccess?: (order: LocalOrder) => void;
 }
 
-/**
- * VideoFeed Component
- *
- * TikTok-style vertical video feed for browsing products.
- * Full-screen snapping, auto-play, and swipe-to-buy interaction.
- */
 export function VideoFeed({
   products,
   sellerId,
   initialVideoId,
   onBack,
   shopConfig,
+  sellerHandle,
+  onOrderSuccess,
 }: VideoFeedProps) {
+  const t = useTranslations('publicFeed');
+  const tSwipe = useTranslations('swipeButton');
+  const tFeed = useTranslations('customer.feed');
+  const locale = useLocale();
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeVideoId, setActiveVideoId] = useState<string>(
     initialVideoId || products[0]?.id
   );
   const [isMuted, setIsMuted] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [checkoutProduct, setCheckoutProduct] = useState<Product | null>(null);
+
+  const activeProduct = useMemo(
+    () => products.find((p) => p.id === activeVideoId) || products[0],
+    [products, activeVideoId]
+  );
 
   // Scroll to initial video on mount
   useEffect(() => {
@@ -78,6 +96,21 @@ export function VideoFeed({
       }, 50);
     }
   }, [initialVideoId]);
+
+  // Scroll detection
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      setIsScrolling(true);
+      if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
+      scrollTimerRef.current = setTimeout(() => setIsScrolling(false), 300);
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Intersection Observer for video activation
   useEffect(() => {
@@ -99,39 +132,54 @@ export function VideoFeed({
     return () => observer.disconnect();
   }, [products]);
 
+  const handleBuy = useCallback(() => {
+    if (activeProduct) setCheckoutProduct(activeProduct);
+  }, [activeProduct]);
+
+  // Price display for fixed SwipeButton
+  const displayPrice = activeProduct
+    ? activeProduct.discountPrice
+      ? activeProduct.discountPrice.format(locale)
+      : activeProduct.price.format(locale)
+    : '';
+  const activeStock = activeProduct?.stock ?? 0;
+
   return (
     <div
       ref={containerRef}
       className="h-[100dvh] w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar bg-black relative"
     >
-      {/* Fixed Controls - Back button on LEFT, Volume on RIGHT */}
-      <div className="fixed top-4 left-4 z-30">
-        <button
-          onClick={onBack}
-          className="p-2 bg-black/40 backdrop-blur-md rounded-full text-white border border-white/10 hover:bg-black/60 transition-colors"
-        >
-          <DirectionalIcon icon={ArrowLeft} size={24} />
-        </button>
-      </div>
-      <div className="fixed top-4 right-4 z-30">
-        <button
-          onClick={() => setIsMuted(!isMuted)}
-          className="p-2 bg-black/40 backdrop-blur-md rounded-full text-white border border-white/10 hover:bg-black/60 transition-colors"
-        >
-          {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
-        </button>
-      </div>
-
       {/* Video Cards */}
       {products.map((product) => (
-        <VideoCard
+        <MinimalVideoCard
           key={product.id}
           product={product}
           isActive={activeVideoId === product.id}
           isMuted={isMuted}
-          onBuy={() => setCheckoutProduct(product)}
+          onMuteToggle={() => setIsMuted(!isMuted)}
+          onClose={onBack}
+          sellerHandle={sellerHandle}
         />
       ))}
+
+      {/* Fixed bottom gradient + SwipeButton */}
+      <div className="fixed bottom-0 inset-x-0 z-30 pointer-events-none">
+        <div className="bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-12 pb-6 px-4 pointer-events-auto">
+        <SwipeButton
+          onConfirm={handleBuy}
+          disabled={activeStock === 0}
+          isBlocked={isScrolling}
+          label={
+            activeStock === 0
+              ? t('outOfStock')
+              : `${displayPrice} · ${t('slideToShop')}`
+          }
+          midLabel={tSwipe('keepGoing')}
+          nearLabel={tSwipe('almostThere')}
+          icon={<ShoppingBag size={20} className="text-white fill-white/20" />}
+        />
+        </div>
+      </div>
 
       {/* Checkout Drawer */}
       {checkoutProduct && (
@@ -141,104 +189,135 @@ export function VideoFeed({
           isOpen={!!checkoutProduct}
           onClose={() => setCheckoutProduct(null)}
           shopConfig={shopConfig}
+          onOrderSuccess={onOrderSuccess}
         />
       )}
     </div>
   );
 }
 
-interface VideoCardProps {
+interface MinimalVideoCardProps {
   product: Product;
   isActive: boolean;
   isMuted: boolean;
-  onBuy: () => void;
+  onMuteToggle: () => void;
+  onClose: () => void;
+  sellerHandle?: string;
 }
 
-/**
- * VideoCard Component
- *
- * Individual product card with video, price, and buy button.
- */
-function VideoCard({
+function MinimalVideoCard({
   product,
   isActive,
   isMuted,
-  onBuy,
-}: VideoCardProps) {
-  const t = useTranslations();
-
-  const price = product.price;
-  const discountPrice = product.discountPrice;
+  onMuteToggle,
+  onClose,
+  sellerHandle,
+}: MinimalVideoCardProps) {
+  const locale = useLocale();
+  const tFeed = useTranslations('customer.feed');
   const stock = product.stock;
+
+  const [isPaused, setIsPaused] = useState(false);
+  const [showPlayPause, setShowPlayPause] = useState(false);
+  const fadeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!isActive) setIsPaused(false);
+  }, [isActive]);
+
+  const handleVideoTap = useCallback(() => {
+    setIsPaused((prev) => !prev);
+    setShowPlayPause(true);
+    if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
+    fadeTimerRef.current = setTimeout(() => setShowPlayPause(false), 800);
+  }, []);
+
+  const effectiveActive = isActive && !isPaused;
 
   return (
     <div
       id={`video-card-${product.id}`}
       data-id={product.id}
-      className="video-card w-full h-[100dvh] snap-start flex flex-col bg-black p-3 pb-8"
+      className="video-card w-full h-[100dvh] snap-start relative bg-black"
     >
-      {/* Video Container - corners match button roundness */}
-      <div className="relative flex-1 w-full rounded-3xl overflow-hidden shadow-[0_0_40px_-10px_rgba(255,255,255,0.15)] border border-zinc-800/50 bg-zinc-900">
+      {/* Full-screen video */}
+      <div className="absolute inset-0">
         <ProductVideo
           productId={product.id}
           src={product.videoUrl}
-          isActive={isActive}
-          className="absolute inset-0 w-full h-full object-cover"
+          isActive={effectiveActive}
+          className="w-full h-full object-cover"
           loop
           playsInline
           muted={isMuted}
         />
-
-        {/* Badges */}
-        <div className="absolute bottom-4 start-4 z-20 flex gap-2">
-          {stock < 10 && stock > 0 && (
-            <div className="flex items-center gap-1 bg-red-500/90 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full animate-pulse">
-              <AlertCircle size={10} />
-              <span>{t('product.lowStock', { count: stock })}</span>
-            </div>
-          )}
-          {product.promotionLabel && (
-            <div className="bg-purple-600/90 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-lg">
-              {product.promotionLabel}
-            </div>
-          )}
-        </div>
       </div>
 
-      {/* Product Details */}
-      <div className="mt-5 px-2 flex flex-col gap-6">
-        <div className="flex justify-between items-center gap-4">
-          <h2 className="text-xl font-bold text-white leading-tight flex-1">
-            {product.title}
-          </h2>
+      {/* Tap zone */}
+      <button
+        onClick={handleVideoTap}
+        className="absolute inset-0 bottom-28 z-10"
+        aria-label={isPaused ? 'Play' : 'Pause'}
+      />
 
-          <div className="flex flex-col items-end shrink-0">
-            {discountPrice ? (
-              <>
-                <span className="text-2xl font-bold text-emerald-400">
-                  {discountPrice.amount}
-                  <span className="text-sm ms-1 text-emerald-500/80">{discountPrice.currency}</span>
-                </span>
-                <span className="text-xs text-zinc-600 line-through font-medium">
-                  {price.amount}
-                </span>
-              </>
+      {/* Play/Pause indicator */}
+      {showPlayPause && (
+        <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+          <div className="w-16 h-16 rounded-full bg-black/25 backdrop-blur-sm flex items-center justify-center animate-[pulse-fade_0.8s_ease-out_forwards]">
+            {isPaused ? (
+              <Play size={28} className="text-white/80 fill-white/80 ms-1" />
             ) : (
-              <span className="text-2xl font-bold text-white">
-                {price.amount}
-                <span className="text-sm ms-1 text-zinc-500">{price.currency}</span>
-              </span>
+              <Pause size={28} className="text-white/80 fill-white/80" />
             )}
           </div>
         </div>
+      )}
 
-        {/* Swipe to Buy */}
-        <SwipeButton
-          onConfirm={onBuy}
-          disabled={stock === 0}
-          label={stock === 0 ? t('product.outOfStock') : t('product.slideToBuy')}
-          icon={<ShoppingBag size={20} className="text-white fill-white/20" />}
-        />
+      {/* Close button */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 start-4 z-20 p-2 bg-black/20 backdrop-blur-sm rounded-full text-white/60"
+      >
+        <X size={16} />
+      </button>
+
+      {/* Top-end buttons: mute + share */}
+      <div className="absolute top-4 end-4 z-20 flex flex-col gap-2">
+        <button
+          onClick={onMuteToggle}
+          className="p-2 bg-black/20 backdrop-blur-sm rounded-full text-white/60"
+        >
+          {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+        </button>
+        {sellerHandle && (
+          <button
+            onClick={() => {
+              const url = `${window.location.origin}/${locale}/shop/${sellerHandle}/${product.id}`;
+              navigator.clipboard.writeText(url);
+            }}
+            className="p-2 bg-black/20 backdrop-blur-sm rounded-full text-white/60"
+          >
+            <Share2 size={16} />
+          </button>
+        )}
+      </div>
+
+      {/* Bottom info — above fixed SwipeButton */}
+      <div className="absolute bottom-20 inset-x-0 z-10">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        <div className="relative px-4 pb-2 pt-8">
+          <h2 className="text-sm font-medium text-white drop-shadow-lg line-clamp-1">
+            {product.title}
+          </h2>
+          {stock < 10 && stock > 0 && (
+            <div className="flex gap-2 mt-2">
+              <div className="flex items-center gap-1 bg-red-500/80 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                <AlertCircle size={10} />
+                <span>{tFeed('onlyLeft', { count: stock })}</span>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -4,23 +4,29 @@ import { getCurrentUser, createClient, createAdminClient } from '@/infrastructur
 import { createRepositories } from '@/infrastructure/persistence/supabase';
 import { UpdateSellerProfile } from '@/application/use-cases/sellers/UpdateSellerProfile';
 import { SettingsForm } from '@/presentation/components/seller/SettingsForm';
+import { SettingsMenu } from '@/presentation/components/seller/SettingsMenu';
 import type { UpdateSellerDTO } from '@/application/dtos/SellerDTO';
 
 interface SettingsPageProps {
   params: Promise<{
     locale: string;
   }>;
+  searchParams: Promise<{
+    section?: string;
+  }>;
 }
 
 /**
  * Seller Settings Page
  *
- * Server component that fetches seller data and passes to client form.
+ * Shows grouped settings menu by default.
+ * When a section query param is present, shows the full SettingsForm
+ * scrolled to that section for detailed editing.
  */
-export default async function SettingsPage({ params }: SettingsPageProps) {
+export default async function SettingsPage({ params, searchParams }: SettingsPageProps) {
   const { locale } = await params;
+  const { section } = await searchParams;
 
-  // Get authenticated seller
   const seller = await getCurrentSeller(locale);
   const user = await getCurrentUser();
 
@@ -59,11 +65,23 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
     await supabaseServer.auth.signOut();
   }
 
+  // If a section is specified, show the full settings form
+  if (section) {
+    return (
+      <SettingsForm
+        seller={seller}
+        locale={locale}
+        updateAction={updateSettings}
+        logoutAction={logout}
+      />
+    );
+  }
+
+  // Default: show the grouped settings menu
   return (
-    <SettingsForm
+    <SettingsMenu
       seller={seller}
       locale={locale}
-      updateAction={updateSettings}
       logoutAction={logout}
     />
   );

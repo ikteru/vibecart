@@ -46,7 +46,7 @@ export default async function SellerLayout({ children, params }: SellerLayoutPro
       <div className="h-full overflow-y-auto no-scrollbar p-6 pb-24">{children}</div>
 
       {/* Bottom Navigation */}
-      <SellerNav locale={locale} />
+      <SellerNav locale={locale} shopHandle={result.seller.handle} />
     </div>
   );
 }

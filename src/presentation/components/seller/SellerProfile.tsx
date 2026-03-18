@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { ProductVideo } from '../video/ProductVideo';
 import type { Product } from '@/domain/entities/Product';
 import {
@@ -78,6 +78,7 @@ interface ShopConfig {
     handle?: string;
     followersCount?: number;
     profilePictureUrl?: string;
+    biography?: string;
   };
   googleMaps: {
     enabled: boolean;
@@ -195,6 +196,7 @@ export function SellerProfile({
   onSelectProduct,
 }: SellerProfileProps) {
   const t = useTranslations();
+  const locale = useLocale();
   const [showComingSoon, setShowComingSoon] = useState(false);
   const [comingSoonFeature, setComingSoonFeature] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('all');
@@ -361,9 +363,9 @@ export function SellerProfile({
         <div className="relative shrink-0">
           <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-emerald-500 via-emerald-400 to-cyan-500 p-[2px] shadow-lg">
             <div className="w-full h-full rounded-full bg-zinc-900 flex items-center justify-center overflow-hidden border-2 border-black">
-              {shopConfig.makerBio.enabled && shopConfig.makerBio.imageUrl && !profileImageError ? (
+              {!profileImageError && (shopConfig.instagram?.profilePictureUrl || (shopConfig.makerBio.enabled && shopConfig.makerBio.imageUrl)) ? (
                 <img
-                  src={shopConfig.makerBio.imageUrl}
+                  src={shopConfig.instagram?.profilePictureUrl || shopConfig.makerBio.imageUrl}
                   className="w-full h-full object-cover"
                   alt="Profile"
                   onError={() => setProfileImageError(true)}
@@ -386,9 +388,14 @@ export function SellerProfile({
           <h1 className="text-xl font-bold tracking-tight leading-tight truncate w-full">
             {sellerName}
           </h1>
-          <p className="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-2">
-            @{sellerHandle || sellerName.toLowerCase().replace(/\s+/g, '_')}
+          <p className="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-1">
+            @{shopConfig.instagram?.handle || sellerHandle || sellerName.toLowerCase().replace(/\s+/g, '_')}
           </p>
+          {shopConfig.instagram?.biography && (
+            <p className="text-zinc-400 text-xs mb-2 line-clamp-2 leading-relaxed">
+              {shopConfig.instagram.biography}
+            </p>
+          )}
           <div className="flex gap-4 text-sm">
             {shopConfig.instagram?.isConnected && shopConfig.instagram.followersCount && (
               <div>
@@ -456,8 +463,7 @@ export function SellerProfile({
 
                     <div className="absolute bottom-2 start-2 end-2 flex justify-between items-end">
                       <span className="text-white text-sm font-bold drop-shadow-md">
-                        {product.price.amount}{' '}
-                        <span className="text-[10px]">{product.price.currency}</span>
+                        {product.price.format(locale)}
                       </span>
                       <div className="bg-white/20 backdrop-blur-md p-1.5 rounded-full">
                         <Play size={10} fill="white" className="text-white" />
