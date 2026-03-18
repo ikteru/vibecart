@@ -3,62 +3,66 @@
 import { useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { FloatingBubbles } from './FloatingBubbles';
+import { ParallaxCards } from './ParallaxCards';
 import { HeroSection } from './HeroSection';
-import { WaitlistBar } from './WaitlistBar';
+import { BeforeAfterSection } from './BeforeAfterSection';
 import { HowItWorksSection } from './HowItWorksSection';
-import { InstagramTransformSection } from './InstagramTransformSection';
-import { WhatsAppStorySection } from './WhatsAppStorySection';
-import { CODSection } from './CODSection';
-import { ShopPreviewSection } from './ShopPreviewSection';
-import { BetaSignupSection } from './BetaSignupSection';
+import { FeaturesSection } from './FeaturesSection';
+import { SocialProofSection } from './SocialProofSection';
+import { RoadmapSection } from './RoadmapSection';
+import { FAQSection } from './FAQSection';
+import { FinalCTASection } from './FinalCTASection';
 import { FooterSection } from './FooterSection';
 import { StickyBottomCTA } from './StickyBottomCTA';
-
-const BETA_TOTAL = 50;
-const BETA_COUNT = 46;
 
 export function BetaLanding() {
   const signupRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
 
   const signupSuccess = searchParams.get('signup') === 'success';
-  const betaFull = searchParams.get('beta') === 'full';
 
   const scrollToSignup = () => {
     signupRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const spotsLeft = BETA_TOTAL - BETA_COUNT;
-
   return (
     <div className="relative min-h-screen bg-zinc-950 text-white">
-      <FloatingBubbles />
+      {/* 1. Hero + floating DM notifications + parallax cards */}
+      <div className="relative">
+        <ParallaxCards />
+        <FloatingBubbles />
+        <HeroSection onCtaClick={scrollToSignup} />
+      </div>
 
-      <HeroSection onCtaClick={scrollToSignup} />
+      {/* 2. Before/After (merged pain+solution) */}
+      <BeforeAfterSection onCtaClick={scrollToSignup} />
 
-      <WaitlistBar count={BETA_COUNT} total={BETA_TOTAL} />
-
+      {/* 3. How It Works */}
       <HowItWorksSection />
 
-      <InstagramTransformSection />
+      {/* 4. Features */}
+      <FeaturesSection />
 
-      <WhatsAppStorySection />
+      {/* 5. Social Proof */}
+      <SocialProofSection />
 
-      <CODSection />
+      {/* 6. Roadmap */}
+      <RoadmapSection />
 
-      <ShopPreviewSection onSignup={scrollToSignup} />
+      {/* 7. FAQ */}
+      <FAQSection />
 
-      <BetaSignupSection
+      {/* 8. Final CTA */}
+      <FinalCTASection
         ref={signupRef}
-        count={BETA_COUNT}
-        total={BETA_TOTAL}
         signupSuccess={signupSuccess}
-        betaFull={betaFull}
       />
 
+      {/* 9. Footer */}
       <FooterSection />
 
-      <StickyBottomCTA spotsLeft={spotsLeft} onCtaClick={scrollToSignup} />
+      {/* Sticky CTA (mobile) */}
+      <StickyBottomCTA onCtaClick={scrollToSignup} />
     </div>
   );
 }

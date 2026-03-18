@@ -31,7 +31,7 @@ export function FooterSection() {
           {languages.map((lang) => (
             <a
               key={lang.code}
-              href={`/${lang.code}`}
+              href={`/${lang.code}/join`}
               className="flex items-center gap-1.5 rounded-full bg-zinc-800/50 px-3 py-1.5 text-xs text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
             >
               <span>{lang.flag}</span>
@@ -43,10 +43,10 @@ export function FooterSection() {
         {/* Links + Social */}
         <div className="flex flex-col items-center gap-4 border-t border-zinc-800/50 pt-8">
           <div className="flex items-center gap-6 text-xs text-zinc-500">
-            <Link href="/ar-MA/legal/privacy" className="hover:text-primary-500 transition-colors">
+            <Link href="/ar-MA/legal/privacy" className="transition-colors hover:text-primary-500">
               {t('privacy')}
             </Link>
-            <Link href="/ar-MA/legal/terms" className="hover:text-primary-500 transition-colors">
+            <Link href="/ar-MA/legal/terms" className="transition-colors hover:text-primary-500">
               {t('terms')}
             </Link>
           </div>
@@ -60,10 +60,7 @@ export function FooterSection() {
             </a>
           </div>
 
-          <p className="text-xs text-zinc-600">
-            {t('madeIn')}
-          </p>
-
+          <p className="text-xs text-zinc-600">{t('madeIn')}</p>
           <p className="text-[10px] text-zinc-700">
             © {new Date().getFullYear()} <span dir="ltr">VibeCart</span>
           </p>

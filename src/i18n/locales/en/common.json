@@ -103,97 +103,128 @@
   },
   "landing": {
     "hero": {
-      "title": "Your Shop in Your Pocket",
-      "subtitle": "Turn your Instagram reels into money — completely free",
-      "cta": "Join the Beta — Free",
-      "scrollHint": "See how it works"
+      "title": "Selling on Instagram? You deserve better than DMs.",
+      "subtitle": "Your videos become a shop. Customers order in one tap.",
+      "typing1": "Your videos = your shop",
+      "typing2": "Order in one tap",
+      "typing3": "No more DM chaos",
+      "cta": "Join the free beta",
+      "socialProof": "+200 Moroccan sellers already signed up · Launching soon 🇲🇦"
     },
-    "waitlist": {
-      "progress": "{taken} / 50 spots taken",
-      "spotsLeft": "{count} spots left",
-      "beFirst": "Be among the first",
-      "first50": "First 50 sellers — free forever"
+    "pain": {
+      "title": "Same struggle, every single day.",
+      "p1": { "title": "50 DMs saying \"Price?\"", "desc": "You copy-paste the same reply 50 times a day. By hand." },
+      "p2": { "title": "Orders in a notebook", "desc": "No tracking, no history. You lose orders. You forget sizes." },
+      "p3": { "title": "Ghost customers", "desc": "\"Yes I want it!\" in DMs… then silence. You follow up, no reply." },
+      "p4": { "title": "Sales lost while you sleep", "desc": "Someone comments \"DM\" at 11pm. You reply at 9am. Too late." },
+      "p5": { "title": "Instagram + WhatsApp + notebook = chaos", "desc": "You run your shop on 3 apps. Nothing is connected." },
+      "p6": { "title": "\"Do you deliver to Agadir?\"", "desc": "The same question 20 times a day. You reply manually." },
+      "p7": { "title": "No idea what's working", "desc": "Which Reel sells most? Which product converts? You have no clue." },
+      "p8": { "title": "COD orders refused", "desc": "You ship it, the customer refuses delivery. You pay the fees." }
+    },
+    "solution": {
+      "title": "What if all that disappeared?",
+      "cta": "Try VibeCart for free",
+      "painLabel": "The struggle",
+      "fixLabel": "With VibeCart",
+      "s1": { "pain": "50 \"Price?\" DMs to handle", "fix": "VibeBot replies automatically. In Darija. 24/7." },
+      "s2": { "pain": "Orders in a notebook", "fix": "Order dashboard. Status, payment, delivery — all in one place." },
+      "s3": { "pain": "Ghost customers in DMs", "fix": "Customers order in 3 taps from the video. No DMs needed." },
+      "s4": { "pain": "Sales lost at night", "fix": "VibeBot sells for you while you sleep." },
+      "s5": { "pain": "3 disconnected apps", "fix": "One app: shop + orders + delivery + stats." },
+      "s6": { "pain": "\"Delivery to Agadir?\" x20", "fix": "Automatic reply with price and delivery time. By city." },
+      "s7": { "pain": "No analytics", "fix": "You know which Reel sells, which product converts, at what time." },
+      "s8": { "pain": "COD refused, fees lost", "fix": "Seller protection. Client verification. Refuser blacklist." }
     },
     "howItWorks": {
-      "title": "3 Steps. That's It.",
-      "step1": {
-        "title": "Connect Instagram",
-        "desc": "Link your account in one click"
-      },
-      "step2": {
-        "title": "Share Your Link",
-        "desc": "Send it to your customers on WhatsApp"
-      },
-      "step3": {
-        "title": "Get Orders",
-        "desc": "Orders come straight to your WhatsApp"
-      }
+      "title": "3 steps. 60 seconds. Your shop is live.",
+      "step1": { "title": "Connect your Instagram", "desc": "Sign in with your Instagram account. VibeCart imports your products." },
+      "step2": { "title": "Your videos become shoppable", "desc": "Every Reel, every video = a storefront. Your customers tap on the product and order." },
+      "step3": { "title": "You receive orders", "desc": "Orders, payment, delivery, tracking — all in one app." }
     },
-    "transform": {
-      "title": "Your Insta = Your Shop",
-      "subtitle": "Your existing content becomes your product catalog",
-      "before": "Your Instagram",
-      "after": "Your Shop",
-      "price": "Price",
-      "order": "Order"
+    "features": {
+      "title": "What changes everything",
+      "f1": { "title": "Shoppable Videos", "desc": "Your Instagram Reels = your shop. Customer sees, taps, orders. Without leaving the video." },
+      "f2": { "title": "Order in 3 Taps", "desc": "Product → address → COD or card → done. Less friction = more sales." },
+      "f3": { "title": "\"Comment BUY\" → Auto DM", "desc": "Your followers comment \"BUY\" on your Reel. They get the link automatically via DM." },
+      "f4": { "title": "Everything via WhatsApp", "desc": "Order confirmation, delivery tracking, reminders — everything arrives on WhatsApp." },
+      "f5": { "title": "Your Seller Dashboard", "desc": "How much you sell. What product works. Which video converts. Real numbers, not likes." }
     },
-    "whatsappStory": {
-      "title": "How an Order Works",
-      "customer": "Customer",
-      "seller": "You",
-      "system": "VibeCart",
-      "msg1": "I saw this product on your Insta, is it available?",
-      "msg2": "Yes\\! Here's my shop link:",
-      "msg3": "Ordered\\! Cash on delivery please",
-      "msg4": "Order #1234 confirmed — Cash on delivery",
-      "msg5": "Thanks\\! It'll arrive tomorrow inshallah",
-      "typing": "typing..."
+    "beforeAfter": {
+      "title": "Before / After",
+      "before": "Before VibeCart",
+      "after": "With VibeCart",
+      "pair1": { "pain": "50 \"Price?\" DMs / day", "fix": "Bot replies in Darija" },
+      "pair2": { "pain": "Orders in a notebook", "fix": "Dashboard with tracking" },
+      "pair3": { "pain": "Sales lost at 11pm", "fix": "Bot sells 24/7" },
+      "pair4": { "pain": "Insta + WhatsApp + notebook", "fix": "All in VibeCart" }
     },
-    "cod": {
-      "title": "Pay When It Arrives",
-      "subtitle": "No bank card needed. No hassle.",
-      "desc": "Your customers pay cash when they receive the product — just like they're used to"
+    "socialProof": {
+      "waitlistCount": "+{count} sellers signed up for beta",
+      "stat": "{percent}% of Moroccans scroll every week. Only {buyPercent}% buy.",
+      "frictionTitle": "The problem isn't demand.",
+      "frictionDesc": "It's checkout friction. VibeCart replaces it with 3 taps."
     },
-    "preview": {
-      "title": "See Your Shop",
-      "placeholder": "@your_handle",
-      "shopUrl": "vibecart.ma/shop/",
-      "yourShop": "Shop of",
-      "products": "Products",
-      "followers": "Followers"
+    "roadmap": {
+      "title": "We're just getting started.",
+      "badge": "Coming soon",
+      "r1": { "title": "VibeBot — Your AI assistant", "desc": "Replies to your Instagram DMs automatically. In Darija. Sends product links." },
+      "r2": { "title": "Auto-publish from Instagram", "desc": "Add #VibeCart to your Reel, it appears automatically in your shop." },
+      "r3": { "title": "Live Shopping", "desc": "Sell live. Your viewers order during the stream without leaving." },
+      "r4": { "title": "Customer reviews with photos", "desc": "Your buyers leave reviews with real photos. Trust that sells." },
+      "r5": { "title": "Group orders", "desc": "Your customers share the link on WhatsApp, order together, get a discount." }
     },
-    "signup": {
-      "title": "First 50 — Free Forever",
-      "subtitle": "Be among the first and get exclusive perks",
-      "instagramCta": "Join Beta with Instagram",
-      "connectingInstagram": "Connecting to Instagram...",
-      "betaFull": "Beta is full! Join the waitlist and we'll let you know when more spots open up.",
-      "benefits": {
-        "free": "0 MAD — Forever",
-        "freeDesc": "No hidden fees ever",
-        "support": "Direct Support",
-        "supportDesc": "WhatsApp group with the team",
-        "features": "Exclusive Features",
-        "featuresDesc": "First to try new features",
-        "founding": "Founding Member",
-        "foundingDesc": "Your name on the founders list"
+    "faq": {
+      "title": "Frequently asked questions",
+      "q1": { "q": "Is it free?", "a": "The beta is 100% free. When we officially launch, founding sellers keep exclusive perks: 0% commission for 3 months, permanent founder badge, and early access to new features." },
+      "q2": { "q": "Do I have to leave Instagram?", "a": "Never! VibeCart works WITH your Instagram. Your Reels stay on Insta, your audience stays where it is. VibeCart simply adds checkout and order management on top, without changing your content." },
+      "q3": { "q": "Do my customers need to install an app?", "a": "No. The VibeCart link opens directly in the browser — no download, no account to create. Your customer taps the product, fills in their address, picks COD or card, and done." },
+      "q4": { "q": "Is COD supported?", "a": "Of course. Cash on delivery (COD) is the default payment method — we know that's how Morocco shops. Card payments are also available for those who prefer." },
+      "q5": { "q": "Do you deliver everywhere in Morocco?", "a": "We're integrated with major Moroccan carriers. Delivery available in all major cities. Payments are secured with phone verification of the customer before each order." }
+    },
+    "cta": {
+      "title": "Early sellers will have an advantage forever.",
+      "benefit1": "Priority access to the beta",
+      "benefit2": "0% commission for 3 months",
+      "benefit3": "Permanent \"Founding Seller\" badge",
+      "benefit4": "Direct access to the team",
+      "benefit5": "New features before everyone else",
+      "ctaButton": "Join the free beta",
+      "belowCta": "Just your Instagram and WhatsApp. 30 seconds. No credit card.",
+      "form": {
+        "instagram": "Your Instagram account",
+        "instagramPlaceholder": "@your_shop",
+        "whatsapp": "WhatsApp number",
+        "whatsappPlaceholder": "06...",
+        "city": "City",
+        "selectCity": "Select a city",
+        "cities": {
+          "casablanca": "Casablanca",
+          "marrakech": "Marrakech",
+          "rabat": "Rabat",
+          "tanger": "Tangier",
+          "agadir": "Agadir",
+          "other": "Other"
+        },
+        "submit": "Join the beta"
       },
       "success": {
-        "title": "Congrats\\!",
-        "subtitle": "Your shop is ready. Let's set it up!",
-        "goToDashboard": "Go to My Shop",
-        "share": "Share with friends"
+        "title": "Welcome!",
+        "subtitle": "You are founding seller #{number}.",
+        "waiting": "We'll contact you on WhatsApp when your spot is ready.",
+        "sharePrompt": "In the meantime, share VibeCart with a seller friend",
+        "shareWhatsApp": "Share on WhatsApp",
+        "copyLink": "Copy link"
       }
     },
     "footer": {
-      "madeIn": "Made with love in Morocco",
+      "madeIn": "Made in Morocco 🇲🇦",
       "tagline": "Video-native commerce",
-      "legal": "Legal",
       "privacy": "Privacy Policy",
       "terms": "Terms of Service"
     },
     "sticky": {
-      "cta": "Join the Beta",
+      "cta": "Join the beta",
       "spotsLeft": "{count} spots left"
     }
   },

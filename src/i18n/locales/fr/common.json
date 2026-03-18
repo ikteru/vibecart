@@ -103,97 +103,128 @@
   },
   "landing": {
     "hero": {
-      "title": "Ta boutique dans ta poche",
-      "subtitle": "Transforme tes reels en argent — gratuitement",
-      "cta": "Rejoins la beta — Gratuit",
-      "scrollHint": "Voir comment"
+      "title": "Tu vends sur Instagram? Tu mérites mieux que les DMs.",
+      "subtitle": "Tes vidéos deviennent une boutique. Tes clients commandent en un tap.",
+      "typing1": "Tes vidéos = ta boutique",
+      "typing2": "Commande en un tap",
+      "typing3": "Fini le chaos des DMs",
+      "cta": "Rejoindre la bêta gratuitement",
+      "socialProof": "+200 vendeurs marocains déjà inscrits · Lancement bientôt 🇲🇦"
     },
-    "waitlist": {
-      "progress": "{taken} / 50 places prises",
-      "spotsLeft": "{count} places restantes",
-      "beFirst": "Sois parmi les premiers",
-      "first50": "Les 50 premiers vendeurs — gratuit pour toujours"
+    "pain": {
+      "title": "Chaque jour, la même galère.",
+      "p1": { "title": "50 DMs qui disent \"Prix?\"", "desc": "Tu copies-colles la même réponse 50 fois par jour. À la main." },
+      "p2": { "title": "Les commandes dans un carnet", "desc": "Pas de suivi, pas d'historique. Tu perds des commandes. Tu oublies des tailles." },
+      "p3": { "title": "Les clients fantômes", "desc": "\"Oui je veux!\" en DM… puis plus rien. Tu relances, pas de réponse." },
+      "p4": { "title": "Ventes perdues pendant que tu dors", "desc": "Quelqu'un commente \"DM\" à 23h. Tu réponds à 9h. Trop tard." },
+      "p5": { "title": "Instagram + WhatsApp + carnet = chaos", "desc": "Tu gères ta boutique sur 3 apps. Rien n'est connecté." },
+      "p6": { "title": "\"Vous livrez à Agadir?\"", "desc": "La même question 20 fois par jour. Tu réponds manuellement." },
+      "p7": { "title": "Aucune idée de ce qui marche", "desc": "Quel Reel vend le plus? Quel produit convertit? Tu n'en sais rien." },
+      "p8": { "title": "Commandes COD refusées", "desc": "Tu envoies, le client refuse à la livraison. Tu paies les frais." }
+    },
+    "solution": {
+      "title": "Et si tout ça disparaissait?",
+      "cta": "Essayer VibeCart gratuitement",
+      "painLabel": "La galère",
+      "fixLabel": "Avec VibeCart",
+      "s1": { "pain": "50 DMs \"Prix?\" à gérer", "fix": "VibeBot répond automatiquement. En darija. 24h/24." },
+      "s2": { "pain": "Commandes dans un carnet", "fix": "Dashboard de commandes. Statut, paiement, livraison — tout au même endroit." },
+      "s3": { "pain": "Clients fantômes en DM", "fix": "Le client commande en 3 taps depuis la vidéo. Pas de DM nécessaire." },
+      "s4": { "pain": "Ventes perdues la nuit", "fix": "VibeBot vend pour toi pendant que tu dors." },
+      "s5": { "pain": "3 apps non connectées", "fix": "Une seule app: boutique + commandes + livraison + stats." },
+      "s6": { "pain": "\"Livraison à Agadir?\" x20", "fix": "Réponse automatique avec prix et délai. Par ville." },
+      "s7": { "pain": "Aucune analytics", "fix": "Tu sais quel Reel vend, quel produit convertit, à quelle heure." },
+      "s8": { "pain": "COD refusé, frais perdus", "fix": "Protection vendeur. Vérification client. Blacklist des refuseurs." }
     },
     "howItWorks": {
-      "title": "3 etapes. C'est tout.",
-      "step1": {
-        "title": "Connecte Instagram",
-        "desc": "Lie ton compte en un clic"
-      },
-      "step2": {
-        "title": "Partage ton lien",
-        "desc": "Envoie-le a tes clients sur WhatsApp"
-      },
-      "step3": {
-        "title": "Recois les commandes",
-        "desc": "Les commandes arrivent direct sur WhatsApp"
-      }
+      "title": "3 étapes. 60 secondes. Ta boutique est en ligne.",
+      "step1": { "title": "Connecte ton Instagram", "desc": "Tu te connectes avec ton compte Instagram. VibeCart importe tes produits." },
+      "step2": { "title": "Tes vidéos deviennent shoppables", "desc": "Chaque Reel, chaque vidéo = une vitrine. Tes clients tapent sur le produit et commandent." },
+      "step3": { "title": "Tu reçois les commandes", "desc": "Commandes, paiement, livraison, suivi — tout dans une app." }
     },
-    "transform": {
-      "title": "Ton Insta = Ta boutique",
-      "subtitle": "Ton contenu existant devient ton catalogue produits",
-      "before": "Ton Instagram",
-      "after": "Ta boutique",
-      "price": "Prix",
-      "order": "Commander"
+    "features": {
+      "title": "Ce qui change tout",
+      "f1": { "title": "Vidéos Shoppables", "desc": "Tes Reels Instagram = ta boutique. Le client voit, tape, commande. Sans quitter la vidéo." },
+      "f2": { "title": "Commande en 3 Taps", "desc": "Produit → adresse → COD ou carte → terminé. Moins de friction = plus de ventes." },
+      "f3": { "title": "\"Comment BUY\" → DM Auto", "desc": "Tes followers commentent \"BUY\" sur ton Reel. Ils reçoivent le lien automatiquement en DM." },
+      "f4": { "title": "Tout passe par WhatsApp", "desc": "Confirmation de commande, suivi de livraison, rappels — tout arrive sur WhatsApp." },
+      "f5": { "title": "Ton Dashboard Vendeur", "desc": "Combien tu vends. Quel produit marche. Quelle vidéo convertit. Des vrais chiffres, pas des likes." }
     },
-    "whatsappStory": {
-      "title": "Comment une commande se passe",
-      "customer": "Client",
-      "seller": "Toi",
-      "system": "VibeCart",
-      "msg1": "J'ai vu ce produit sur ton Insta, c'est dispo?",
-      "msg2": "Oui\\! Voila le lien de ma boutique:",
-      "msg3": "Commande\\! Paiement a la livraison svp",
-      "msg4": "Commande #1234 confirmee — Paiement a la livraison",
-      "msg5": "Merci\\! Ca arrive demain inshallah",
-      "typing": "ecrit..."
+    "beforeAfter": {
+      "title": "Avant / Après",
+      "before": "Avant VibeCart",
+      "after": "Avec VibeCart",
+      "pair1": { "pain": "50 DMs \"Prix?\" / jour", "fix": "Bot répond en darija" },
+      "pair2": { "pain": "Commandes dans un carnet", "fix": "Dashboard avec suivi" },
+      "pair3": { "pain": "Ventes perdues à 23h", "fix": "Bot vend H24" },
+      "pair4": { "pain": "Insta + WhatsApp + carnet", "fix": "Tout dans VibeCart" }
     },
-    "cod": {
-      "title": "Paye quand ca arrive",
-      "subtitle": "Pas de carte bancaire. Pas de prise de tete.",
-      "desc": "Tes clients paient en cash a la reception — comme d'habitude"
+    "socialProof": {
+      "waitlistCount": "+{count} vendeurs inscrits à la bêta",
+      "stat": "{percent}% des Marocains scrollent chaque semaine. Seulement {buyPercent}% achètent.",
+      "frictionTitle": "Le problème n'est pas la demande.",
+      "frictionDesc": "C'est la friction au checkout. VibeCart la remplace par 3 taps."
     },
-    "preview": {
-      "title": "Vois ta boutique",
-      "placeholder": "@ton_compte",
-      "shopUrl": "vibecart.ma/shop/",
-      "yourShop": "Boutique de",
-      "products": "Produits",
-      "followers": "Abonnes"
+    "roadmap": {
+      "title": "On ne fait que commencer.",
+      "badge": "Bientôt",
+      "r1": { "title": "VibeBot — Ton assistant IA", "desc": "Répond à tes DMs Instagram automatiquement. En darija. Envoie les liens produits." },
+      "r2": { "title": "Publication auto depuis Instagram", "desc": "Ajoute #VibeCart dans ton Reel, il apparaît automatiquement dans ta boutique." },
+      "r3": { "title": "Live Shopping", "desc": "Vends en direct. Tes viewers commandent pendant le live sans quitter le stream." },
+      "r4": { "title": "Avis clients avec photos", "desc": "Tes acheteurs laissent des avis avec des vraies photos. La confiance qui fait vendre." },
+      "r5": { "title": "Commandes groupées", "desc": "Tes clients partagent le lien sur WhatsApp, commandent ensemble, bénéficient d'une réduction." }
     },
-    "signup": {
-      "title": "Les 50 premiers — Gratuit pour toujours",
-      "subtitle": "Sois parmi les premiers et profite d'avantages exclusifs",
-      "instagramCta": "Rejoindre la beta avec Instagram",
-      "connectingInstagram": "Connexion a Instagram...",
-      "betaFull": "La beta est complete ! Inscris-toi sur la liste d'attente, on te previent des qu'il y a de la place.",
-      "benefits": {
-        "free": "0 MAD — Pour toujours",
-        "freeDesc": "Aucun frais cache",
-        "support": "Support direct",
-        "supportDesc": "Groupe WhatsApp avec l'equipe",
-        "features": "Fonctionnalites exclusives",
-        "featuresDesc": "Premier a tester les nouveautes",
-        "founding": "Membre fondateur",
-        "foundingDesc": "Ton nom sur la liste des fondateurs"
+    "faq": {
+      "title": "Questions fréquentes",
+      "q1": { "q": "C'est gratuit?", "a": "La bêta est 100% gratuite. Quand on lancera officiellement, les vendeurs fondateurs garderont des avantages exclusifs: 0% commission pendant 3 mois, badge fondateur permanent, et accès prioritaire aux nouvelles features." },
+      "q2": { "q": "Je dois abandonner Instagram?", "a": "Jamais! VibeCart fonctionne AVEC ton Instagram. Tes Reels restent sur Insta, ton audience reste là où elle est. VibeCart ajoute simplement le checkout et la gestion des commandes par-dessus, sans rien changer à ton contenu." },
+      "q3": { "q": "Mes clients doivent installer une app?", "a": "Non. Le lien VibeCart s'ouvre directement dans le navigateur — pas de téléchargement, pas de compte à créer. Ton client tape sur le produit, remplit son adresse, choisit COD ou carte, et c'est fait." },
+      "q4": { "q": "COD est supporté?", "a": "Bien sûr. Le paiement à la livraison (COD) est le mode par défaut — on sait que c'est comme ça que le Maroc achète. La carte bancaire est aussi disponible pour ceux qui préfèrent." },
+      "q5": { "q": "Vous livrez partout au Maroc?", "a": "On est intégrés avec les principaux transporteurs marocains. Livraison disponible dans toutes les grandes villes. Les paiements sont sécurisés avec vérification par téléphone du client avant chaque commande." }
+    },
+    "cta": {
+      "title": "Les premiers vendeurs auront un avantage pour toujours.",
+      "benefit1": "Accès prioritaire à la bêta",
+      "benefit2": "0% de commission pendant 3 mois",
+      "benefit3": "Badge \"Vendeur Fondateur\" permanent",
+      "benefit4": "Accès direct à l'équipe",
+      "benefit5": "Les nouvelles features en avant-première",
+      "ctaButton": "Rejoindre la bêta gratuitement",
+      "belowCta": "Juste ton Instagram et ton WhatsApp. 30 secondes. Pas de carte bancaire.",
+      "form": {
+        "instagram": "Ton compte Instagram",
+        "instagramPlaceholder": "@ta_boutique",
+        "whatsapp": "Numéro WhatsApp",
+        "whatsappPlaceholder": "06...",
+        "city": "Ville",
+        "selectCity": "Sélectionner une ville",
+        "cities": {
+          "casablanca": "Casablanca",
+          "marrakech": "Marrakech",
+          "rabat": "Rabat",
+          "tanger": "Tanger",
+          "agadir": "Agadir",
+          "other": "Autre"
+        },
+        "submit": "Rejoindre la bêta"
       },
       "success": {
-        "title": "Felicitations\\!",
-        "subtitle": "Ta boutique est prete. On la configure !",
-        "goToDashboard": "Aller a ma boutique",
-        "share": "Partage avec tes amis"
+        "title": "Bienvenue!",
+        "subtitle": "Tu es le vendeur fondateur #{number}.",
+        "waiting": "On te contactera sur WhatsApp quand ta place sera prête.",
+        "sharePrompt": "En attendant, partage VibeCart avec un(e) ami(e) vendeur(se)",
+        "shareWhatsApp": "Partager sur WhatsApp",
+        "copyLink": "Copier le lien"
       }
     },
     "footer": {
-      "madeIn": "Fait avec amour au Maroc",
-      "tagline": "Le commerce par video",
-      "legal": "Legal",
-      "privacy": "Politique de confidentialite",
+      "madeIn": "Fait au Maroc 🇲🇦",
+      "tagline": "Le commerce par vidéo",
+      "privacy": "Politique de confidentialité",
       "terms": "Conditions d'utilisation"
     },
     "sticky": {
-      "cta": "Rejoins la beta",
+      "cta": "Rejoindre la bêta",
       "spotsLeft": "{count} places restantes"
     }
   },

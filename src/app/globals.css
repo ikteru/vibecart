@@ -252,12 +252,12 @@
     animation: glowBreathe 4s ease-in-out infinite;
   }
 
-  .animate-bubble {
-    animation: bubbleFloat 12s linear infinite;
-  }
-
   .animate-pulse-soft {
     animation: pulseSoft 2s ease-in-out infinite;
+  }
+
+  .animate-card-rain {
+    animation: cardRain 15s linear infinite;
   }
 
   @keyframes float {
@@ -278,20 +278,12 @@
     }
   }
 
-  @keyframes bubbleFloat {
+  @keyframes cardRain {
     0% {
-      transform: translateY(100vh) translateX(0) scale(0.8);
-      opacity: 0;
-    }
-    10% {
-      opacity: 0.15;
-    }
-    90% {
-      opacity: 0.15;
+      transform: translateY(-100px) rotate(var(--tw-rotate, 0deg));
     }
     100% {
-      transform: translateY(-20vh) translateX(30px) scale(1);
-      opacity: 0;
+      transform: translateY(110vh) rotate(var(--tw-rotate, 0deg));
     }
   }
 
@@ -331,8 +323,8 @@
     .animate-float,
     .animate-float-delayed,
     .animate-glow-breathe,
-    .animate-bubble,
-    .animate-pulse-soft {
+    .animate-pulse-soft,
+    .animate-card-rain {
       animation: none;
     }
   }

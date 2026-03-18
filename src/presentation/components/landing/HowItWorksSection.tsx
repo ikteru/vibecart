@@ -2,13 +2,11 @@
 
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Instagram, Link2, MessageCircle } from 'lucide-react';
+import { Instagram, Play, ShoppingBag } from 'lucide-react';
 
 const container = {
   hidden: {},
-  show: {
-    transition: { staggerChildren: 0.25 },
-  },
+  show: { transition: { staggerChildren: 0.25 } },
 };
 
 const item = {
@@ -24,27 +22,21 @@ export function HowItWorksSection() {
       icon: Instagram,
       gradient: 'from-purple-500 to-pink-500',
       ring: 'ring-purple-500/20',
-      title: t('step1.title'),
-      desc: t('step1.desc'),
     },
     {
-      icon: Link2,
+      icon: Play,
       gradient: 'from-primary-500 to-primary-400',
       ring: 'ring-primary-500/20',
-      title: t('step2.title'),
-      desc: t('step2.desc'),
     },
     {
-      icon: MessageCircle,
+      icon: ShoppingBag,
       gradient: 'from-green-500 to-green-400',
       ring: 'ring-green-500/20',
-      title: t('step3.title'),
-      desc: t('step3.desc'),
     },
   ];
 
   return (
-    <section className="px-4 py-20">
+    <section className="bg-zinc-900/30 px-4 py-20">
       <div className="mx-auto max-w-4xl">
         <motion.h2
           className="mb-16 text-center text-3xl font-extrabold text-white sm:text-4xl"
@@ -83,8 +75,8 @@ export function HowItWorksSection() {
                 <div className="absolute start-[60%] top-10 hidden h-[2px] w-[calc(100%-20%)] bg-gradient-to-r from-zinc-700 to-transparent md:block" />
               )}
 
-              <h3 className="mb-2 text-xl font-bold text-white">{step.title}</h3>
-              <p className="text-sm leading-relaxed text-zinc-400">{step.desc}</p>
+              <h3 className="mb-2 text-xl font-bold text-white">{t(`step${i + 1}.title`)}</h3>
+              <p className="text-sm leading-relaxed text-zinc-400">{t(`step${i + 1}.desc`)}</p>
             </motion.div>
           ))}
         </motion.div>
