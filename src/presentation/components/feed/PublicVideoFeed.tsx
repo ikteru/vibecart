@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
 import {
   Volume2,
   VolumeX,
@@ -73,6 +73,8 @@ export function PublicVideoFeed({
   initialCursor,
 }: PublicVideoFeedProps) {
   const t = useTranslations('publicFeed');
+  const tSwipe = useTranslations('swipeButton');
+  const locale = useLocale();
   const containerRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
@@ -85,9 +87,32 @@ export function PublicVideoFeed({
     products[0]?.id || ''
   );
   const [isMuted, setIsMuted] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [checkoutProduct, setCheckoutProduct] = useState<FeedProductDTO | null>(null);
   const [checkoutShopConfig, setCheckoutShopConfig] = useState<ShopConfig | null>(null);
   const [isLoadingConfig, setIsLoadingConfig] = useState(false);
+
+  // Active product for the fixed SwipeButton
+  const activeProduct = useMemo(
+    () => products.find((p) => p.id === activeVideoId) || products[0],
+    [products, activeVideoId]
+  );
+
+  // Scroll detection — debounced
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      setIsScrolling(true);
+      if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
+      scrollTimerRef.current = setTimeout(() => setIsScrolling(false), 300);
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Intersection Observer for video activation
   useEffect(() => {
@@ -126,12 +151,13 @@ export function PublicVideoFeed({
     return () => observer.disconnect();
   }, [hasMore, isLoading, loadMore]);
 
-  const handleBuy = useCallback(async (product: FeedProductDTO) => {
-    setCheckoutProduct(product);
+  const handleBuy = useCallback(async () => {
+    if (!activeProduct) return;
+    setCheckoutProduct(activeProduct);
     setIsLoadingConfig(true);
 
     try {
-      const res = await fetch(`/api/shop/${product.sellerId}/config`);
+      const res = await fetch(`/api/shop/${activeProduct.sellerId}/config`);
       const data = await res.json();
       setCheckoutShopConfig(data.success ? data.config : {});
     } catch {
@@ -139,7 +165,7 @@ export function PublicVideoFeed({
     } finally {
       setIsLoadingConfig(false);
     }
-  }, []);
+  }, [activeProduct]);
 
   const handleCloseCheckout = useCallback(() => {
     setCheckoutProduct(null);
@@ -158,13 +184,19 @@ export function PublicVideoFeed({
     );
   }
 
+  // Price display for fixed SwipeButton
+  const displayPrice = activeProduct
+    ? activeProduct.discountPrice
+      ? Money.create(activeProduct.discountPrice.amount, activeProduct.discountPrice.currency as Currency).format(locale)
+      : Money.create(activeProduct.price.amount, activeProduct.price.currency as Currency).format(locale)
+    : '';
+  const activeStock = activeProduct?.stock ?? 0;
+
   return (
     <div
       ref={containerRef}
       className="h-[100dvh] w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar bg-black relative"
     >
-      {/* No header — fully immersive */}
-
       {/* Video Cards */}
       {products.map((product) => (
         <PublicVideoCard
@@ -173,7 +205,6 @@ export function PublicVideoFeed({
           isActive={activeVideoId === product.id}
           isMuted={isMuted}
           onMuteToggle={() => setIsMuted(!isMuted)}
-          onBuy={() => handleBuy(product)}
         />
       ))}
 
@@ -186,12 +217,26 @@ export function PublicVideoFeed({
         </div>
       )}
 
-      {!hasMore && products.length > 0 && (
-        <div className="text-center py-8">
-          <p className="text-zinc-600 text-sm">{t('noMoreProducts')}</p>
+      {/* Fixed bottom gradient + SwipeButton */}
+      <div className="fixed bottom-0 inset-x-0 z-30 pointer-events-none">
+        <div className="bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-12 pb-6 px-4 pointer-events-auto">
+        <SwipeButton
+          onConfirm={handleBuy}
+          disabled={activeStock === 0}
+          isBlocked={isScrolling}
+          label={
+            activeStock === 0
+              ? t('outOfStock')
+              : `${displayPrice} · ${t('slideToShop')}`
+          }
+          midLabel={tSwipe('keepGoing')}
+          nearLabel={tSwipe('almostThere')}
+          icon={<ShoppingBag size={20} className="text-white fill-white/20" />}
+        />
         </div>
-      )}
+      </div>
 
+      {/* Checkout Drawer */}
       {checkoutProduct && checkoutShopConfig && !isLoadingConfig && (
         <CheckoutDrawer
           product={feedDtoToProduct(checkoutProduct)}
@@ -216,7 +261,6 @@ interface PublicVideoCardProps {
   isActive: boolean;
   isMuted: boolean;
   onMuteToggle: () => void;
-  onBuy: () => void;
 }
 
 function PublicVideoCard({
@@ -224,30 +268,20 @@ function PublicVideoCard({
   isActive,
   isMuted,
   onMuteToggle,
-  onBuy,
 }: PublicVideoCardProps) {
-  const t = useTranslations('publicFeed');
   const tFeed = useTranslations('customer.feed');
-  const price = product.price;
-  const discountPrice = product.discountPrice;
   const stock = product.stock;
-  const displayPrice = discountPrice
-    ? `${discountPrice.amount} ${discountPrice.currency}`
-    : `${price.amount} ${price.currency}`;
 
   const [isPaused, setIsPaused] = useState(false);
   const [showPlayPause, setShowPlayPause] = useState(false);
   const fadeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Reset pause state when card becomes inactive (scrolled away)
   useEffect(() => {
     if (!isActive) setIsPaused(false);
   }, [isActive]);
 
   const handleVideoTap = useCallback(() => {
     setIsPaused((prev) => !prev);
-
-    // Show the play/pause indicator briefly
     setShowPlayPause(true);
     if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
     fadeTimerRef.current = setTimeout(() => setShowPlayPause(false), 800);
@@ -274,19 +308,17 @@ function PublicVideoCard({
         />
       </div>
 
-      {/* Tap zone for play/pause — covers center, avoids bottom overlay */}
+      {/* Tap zone for play/pause */}
       <button
         onClick={handleVideoTap}
-        className="absolute inset-0 bottom-36 z-10"
+        className="absolute inset-0 bottom-28 z-10"
         aria-label={isPaused ? 'Play' : 'Pause'}
       />
 
-      {/* Play/Pause indicator — center of screen, animated */}
+      {/* Play/Pause indicator */}
       {showPlayPause && (
         <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-          <div
-            className="w-16 h-16 rounded-full bg-black/25 backdrop-blur-sm flex items-center justify-center animate-[pulse-fade_0.8s_ease-out_forwards]"
-          >
+          <div className="w-16 h-16 rounded-full bg-black/25 backdrop-blur-sm flex items-center justify-center animate-[pulse-fade_0.8s_ease-out_forwards]">
             {isPaused ? (
               <Play size={28} className="text-white/80 fill-white/80 ms-1" />
             ) : (
@@ -296,7 +328,7 @@ function PublicVideoCard({
         </div>
       )}
 
-      {/* Mute button — subtle, top-end corner */}
+      {/* Mute button */}
       <button
         onClick={onMuteToggle}
         className="absolute top-4 end-4 z-20 p-2 bg-black/20 backdrop-blur-sm rounded-full text-white/60"
@@ -304,37 +336,21 @@ function PublicVideoCard({
         {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
       </button>
 
-      {/* Bottom overlay — compact, stays in bottom ~15% */}
-      <div className="absolute bottom-0 inset-x-0 z-10">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-
-        <div className="relative px-4 pb-6 pt-10">
-          {/* Product title */}
-          <h2 className="text-sm font-medium text-white drop-shadow-lg line-clamp-1 mb-3">
+      {/* Bottom info — compact, above the fixed SwipeButton */}
+      <div className="absolute bottom-20 inset-x-0 z-10">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        <div className="relative px-4 pb-2 pt-8">
+          <h2 className="text-sm font-medium text-white drop-shadow-lg line-clamp-1">
             {product.title}
           </h2>
-
-          {/* Stock badge — small, only when needed */}
           {stock < 10 && stock > 0 && (
-            <div className="flex gap-2 mb-3">
+            <div className="flex gap-2 mt-2">
               <div className="flex items-center gap-1 bg-red-500/80 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
                 <AlertCircle size={10} />
                 <span>{tFeed('onlyLeft', { count: stock })}</span>
               </div>
             </div>
           )}
-
-          {/* Swipe to Buy — price embedded in label */}
-          <SwipeButton
-            onConfirm={onBuy}
-            disabled={stock === 0}
-            label={
-              stock === 0
-                ? t('outOfStock')
-                : `${displayPrice} · ${t('slideToShop')}`
-            }
-            icon={<ShoppingBag size={20} className="text-white fill-white/20" />}
-          />
         </div>
       </div>
     </div>

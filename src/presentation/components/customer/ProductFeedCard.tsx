@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
+import { useLocale } from 'next-intl';
 import { Heart } from 'lucide-react';
 import { ProductVideo } from '@/presentation/components/video/ProductVideo';
 import type { Product } from '@/domain/entities/Product';
@@ -18,6 +19,7 @@ export function ProductFeedCard({
   onToggleSaved,
   onTap,
 }: ProductFeedCardProps) {
+  const locale = useLocale();
   const cardRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -104,10 +106,10 @@ export function ProductFeedCard({
             {hasDiscount ? (
               <>
                 <span className="text-emerald-400 font-bold text-base">
-                  {effectivePrice.format()}
+                  {effectivePrice.format(locale)}
                 </span>
                 <span className="text-zinc-400 line-through text-sm">
-                  {product.price.format()}
+                  {product.price.format(locale)}
                 </span>
                 <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-xs font-bold">
                   -{discountPercent}%
@@ -115,7 +117,7 @@ export function ProductFeedCard({
               </>
             ) : (
               <span className="text-white font-bold text-base">
-                {product.price.format()}
+                {product.price.format(locale)}
               </span>
             )}
           </div>

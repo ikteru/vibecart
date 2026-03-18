@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
 import {
   Volume2,
   VolumeX,
@@ -65,12 +65,23 @@ export function VideoFeed({
   shopConfig,
   onOrderSuccess,
 }: VideoFeedProps) {
+  const t = useTranslations('publicFeed');
+  const tSwipe = useTranslations('swipeButton');
+  const tFeed = useTranslations('customer.feed');
+  const locale = useLocale();
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeVideoId, setActiveVideoId] = useState<string>(
     initialVideoId || products[0]?.id
   );
   const [isMuted, setIsMuted] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [checkoutProduct, setCheckoutProduct] = useState<Product | null>(null);
+
+  const activeProduct = useMemo(
+    () => products.find((p) => p.id === activeVideoId) || products[0],
+    [products, activeVideoId]
+  );
 
   // Scroll to initial video on mount
   useEffect(() => {
@@ -83,6 +94,21 @@ export function VideoFeed({
       }, 50);
     }
   }, [initialVideoId]);
+
+  // Scroll detection
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      setIsScrolling(true);
+      if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
+      scrollTimerRef.current = setTimeout(() => setIsScrolling(false), 300);
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Intersection Observer for video activation
   useEffect(() => {
@@ -104,6 +130,18 @@ export function VideoFeed({
     return () => observer.disconnect();
   }, [products]);
 
+  const handleBuy = useCallback(() => {
+    if (activeProduct) setCheckoutProduct(activeProduct);
+  }, [activeProduct]);
+
+  // Price display for fixed SwipeButton
+  const displayPrice = activeProduct
+    ? activeProduct.discountPrice
+      ? activeProduct.discountPrice.format(locale)
+      : activeProduct.price.format(locale)
+    : '';
+  const activeStock = activeProduct?.stock ?? 0;
+
   return (
     <div
       ref={containerRef}
@@ -117,10 +155,28 @@ export function VideoFeed({
           isActive={activeVideoId === product.id}
           isMuted={isMuted}
           onMuteToggle={() => setIsMuted(!isMuted)}
-          onBuy={() => setCheckoutProduct(product)}
           onClose={onBack}
         />
       ))}
+
+      {/* Fixed bottom gradient + SwipeButton */}
+      <div className="fixed bottom-0 inset-x-0 z-30 pointer-events-none">
+        <div className="bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-12 pb-6 px-4 pointer-events-auto">
+        <SwipeButton
+          onConfirm={handleBuy}
+          disabled={activeStock === 0}
+          isBlocked={isScrolling}
+          label={
+            activeStock === 0
+              ? t('outOfStock')
+              : `${displayPrice} · ${t('slideToShop')}`
+          }
+          midLabel={tSwipe('keepGoing')}
+          nearLabel={tSwipe('almostThere')}
+          icon={<ShoppingBag size={20} className="text-white fill-white/20" />}
+        />
+        </div>
+      </div>
 
       {/* Checkout Drawer */}
       {checkoutProduct && (
@@ -142,7 +198,6 @@ interface MinimalVideoCardProps {
   isActive: boolean;
   isMuted: boolean;
   onMuteToggle: () => void;
-  onBuy: () => void;
   onClose: () => void;
 }
 
@@ -151,17 +206,10 @@ function MinimalVideoCard({
   isActive,
   isMuted,
   onMuteToggle,
-  onBuy,
   onClose,
 }: MinimalVideoCardProps) {
-  const t = useTranslations('publicFeed');
   const tFeed = useTranslations('customer.feed');
-  const price = product.price;
-  const discountPrice = product.discountPrice;
   const stock = product.stock;
-  const displayPrice = discountPrice
-    ? `${discountPrice.amount} ${discountPrice.currency}`
-    : `${price.amount} ${price.currency}`;
 
   const [isPaused, setIsPaused] = useState(false);
   const [showPlayPause, setShowPlayPause] = useState(false);
@@ -199,10 +247,10 @@ function MinimalVideoCard({
         />
       </div>
 
-      {/* Tap zone for play/pause */}
+      {/* Tap zone */}
       <button
         onClick={handleVideoTap}
-        className="absolute inset-0 bottom-36 z-10"
+        className="absolute inset-0 bottom-28 z-10"
         aria-label={isPaused ? 'Play' : 'Pause'}
       />
 
@@ -219,7 +267,7 @@ function MinimalVideoCard({
         </div>
       )}
 
-      {/* Close button — top start */}
+      {/* Close button */}
       <button
         onClick={onClose}
         className="absolute top-4 start-4 z-20 p-2 bg-black/20 backdrop-blur-sm rounded-full text-white/60"
@@ -227,7 +275,7 @@ function MinimalVideoCard({
         <X size={16} />
       </button>
 
-      {/* Mute button — top end */}
+      {/* Mute button */}
       <button
         onClick={onMuteToggle}
         className="absolute top-4 end-4 z-20 p-2 bg-black/20 backdrop-blur-sm rounded-full text-white/60"
@@ -235,37 +283,21 @@ function MinimalVideoCard({
         {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
       </button>
 
-      {/* Bottom overlay — compact */}
-      <div className="absolute bottom-0 inset-x-0 z-10">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-
-        <div className="relative px-4 pb-6 pt-10">
-          {/* Product title */}
-          <h2 className="text-sm font-medium text-white drop-shadow-lg line-clamp-1 mb-3">
+      {/* Bottom info — above fixed SwipeButton */}
+      <div className="absolute bottom-20 inset-x-0 z-10">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        <div className="relative px-4 pb-2 pt-8">
+          <h2 className="text-sm font-medium text-white drop-shadow-lg line-clamp-1">
             {product.title}
           </h2>
-
-          {/* Stock badge */}
           {stock < 10 && stock > 0 && (
-            <div className="flex gap-2 mb-3">
+            <div className="flex gap-2 mt-2">
               <div className="flex items-center gap-1 bg-red-500/80 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
                 <AlertCircle size={10} />
                 <span>{tFeed('onlyLeft', { count: stock })}</span>
               </div>
             </div>
           )}
-
-          {/* Swipe to Buy with price */}
-          <SwipeButton
-            onConfirm={onBuy}
-            disabled={stock === 0}
-            label={
-              stock === 0
-                ? t('outOfStock')
-                : `${displayPrice} · ${t('slideToShop')}`
-            }
-            icon={<ShoppingBag size={20} className="text-white fill-white/20" />}
-          />
         </div>
       </div>
     </div>

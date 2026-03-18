@@ -1500,6 +1500,11 @@
     }
   },
   "customer": {
+    "shopNotFound": {
+      "title": "الحانوت ما كاينش",
+      "description": "هاد الحانوت ما كاينش ولا يمكن تبدل. شوف اللينك وعاود حاول.",
+      "backHome": "تصفح الحوانت"
+    },
     "nav": {
       "feed": "الفيد",
       "saved": "المحفوظات",
@@ -1515,7 +1520,9 @@
       "noProductsHint": "هاد الحانوت مازال ما زاد حتى منتوج",
       "onlyLeft": "غير {count} بقاو",
       "freeShipping": "التوصيل بالمجان",
-      "pickupAvailable": "الاستلام من المحل متوفر"
+      "pickupAvailable": "الاستلام من المحل متوفر",
+      "readMore": "المزيد",
+      "showLess": "أقل"
     },
     "saved": {
       "title": "المنتجات المحفوظة",
@@ -1599,6 +1606,10 @@
     "dashboard": "لوحة التحكم",
     "slideToShop": "سحب للشراء",
     "outOfStock": "نفذ المخزون"
+  },
+  "swipeButton": {
+    "keepGoing": "كمّل...",
+    "almostThere": "قريب توصل!"
   },
   "sellerProfile": {
     "editProfile": "تعديل البروفايل",

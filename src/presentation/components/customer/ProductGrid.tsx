@@ -27,7 +27,7 @@ export function ProductGrid({ products, onSelectProduct }: ProductGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-3 gap-px">
+    <div className="grid grid-cols-3 gap-px bg-zinc-900">
       {products.map((product) => (
         <button
           key={product.id}

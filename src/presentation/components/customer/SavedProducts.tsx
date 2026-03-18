@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import { Money, type Currency } from '@/domain/value-objects/Money';
 import { Heart, Trash2 } from 'lucide-react';
 import type { SavedProduct } from '@/presentation/hooks/useSaved';
 
@@ -13,6 +14,7 @@ interface SavedProductsProps {
 
 export function SavedProducts({ saved, onRemove, onTap }: SavedProductsProps) {
   const t = useTranslations('customer.saved');
+  const locale = useLocale();
   const [editMode, setEditMode] = useState(false);
 
   if (saved.length === 0) {
@@ -75,15 +77,15 @@ export function SavedProducts({ saved, onRemove, onTap }: SavedProductsProps) {
                 {item.discountPrice ? (
                   <>
                     <span className="text-emerald-400 font-bold text-sm">
-                      {(item.discountPrice / 100).toFixed(0)} {item.currency}
+                      {Money.fromCents(item.discountPrice, (item.currency || 'MAD') as Currency).format(locale)}
                     </span>
                     <span className="text-zinc-500 line-through text-xs">
-                      {(item.price / 100).toFixed(0)}
+                      {Money.fromCents(item.price, (item.currency || 'MAD') as Currency).formatAmount(locale)}
                     </span>
                   </>
                 ) : (
                   <span className="text-white font-bold text-sm">
-                    {(item.price / 100).toFixed(0)} {item.currency}
+                    {Money.fromCents(item.price, (item.currency || 'MAD') as Currency).format(locale)}
                   </span>
                 )}
               </div>

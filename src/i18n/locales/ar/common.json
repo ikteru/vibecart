@@ -1483,6 +1483,11 @@
     }
   },
   "customer": {
+    "shopNotFound": {
+      "title": "المتجر غير موجود",
+      "description": "هذا المتجر غير موجود أو ربما تم نقله. تحقق من الرابط وحاول مرة أخرى.",
+      "backHome": "تصفح المتاجر"
+    },
     "nav": {
       "feed": "الخلاصة",
       "saved": "المحفوظات",
@@ -1498,7 +1503,9 @@
       "noProductsHint": "هذا المتجر لم يضف أي منتجات بعد",
       "onlyLeft": "متبقي {count} فقط",
       "freeShipping": "شحن مجاني",
-      "pickupAvailable": "الاستلام من المتجر متاح"
+      "pickupAvailable": "الاستلام من المتجر متاح",
+      "readMore": "المزيد",
+      "showLess": "أقل"
     },
     "saved": {
       "title": "المنتجات المحفوظة",
@@ -1582,6 +1589,10 @@
     "dashboard": "لوحة التحكم",
     "slideToShop": "اسحب للشراء",
     "outOfStock": "نفذ المخزون"
+  },
+  "swipeButton": {
+    "keepGoing": "استمر...",
+    "almostThere": "اقتربت!"
   },
   "sellerProfile": {
     "editProfile": "تعديل الملف الشخصي",

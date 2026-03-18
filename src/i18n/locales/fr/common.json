@@ -1483,6 +1483,11 @@
     }
   },
   "customer": {
+    "shopNotFound": {
+      "title": "Boutique introuvable",
+      "description": "Cette boutique n'existe pas ou a peut-être été déplacée. Vérifiez le lien et réessayez.",
+      "backHome": "Parcourir les boutiques"
+    },
     "nav": {
       "feed": "Fil",
       "saved": "Favoris",
@@ -1498,7 +1503,9 @@
       "noProductsHint": "Cette boutique n'a pas encore ajouté de produits",
       "onlyLeft": "Plus que {count} en stock",
       "freeShipping": "Livraison gratuite",
-      "pickupAvailable": "Retrait en magasin disponible"
+      "pickupAvailable": "Retrait en magasin disponible",
+      "readMore": "plus",
+      "showLess": "moins"
     },
     "saved": {
       "title": "Produits sauvegardés",
@@ -1582,6 +1589,10 @@
     "dashboard": "Tableau de bord",
     "slideToShop": "Glisser pour acheter",
     "outOfStock": "Rupture de stock"
+  },
+  "swipeButton": {
+    "keepGoing": "Continuez...",
+    "almostThere": "Presque !"
   },
   "sellerProfile": {
     "editProfile": "Modifier le profil",

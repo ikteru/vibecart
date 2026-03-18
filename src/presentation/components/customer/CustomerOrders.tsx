@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import { Money, type Currency, isValidCurrency } from '@/domain/value-objects/Money';
 import {
   ClipboardList,
   Package,
@@ -42,6 +43,8 @@ function formatDate(iso: string): string {
 export function CustomerOrders({ localOrders, shopHandle, locale }: CustomerOrdersProps) {
   const t = useTranslations('customer');
   const session = useCustomerSession();
+  const formatPrice = (amount: number, currency: string) =>
+    Money.create(amount, isValidCurrency(currency) ? currency : 'MAD').format(locale);
   const [serverOrders, setServerOrders] = useState<LocalOrder[]>([]);
   const [isFetching, setIsFetching] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -210,7 +213,7 @@ export function CustomerOrders({ localOrders, shopHandle, locale }: CustomerOrde
                     </span>
                     <span>·</span>
                     <span className="text-white font-medium">
-                      {order.total} {order.currency}
+                      {formatPrice(order.total, order.currency)}
                     </span>
                     <span>·</span>
                     <span>{formatDate(order.createdAt)}</span>
@@ -287,7 +290,7 @@ export function CustomerOrders({ localOrders, shopHandle, locale }: CustomerOrde
                           </div>
                           <div className="text-end flex-shrink-0">
                             <p className="text-white text-sm font-medium">
-                              {item.price * item.quantity} {order.currency}
+                              {formatPrice(item.price * item.quantity, order.currency)}
                             </p>
                             <p className="text-zinc-500 text-xs">×{item.quantity}</p>
                           </div>
@@ -298,7 +301,7 @@ export function CustomerOrders({ localOrders, shopHandle, locale }: CustomerOrde
                     <div className="mt-3 pt-3 border-t border-zinc-800 flex items-center justify-between">
                       <span className="text-zinc-400 text-sm">Total</span>
                       <span className="text-white font-bold">
-                        {order.total} {order.currency}
+                        {formatPrice(order.total, order.currency)}
                       </span>
                     </div>
                   </div>

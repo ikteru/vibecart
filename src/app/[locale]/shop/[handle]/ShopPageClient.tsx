@@ -67,6 +67,7 @@ export function ShopPageClient({ seller, products: productDTOs }: ShopPageClient
   const [activeTab, setActiveTab] = useState<CustomerTab>('feed');
   const [showVideoFeed, setShowVideoFeed] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [bioExpanded, setBioExpanded] = useState(false);
 
   // Hooks for local customer data
   const saved = useSaved(seller.handle);
@@ -242,20 +243,43 @@ export function ShopPageClient({ seller, products: productDTOs }: ShopPageClient
 
   // Tabbed customer experience
   return (
-    <div className="h-screen bg-black">
-      <div className="h-full overflow-y-auto no-scrollbar">
+    <div className="h-screen bg-zinc-900">
+      <div className="h-full overflow-y-auto no-scrollbar bg-black">
         {/* Compact profile header */}
-        <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-800 flex items-center justify-center border border-zinc-600 shrink-0">
-            <span className="text-white font-bold text-xl">
-              {seller.shopName.charAt(0).toUpperCase()}
-            </span>
-          </div>
-          <div>
+        <div className="flex items-center gap-3 px-4 pt-4 pb-1">
+          {seller.shopConfig?.instagram?.profilePictureUrl ? (
+            <img
+              src={seller.shopConfig.instagram.profilePictureUrl}
+              alt={seller.shopName}
+              className="w-14 h-14 rounded-full object-cover border border-zinc-600 shrink-0"
+            />
+          ) : (
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-800 flex items-center justify-center border border-zinc-600 shrink-0">
+              <span className="text-white font-bold text-xl">
+                {seller.shopName.charAt(0).toUpperCase()}
+              </span>
+            </div>
+          )}
+          <div className="min-w-0">
             <h1 className="text-white font-bold text-base leading-tight">{seller.shopName}</h1>
-            <p className="text-zinc-500 text-sm">@{seller.handle}</p>
+            <p className="text-zinc-500 text-sm" dir="ltr">
+              {'@'}{seller.shopConfig?.instagram?.handle || seller.handle}
+            </p>
           </div>
         </div>
+        {seller.shopConfig?.instagram?.biography && (
+          <div className="px-4 pb-2">
+            <p className={`text-zinc-400 text-xs leading-relaxed ${bioExpanded ? '' : 'line-clamp-2'}`}>
+              {seller.shopConfig.instagram.biography}
+            </p>
+            <button
+              onClick={() => setBioExpanded(!bioExpanded)}
+              className="text-zinc-500 text-xs font-medium mt-0.5"
+            >
+              {bioExpanded ? t('customer.feed.showLess') : t('customer.feed.readMore')}
+            </button>
+          </div>
+        )}
 
         {/* Story circles */}
         {storyGroups.length > 0 && (

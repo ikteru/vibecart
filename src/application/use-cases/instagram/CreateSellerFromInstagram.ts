@@ -15,6 +15,7 @@ interface InstagramProfileData {
   id: string;
   followers_count?: number;
   profile_picture_url?: string;
+  biography?: string;
 }
 
 interface CreateSellerFromInstagramInput {
@@ -40,7 +41,7 @@ export class CreateSellerFromInstagram {
         return { success: true, seller: existing };
       }
 
-      const { username, id, followers_count, profile_picture_url } = input.instagramProfile;
+      const { username, id, followers_count, profile_picture_url, biography } = input.instagramProfile;
 
       // Find available handle (username, then username_1, username_2, etc.)
       const handle = await this.findAvailableHandle(username);
@@ -53,6 +54,7 @@ export class CreateSellerFromInstagram {
         tokenExpiresAt: input.tokenExpiresAt,
         followersCount: followers_count,
         profilePictureUrl: profile_picture_url,
+        biography,
       };
 
       // Create seller with no WhatsApp (will be prompted later)

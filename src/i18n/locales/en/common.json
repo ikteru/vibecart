@@ -1500,6 +1500,11 @@
     }
   },
   "customer": {
+    "shopNotFound": {
+      "title": "Shop not found",
+      "description": "This shop doesn't exist or may have moved. Check the link and try again.",
+      "backHome": "Browse shops"
+    },
     "nav": {
       "feed": "Feed",
       "saved": "Saved",
@@ -1515,7 +1520,9 @@
       "noProductsHint": "This shop hasn't added any products yet",
       "onlyLeft": "Only {count} left",
       "freeShipping": "Free shipping",
-      "pickupAvailable": "Pickup available"
+      "pickupAvailable": "Pickup available",
+      "readMore": "more",
+      "showLess": "less"
     },
     "saved": {
       "title": "Saved Products",
@@ -1599,6 +1606,10 @@
     "dashboard": "Dashboard",
     "slideToShop": "Slide to Shop",
     "outOfStock": "Out of Stock"
+  },
+  "swipeButton": {
+    "keepGoing": "Keep going...",
+    "almostThere": "Almost there!"
   },
   "sellerProfile": {
     "editProfile": "Edit Profile",

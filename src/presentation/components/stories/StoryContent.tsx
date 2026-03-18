@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Star } from 'lucide-react';
 import type {
   StoryItem,
@@ -130,6 +130,7 @@ function ChatReviewContent({ data }: { data: ChatReviewStoryData }) {
 
 function ProductContent({ data }: { data: ProductStoryData }) {
   const t = useTranslations('customer.stories');
+  const locale = useLocale();
   const { product } = data;
   const price = product.price;
   const discountPrice = product.discountPrice;
@@ -159,15 +160,15 @@ function ProductContent({ data }: { data: ProductStoryData }) {
           {discountPrice ? (
             <>
               <span className="text-emerald-400 text-2xl font-bold">
-                {discountPrice.amount} {discountPrice.currency}
+                {discountPrice.format(locale)}
               </span>
               <span className="text-zinc-500 line-through text-sm">
-                {price.amount} {price.currency}
+                {price.format(locale)}
               </span>
             </>
           ) : (
             <span className="text-white text-2xl font-bold">
-              {price.amount} {price.currency}
+              {price.format(locale)}
             </span>
           )}
         </div>

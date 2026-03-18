@@ -12,11 +12,19 @@ export function usePublicFeed({ initialProducts, initialCursor }: UsePublicFeedO
   const [products, setProducts] = useState<FeedProductDTO[]>(initialProducts);
   const [cursor, setCursor] = useState<string | null>(initialCursor);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(initialCursor !== null);
   const loadingRef = useRef(false);
+  // Keep initial products for looping
+  const initialProductsRef = useRef(initialProducts);
 
   const loadMore = useCallback(async () => {
-    if (!hasMore || loadingRef.current || !cursor) return;
+    if (loadingRef.current) return;
+
+    // If no cursor (exhausted API), loop by appending initial products again
+    if (!cursor) {
+      setProducts((prev) => [...prev, ...initialProductsRef.current]);
+      setCursor(initialCursor);
+      return;
+    }
 
     loadingRef.current = true;
     setIsLoading(true);
@@ -25,20 +33,20 @@ export function usePublicFeed({ initialProducts, initialCursor }: UsePublicFeedO
       const res = await fetch(`/api/feed?cursor=${encodeURIComponent(cursor)}&limit=10`);
       const data = await res.json();
 
-      if (data.success && data.products) {
+      if (data.success && data.products && data.products.length > 0) {
         setProducts((prev) => [...prev, ...data.products]);
         setCursor(data.nextCursor);
-        setHasMore(data.nextCursor !== null);
       } else {
-        setHasMore(false);
+        // No more from API — next loadMore will loop
+        setCursor(null);
       }
     } catch {
-      setHasMore(false);
+      setCursor(null);
     } finally {
       setIsLoading(false);
       loadingRef.current = false;
     }
-  }, [cursor, hasMore]);
+  }, [cursor, initialCursor]);
 
-  return { products, isLoading, hasMore, loadMore };
+  return { products, isLoading, hasMore: true, loadMore };
 }
