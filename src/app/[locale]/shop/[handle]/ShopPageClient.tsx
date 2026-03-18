@@ -3,14 +3,15 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useLocale } from 'next-intl';
 import { useTranslations } from 'next-intl';
-import { VideoFeed } from '@/presentation/components/video/VideoFeed';
-import { CustomerNav, type CustomerTab } from '@/presentation/components/customer/CustomerNav';
-import { SavedProducts } from '@/presentation/components/customer/SavedProducts';
-import { CustomerOrders } from '@/presentation/components/customer/CustomerOrders';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, MoreVertical, Heart, ClipboardList, Share2, X } from 'lucide-react';
+import { DirectionalIcon } from '@/presentation/components/ui/DirectionalIcon';
 import { StoryCircles } from '@/presentation/components/stories/StoryCircles';
 import { StoryViewer } from '@/presentation/components/stories/StoryViewer';
 import { ProductGrid } from '@/presentation/components/customer/ProductGrid';
 import { CategoryChips } from '@/presentation/components/customer/CategoryChips';
+import { SavedProducts } from '@/presentation/components/customer/SavedProducts';
+import { CustomerOrders } from '@/presentation/components/customer/CustomerOrders';
 import { useStoryGroups } from '@/presentation/hooks/useStoryGroups';
 import { useLocalStorage } from '@/presentation/hooks/useLocalStorage';
 import { Product } from '@/domain/entities/Product';
@@ -59,19 +60,19 @@ function dtoToProduct(dto: ProductResponseDTO): Product {
 export function ShopPageClient({ seller, products: productDTOs }: ShopPageClientProps) {
   const locale = useLocale();
   const t = useTranslations();
+  const router = useRouter();
   const products = useMemo(
     () => productDTOs.map(dtoToProduct),
     [productDTOs]
   );
 
-  const [activeTab, setActiveTab] = useState<CustomerTab>('feed');
-  const [showVideoFeed, setShowVideoFeed] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuView, setMenuView] = useState<'menu' | 'saved' | 'orders'>('menu');
   const [bioExpanded, setBioExpanded] = useState(false);
 
   // Hooks for local customer data
   const saved = useSaved(seller.handle);
-  const customerOrders = useCustomerOrders(seller.handle, activeTab === 'orders');
+  const customerOrders = useCustomerOrders(seller.handle, menuView === 'orders');
 
   // Build shop config from seller data
   const shopConfig = useMemo(() => {
@@ -117,15 +118,10 @@ export function ShopPageClient({ seller, products: productDTOs }: ShopPageClient
     };
   }, [seller]);
 
+  // Navigate to product URL (reel view) — URL-driven, no client state
   const handleSelectProduct = useCallback((productId: string) => {
-    setSelectedProductId(productId);
-    setShowVideoFeed(true);
-  }, []);
-
-  const handleBackFromFeed = useCallback(() => {
-    setShowVideoFeed(false);
-    setSelectedProductId(null);
-  }, []);
+    router.push(`/${locale}/shop/${seller.handle}/${productId}`);
+  }, [router, locale, seller.handle]);
 
   const handleToggleSaved = useCallback(
     (product: Product) => {
@@ -208,26 +204,11 @@ export function ShopPageClient({ seller, products: productDTOs }: ShopPageClient
     [storyGroups, handleSelectProduct]
   );
 
-  // Full-screen video feed view
-  if (showVideoFeed) {
-    return (
-      <div className="h-screen">
-        <VideoFeed
-          products={products}
-          sellerId={seller.id}
-          initialVideoId={selectedProductId || undefined}
-          onBack={handleBackFromFeed}
-          shopConfig={{
-            shipping: shopConfig.shipping,
-            pickup: shopConfig.pickup,
-          }}
-          sellerName={seller.shopName}
-          sellerHandle={seller.handle}
-          onOrderSuccess={customerOrders.addOrder}
-        />
-      </div>
-    );
-  }
+  const handleShareShop = useCallback(async () => {
+    const url = `${window.location.origin}/${locale}/shop/${seller.handle}`;
+    await navigator.clipboard.writeText(url);
+    setMenuOpen(false);
+  }, [locale, seller.handle]);
 
   // Story viewer overlay
   if (storyViewerIndex !== null) {
@@ -241,12 +222,106 @@ export function ShopPageClient({ seller, products: productDTOs }: ShopPageClient
     );
   }
 
-  // Tabbed customer experience
+  // Shop profile view
   return (
-    <div className="h-screen bg-zinc-900">
-      <div className="h-full overflow-y-auto no-scrollbar bg-black">
-        {/* Compact profile header */}
-        <div className="flex items-center gap-3 px-4 pt-4 pb-1">
+    <div className="h-screen bg-black">
+      {/* Instagram-style top header */}
+      <div className="sticky top-0 z-20 bg-black/90 backdrop-blur-sm border-b border-zinc-800/50">
+        <div className="flex items-center justify-between px-4 py-3">
+          <button
+            onClick={() => router.back()}
+            className="p-1 text-white"
+          >
+            <DirectionalIcon icon={ArrowLeft} size={22} />
+          </button>
+          <span className="text-white font-semibold text-sm" dir="ltr">
+            {seller.shopConfig?.instagram?.handle || seller.handle}
+          </span>
+          <button
+            onClick={() => { setMenuOpen(true); setMenuView('menu'); }}
+            className="p-1 text-white"
+          >
+            <MoreVertical size={20} />
+          </button>
+        </div>
+      </div>
+
+      {/* Menu overlay */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60" onClick={() => setMenuOpen(false)}>
+          <div
+            className="absolute bottom-0 inset-x-0 bg-zinc-900 rounded-t-2xl max-h-[80vh] overflow-y-auto safe-area-pb"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {menuView === 'menu' && (
+              <div className="py-4">
+                <div className="w-10 h-1 rounded-full bg-zinc-700 mx-auto mb-4" />
+                <button
+                  onClick={() => setMenuView('saved')}
+                  className="flex items-center gap-3 w-full px-6 py-3 text-white hover:bg-zinc-800"
+                >
+                  <Heart size={20} className="text-zinc-400" />
+                  <span className="text-sm">{t('customer.nav.saved')}</span>
+                </button>
+                <button
+                  onClick={() => setMenuView('orders')}
+                  className="flex items-center gap-3 w-full px-6 py-3 text-white hover:bg-zinc-800"
+                >
+                  <ClipboardList size={20} className="text-zinc-400" />
+                  <span className="text-sm">{t('customer.nav.orders')}</span>
+                </button>
+                <button
+                  onClick={handleShareShop}
+                  className="flex items-center gap-3 w-full px-6 py-3 text-white hover:bg-zinc-800"
+                >
+                  <Share2 size={20} className="text-zinc-400" />
+                  <span className="text-sm">{t('sellerProfile.shareShopLink')}</span>
+                </button>
+              </div>
+            )}
+            {menuView === 'saved' && (
+              <div className="pt-4">
+                <div className="flex items-center justify-between px-4 pb-3">
+                  <button onClick={() => setMenuView('menu')} className="p-1 text-white">
+                    <DirectionalIcon icon={ArrowLeft} size={20} />
+                  </button>
+                  <span className="text-white font-semibold text-sm">{t('customer.nav.saved')}</span>
+                  <button onClick={() => setMenuOpen(false)} className="p-1 text-white">
+                    <X size={20} />
+                  </button>
+                </div>
+                <SavedProducts
+                  saved={saved.saved}
+                  onRemove={saved.removeSaved}
+                  onTap={(productId) => { setMenuOpen(false); handleSelectProduct(productId); }}
+                />
+              </div>
+            )}
+            {menuView === 'orders' && (
+              <div className="pt-4">
+                <div className="flex items-center justify-between px-4 pb-3">
+                  <button onClick={() => setMenuView('menu')} className="p-1 text-white">
+                    <DirectionalIcon icon={ArrowLeft} size={20} />
+                  </button>
+                  <span className="text-white font-semibold text-sm">{t('customer.nav.orders')}</span>
+                  <button onClick={() => setMenuOpen(false)} className="p-1 text-white">
+                    <X size={20} />
+                  </button>
+                </div>
+                <CustomerOrders
+                  localOrders={customerOrders.orders}
+                  shopHandle={seller.handle}
+                  locale={locale}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="h-full overflow-y-auto no-scrollbar">
+        {/* Profile header */}
+        <div className="flex items-center gap-3 px-4 pt-3 pb-1">
           {seller.shopConfig?.instagram?.profilePictureUrl ? (
             <img
               src={seller.shopConfig.instagram.profilePictureUrl}

@@ -10,6 +10,7 @@ import {
   X,
   Play,
   Pause,
+  Share2,
 } from 'lucide-react';
 import { SwipeButton } from '../ui/SwipeButton';
 import { CheckoutDrawer } from '../checkout/CheckoutDrawer';
@@ -63,6 +64,7 @@ export function VideoFeed({
   initialVideoId,
   onBack,
   shopConfig,
+  sellerHandle,
   onOrderSuccess,
 }: VideoFeedProps) {
   const t = useTranslations('publicFeed');
@@ -156,6 +158,7 @@ export function VideoFeed({
           isMuted={isMuted}
           onMuteToggle={() => setIsMuted(!isMuted)}
           onClose={onBack}
+          sellerHandle={sellerHandle}
         />
       ))}
 
@@ -199,6 +202,7 @@ interface MinimalVideoCardProps {
   isMuted: boolean;
   onMuteToggle: () => void;
   onClose: () => void;
+  sellerHandle?: string;
 }
 
 function MinimalVideoCard({
@@ -207,7 +211,9 @@ function MinimalVideoCard({
   isMuted,
   onMuteToggle,
   onClose,
+  sellerHandle,
 }: MinimalVideoCardProps) {
+  const locale = useLocale();
   const tFeed = useTranslations('customer.feed');
   const stock = product.stock;
 
@@ -275,13 +281,26 @@ function MinimalVideoCard({
         <X size={16} />
       </button>
 
-      {/* Mute button */}
-      <button
-        onClick={onMuteToggle}
-        className="absolute top-4 end-4 z-20 p-2 bg-black/20 backdrop-blur-sm rounded-full text-white/60"
-      >
-        {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
-      </button>
+      {/* Top-end buttons: mute + share */}
+      <div className="absolute top-4 end-4 z-20 flex flex-col gap-2">
+        <button
+          onClick={onMuteToggle}
+          className="p-2 bg-black/20 backdrop-blur-sm rounded-full text-white/60"
+        >
+          {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+        </button>
+        {sellerHandle && (
+          <button
+            onClick={() => {
+              const url = `${window.location.origin}/${locale}/shop/${sellerHandle}/${product.id}`;
+              navigator.clipboard.writeText(url);
+            }}
+            className="p-2 bg-black/20 backdrop-blur-sm rounded-full text-white/60"
+          >
+            <Share2 size={16} />
+          </button>
+        )}
+      </div>
 
       {/* Bottom info — above fixed SwipeButton */}
       <div className="absolute bottom-20 inset-x-0 z-10">

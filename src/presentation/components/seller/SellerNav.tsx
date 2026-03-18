@@ -8,7 +8,6 @@ import {
   ShoppingBag,
   Package,
   Plus,
-  Eye,
   User,
 } from 'lucide-react';
 
@@ -20,23 +19,22 @@ interface SellerNavProps {
 /**
  * Seller Navigation Component
  *
- * Bottom navigation bar with 5 tabs: Orders, Inventory, [+Add], Preview, Profile.
+ * Bottom navigation bar with 4 tabs: Orders, Products, [+Add], Profile.
  */
-export function SellerNav({ locale, shopHandle }: SellerNavProps) {
+export function SellerNav({ locale }: SellerNavProps) {
   const pathname = usePathname();
   const t = useTranslations('nav');
   const tp = useTranslations('sellerProfile');
 
   const navItems = [
     { href: `/${locale}/seller/orders`, icon: ShoppingBag, label: t('orders'), key: 'orders' },
-    { href: `/${locale}/seller/inventory`, icon: Package, label: t('inventory'), key: 'inventory' },
+    { href: `/${locale}/seller/inventory`, icon: Package, label: tp('products'), key: 'inventory' },
     { href: `/${locale}/seller/inventory/new`, icon: Plus, label: tp('addProduct'), key: 'add', isCenter: true },
-    { href: shopHandle ? `/${locale}/shop/${shopHandle}` : `/${locale}/seller/dashboard`, icon: Eye, label: tp('preview'), key: 'preview' },
     { href: `/${locale}/seller/profile`, icon: User, label: 'Profile', key: 'profile' },
   ];
 
   const isActive = (item: typeof navItems[0]) => {
-    if (item.key === 'add') return false; // Never highlight center button as active
+    if (item.key === 'add') return false;
     if (item.key === 'profile') {
       return pathname.includes('/seller/profile') || pathname.includes('/seller/settings') || pathname.includes('/seller/vibe') || pathname.includes('/seller/dashboard');
     }
@@ -45,12 +43,11 @@ export function SellerNav({ locale, shopHandle }: SellerNavProps) {
 
   return (
     <div className="fixed bottom-0 inset-x-0 bg-zinc-900/95 backdrop-blur-xl border-t border-zinc-800 safe-area-pb z-50">
-      <div className="flex justify-between items-center px-4 py-1.5 max-w-lg mx-auto">
+      <div className="flex justify-between items-center px-6 py-1.5 max-w-lg mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item);
 
-          // Center [+] button — elevated emerald circle
           if (item.isCenter) {
             return (
               <Link

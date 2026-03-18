@@ -11,6 +11,7 @@ import {
   Store,
   Play,
   Pause,
+  Share2,
 } from 'lucide-react';
 import { SwipeButton } from '../ui/SwipeButton';
 import { CheckoutDrawer } from '../checkout/CheckoutDrawer';
@@ -269,6 +270,7 @@ function PublicVideoCard({
   isMuted,
   onMuteToggle,
 }: PublicVideoCardProps) {
+  const locale = useLocale();
   const tFeed = useTranslations('customer.feed');
   const stock = product.stock;
 
@@ -328,18 +330,35 @@ function PublicVideoCard({
         </div>
       )}
 
-      {/* Mute button */}
-      <button
-        onClick={onMuteToggle}
-        className="absolute top-4 end-4 z-20 p-2 bg-black/20 backdrop-blur-sm rounded-full text-white/60"
-      >
-        {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
-      </button>
+      {/* Top-end buttons: mute + share */}
+      <div className="absolute top-4 end-4 z-20 flex flex-col gap-2">
+        <button
+          onClick={onMuteToggle}
+          className="p-2 bg-black/20 backdrop-blur-sm rounded-full text-white/60"
+        >
+          {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+        </button>
+        <button
+          onClick={() => {
+            const url = `${window.location.origin}/${locale}/shop/${product.sellerHandle}/${product.id}`;
+            navigator.clipboard.writeText(url);
+          }}
+          className="p-2 bg-black/20 backdrop-blur-sm rounded-full text-white/60"
+        >
+          <Share2 size={16} />
+        </button>
+      </div>
 
       {/* Bottom info — compact, above the fixed SwipeButton */}
       <div className="absolute bottom-20 inset-x-0 z-10">
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         <div className="relative px-4 pb-2 pt-8">
+          <a
+            href={`/${locale}/shop/${product.sellerHandle}`}
+            className="text-[11px] text-white/60 drop-shadow-lg mb-1 block"
+          >
+            @{product.sellerHandle}
+          </a>
           <h2 className="text-sm font-medium text-white drop-shadow-lg line-clamp-1">
             {product.title}
           </h2>
